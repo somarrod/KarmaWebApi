@@ -1,20 +1,64 @@
 using Microsoft.EntityFrameworkCore;
-using KarmaWebAPI.Models;
+using Microsoft.AspNetCore.Identity;
+using KarmaWebAPI.Data;
+using KarmaWebAPI.Configurations;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Añadir política de cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+    });
+});
+
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<AnyEscolarContext>(opt => {
+
+builder.Services.AddDbContext<DatabaseContext>(opt => {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+//builder.Services.AddAuthentication();
+builder.Services.ConfigureIdentity(); //La forma de infocar la clase ConfigureIdentity que hemos creado
+builder.Services.ConfigureAuthentication();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApiUser>>();
+
+    string[] roleNames = { "AG_Professor", "AG_Alumne", "AG_Admin" };
+    foreach (var roleName in roleNames)
+    {
+        if (!await roleManager.RoleExistsAsync(roleName))
+        {
+            await roleManager.CreateAsync(new IdentityRole(roleName));
+        }
+    }
+
+    //var user = await userManager.FindByEmailAsync("admin@example.com");
+    //if (user != null)
+    //{
+    //    await userManager.AddToRoleAsync(user, "Profesor");
+    //}
+}
+ 
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -24,7 +68,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
 
+app.UseMiddleware<CustomErrorHandlingMiddleware>(); //Middleware para que los errores de autentificación no devuelvan un error 405 y ya está
+app.UseAuthorization();
 app.UseAuthorization();
 
 app.MapControllers();
