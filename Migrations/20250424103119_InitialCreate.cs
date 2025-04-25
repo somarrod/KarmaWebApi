@@ -12,6 +12,21 @@ namespace KarmaWebAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AnyEscolar",
+                columns: table => new
+                {
+                    IdAnyEscolar = table.Column<int>(type: "int", nullable: false),
+                    DataIniciCurs = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataFiCurs = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Actiu = table.Column<bool>(type: "bit", nullable: false),
+                    DiesPeriode = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnyEscolar", x => x.IdAnyEscolar);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -49,6 +64,28 @@ namespace KarmaWebAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Privilegi",
+                columns: table => new
+                {
+                    IdPrivilegi = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nivell = table.Column<int>(type: "int", nullable: false),
+                    Descripcio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EsIndividualGrup = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdAnyEscolar = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Privilegi", x => x.IdPrivilegi);
+                    table.ForeignKey(
+                        name: "FK_Privilegi_AnyEscolar_IdAnyEscolar",
+                        column: x => x.IdAnyEscolar,
+                        principalTable: "AnyEscolar",
+                        principalColumn: "IdAnyEscolar",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -195,6 +232,11 @@ namespace KarmaWebAPI.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Privilegi_IdAnyEscolar",
+                table: "Privilegi",
+                column: "IdAnyEscolar");
         }
 
         /// <inheritdoc />
@@ -216,10 +258,16 @@ namespace KarmaWebAPI.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Privilegi");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "AnyEscolar");
         }
     }
 }

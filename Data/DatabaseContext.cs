@@ -10,12 +10,20 @@ namespace KarmaWebAPI.Data
         { }
 
         public DbSet<AnyEscolar> AnyEscolar { get; set; } = null!;
-
+        public DbSet<Privilegi> Privilegi{ get; set; } = null!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<Privilegi>()
+                        .HasOne(p => p.AnyEscolar)
+                        .WithMany(a => a.Privilegis)
+                        .HasForeignKey(p => p.IdAnyEscolar);
+
             base.OnModelCreating(modelBuilder);
         }
+
+
     }
 }

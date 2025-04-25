@@ -19,15 +19,24 @@ builder.Services.AddCors(options =>
 });
 
 
-builder.Services.AddControllers();
-
 builder.Services.AddDbContext<DatabaseContext>(opt => {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+//builder.Services.AddDbContext<DatabaseContext>(opt => {
+//    opt.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(9, 3, 0)));
+//});
 
 //builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity(); //La forma de infocar la clase ConfigureIdentity que hemos creado
 builder.Services.ConfigureAuthentication();
+builder.Services.ConfigureAuthorization();
+
+//para evitar el bucle al recuperar las instancias
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+});
+
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -49,17 +58,8 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(roleName));
         }
     }
-
-    //var user = await userManager.FindByEmailAsync("admin@example.com");
-    //if (user != null)
-    //{
-    //    await userManager.AddToRoleAsync(user, "Profesor");
-    //}
 }
  
-
-
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -70,7 +70,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseMiddleware<CustomErrorHandlingMiddleware>(); //Middleware para que los errores de autentificación no devuelvan un error 405 y ya está
+//Middleware para que los errores de autentificación no devuelvan un error 405 y ya está
+app.UseMiddleware<CustomErrorHandlingMiddleware>(); 
 app.UseAuthorization();
 app.UseAuthorization();
 

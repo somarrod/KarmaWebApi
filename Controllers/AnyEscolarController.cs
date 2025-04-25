@@ -1,4 +1,5 @@
 ﻿using KarmaWebAPI.Data;
+using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace KarmaWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/AnyEscolar")]
+    [Route("api/anyescolar")]
     
     public class AnyEscolarController : ControllerBase
     {
@@ -18,22 +19,13 @@ namespace KarmaWebAPI.Controllers
             _context = context;
         }
 
-        // GET: api/AnyEscolars
-        [HttpGet]
-        [Route("llista")]
+        #region Consultes
+        // GET: api/AnyEscolar/2025
+        [HttpGet("{idAnyEscolar}")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<AnyEscolar>>> GetAnyEscolar()
+        public async Task<ActionResult<AnyEscolar>> Instancia(int idAnyEscolar)
         {
-            var anyEscolar = await _context.AnyEscolar.ToListAsync();
-            return Ok(anyEscolar);
-        }
-
-        // GET: api/AnyEscolars/2025
-        [HttpGet("{id_anyEscolar}")]
-        [Authorize]
-        public async Task<ActionResult<AnyEscolar>> GetAnyEscolar(int id_anyEscolar)
-        {
-            var anyEscolar = await _context.AnyEscolar.FindAsync(id_anyEscolar);
+            var anyEscolar = await _context.AnyEscolar.FindAsync(idAnyEscolar);
 
             if (anyEscolar == null)
             {
@@ -43,16 +35,66 @@ namespace KarmaWebAPI.Controllers
             return Ok(anyEscolar);
         }
 
-        // PUT: api/AnyEscolars/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize (Roles = "AG_Admin")]
-        [HttpPut("editar")]
-        public async Task<IActionResult> PutAnyEscolar(int id_anyEscolar, AnyEscolar anyEscolar)
+        // GET: api/AnyEscolar
+        [HttpGet]
+        [Route("llista")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<AnyEscolar>>> Llista()
         {
-            if (id_anyEscolar != anyEscolar.id_anyEscolar)
+            var anyEscolar = await _context.AnyEscolar.ToListAsync();
+            return Ok(anyEscolar);
+        }
+        #endregion Consultes
+
+
+        #region Serveis
+        // POST: api/AnyEscolars
+        [HttpPost]
+        [Route("crear")]
+        [Authorize(Roles = "AG_Admin")]
+        public async Task<ActionResult<AnyEscolar>> Crear(AnyEscolarCrearDto anyEscolarDto)
+        {
+            var anyEscolar = new AnyEscolar
             {
+                IdAnyEscolar = int.Parse(anyEscolarDto.DataIniciCurs.Year.ToString() + anyEscolarDto.DataFiCurs.Year.ToString())  ,
+                DataIniciCurs = anyEscolarDto.DataIniciCurs,
+                DataFiCurs = anyEscolarDto.DataFiCurs,
+                Actiu = anyEscolarDto.Actiu,
+                DiesPeriode = anyEscolarDto.DiesPeriode,
+                Privilegis = new List<Privilegi>()
+            };
+
+            try
+            {
+                await _context.AnyEscolar.AddAsync(anyEscolar);
+                await _context.SaveChangesAsync();
+                return Ok(anyEscolar.IdAnyEscolar);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.InnerException != null ? e.InnerException.Message : e.Message);
+            }
+            
+        }
+
+        #region Comentat - Editar no ha d'estar disponible
+        // PUT: api/AnyEscolars/5
+        /*
+        [Authorize(Roles = "AG_Admin")]
+        [HttpPut("editar")]
+        public async Task<IActionResult> Editar(AnyEscolarEditarDto anyEscolarDto)
+        {
+            if (anyEscolarDto == null) {
                 return BadRequest();
             }
+
+            var anyEscolar = new AnyEscolar
+            {
+                IdAnyEscolar = anyEscolarDto.IdAnyEscolar,
+                DataIniciCurs = anyEscolarDto.DataIniciCurs,
+                DataFiCurs = anyEscolarDto.DataFiCurs,
+                Actiu = anyEscolarDto.Actiu,
+                DiesPeriode = anyEscolarDto.DiesPeriode
+            };
 
             _context.Entry(anyEscolar).State = EntityState.Modified;
 
@@ -62,7 +104,7 @@ namespace KarmaWebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AnyEscolarExists(id_anyEscolar))
+                if (!AnyEscolarExists(anyEscolarDto.IdAnyEscolar))
                 {
                     return NotFound();
                 }
@@ -71,28 +113,15 @@ namespace KarmaWebAPI.Controllers
                     throw;
                 }
             }
-
             return Ok();
         }
-
-        // POST: api/AnyEscolars
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        [Route("crear")]
-        [Authorize(Roles = "AG_Admin")]
-        public async Task<ActionResult<AnyEscolar>> crear(AnyEscolar anyEscolar)
-        {
-            await _context.AnyEscolar.AddAsync(anyEscolar);
-            await _context.SaveChangesAsync();
-
-            //return CreatedAtAction(nameof(GetAnyEscolar), new { id = anyEscolar.id_anyEscolar }, anyEscolar);
-            return Ok();
-        }
+        */
+        #endregion Comentat - Editar no ha d'estar disponible      
 
         // DELETE: api/AnyEscolars/5
         [HttpDelete("eliminar")]
         [Authorize(Roles = "AG_Admin")]
-        public async Task<IActionResult> DeleteAnyEscolar(int id)
+        public async Task<IActionResult> Eliminar(int id)
         {
             var anyEscolar = await _context.AnyEscolar.FindAsync(id);
             if (anyEscolar == null)
@@ -100,15 +129,25 @@ namespace KarmaWebAPI.Controllers
                 return NotFound();
             }
 
-            _context.AnyEscolar.Remove(anyEscolar);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.AnyEscolar.Remove(anyEscolar);
+                await _context.SaveChangesAsync();
 
-            return Ok();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException != null ? e.InnerException.Message : e.Message);
+            }
         }
+        #endregion Serveis
 
+        #region Auxiliars
         private bool AnyEscolarExists(int id_AnyEscolar)
         {
-            return _context.AnyEscolar.Any(e => e.id_anyEscolar == id_AnyEscolar);
+            return _context.AnyEscolar.Any(e => e.IdAnyEscolar == id_AnyEscolar);
         }
+        #endregion Auxiliars
     }
 }

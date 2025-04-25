@@ -34,6 +34,14 @@ namespace KarmaWebAPI.Configurations
                         options.LoginPath = "/api/account/login";
                         options.AccessDeniedPath = "/api/account/accessdenied";
                     });
-              }
         }
+
+        public static void ConfigureAuthorization(this IServiceCollection services)
+        {
+            var builder = services.AddAuthorization(options =>
+            {
+                // Configura tus políticas de autorización aquí
+            });
+        }
+    }
 }

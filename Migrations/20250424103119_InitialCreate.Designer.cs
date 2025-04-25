@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KarmaWebAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250410171828_InitialCreate")]
+    [Migration("20250424103119_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace KarmaWebAPI.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -96,24 +96,56 @@ namespace KarmaWebAPI.Migrations
 
             modelBuilder.Entity("KarmaWebAPI.Models.AnyEscolar", b =>
                 {
-                    b.Property<int>("id_anyEscolar")
+                    b.Property<int>("IdAnyEscolar")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_anyEscolar"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAnyEscolar"));
 
-                    b.Property<bool>("actiu")
+                    b.Property<bool>("Actiu")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("dataFiCurs")
+                    b.Property<DateTime>("DataFiCurs")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("dataIniciCurs")
+                    b.Property<DateTime>("DataIniciCurs")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("id_anyEscolar");
+                    b.Property<int>("DiesPeriode")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdAnyEscolar");
 
                     b.ToTable("AnyEscolar");
+                });
+
+            modelBuilder.Entity("KarmaWebAPI.Models.Privilegi", b =>
+                {
+                    b.Property<int>("IdPrivilegi")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPrivilegi"));
+
+                    b.Property<string>("Descripcio")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EsIndividualGrup")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IdAnyEscolar")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Nivell")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdPrivilegi");
+
+                    b.HasIndex("IdAnyEscolar");
+
+                    b.ToTable("Privilegi");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -249,6 +281,17 @@ namespace KarmaWebAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("KarmaWebAPI.Models.Privilegi", b =>
+                {
+                    b.HasOne("KarmaWebAPI.Models.AnyEscolar", "AnyEscolar")
+                        .WithMany("Privilegis")
+                        .HasForeignKey("IdAnyEscolar")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AnyEscolar");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -298,6 +341,11 @@ namespace KarmaWebAPI.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("KarmaWebAPI.Models.AnyEscolar", b =>
+                {
+                    b.Navigation("Privilegis");
                 });
 #pragma warning restore 612, 618
         }

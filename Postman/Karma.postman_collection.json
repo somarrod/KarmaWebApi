@@ -1,0 +1,113 @@
+{
+	"info": {
+		"_postman_id": "e8a0c6d3-4efe-412b-8dd7-b3c371cd8038",
+		"name": "Karma",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "944621"
+	},
+	"item": [
+		{
+			"name": "Sprint1",
+			"item": [
+				{
+					"name": "Crear grup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"p_agranyescolar_oid\": {\r\n    \"id_anyescolar\": 2425\r\n  },\r\n  \"p_agrmateria_oid\": {\r\n    \"id_materia\": 1\r\n  },\r\n  \"p_atrid_grup\": \"1ESOB\",\r\n  \"p_atrnivell\": 1,\r\n  \"p_atrlletra\": \"B\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/GrupApi/create_instance",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"GrupApi",
+								"create_instance"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "adminKarma",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}Token",
+					"host": [
+						"{{url}}Token"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IntcImlkX2FnX3VzdWFyaVwiOlwiYWRtaW5LYXJtYVwifSIsInJvbGUiOlsiQUdfVXN1YXJpIiwiQUdfQWRtaW4iXSwibmJmIjoxNzQ1Mzk1MjMwLCJleHAiOjE3NDUzOTcwMzAsImlhdCI6MTc0NTM5NTIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MzM5Ni8iLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUzMzk2LyJ9.bfKe0cmB14JlM7v3gZc_yosAFaxbO9WdmWwergC9EU4",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
