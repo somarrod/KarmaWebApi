@@ -1,4 +1,5 @@
 ﻿using KarmaWebAPI.Data;
+using KarmaWebAPI.Serveis;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
@@ -43,5 +44,16 @@ namespace KarmaWebAPI.Configurations
                 // Configura tus políticas de autorización aquí
             });
         }
+
+
+        public static void ConfigureServices(this IServiceCollection services)
+        {
+            var builder = services.AddScoped<IAnyEscolarService, AnyEscolarService>()
+                                   .AddScoped<IPrivilegiService, PrivilegiService>();
+            // Otros servicios
+        }
+
+
+
     }
 }

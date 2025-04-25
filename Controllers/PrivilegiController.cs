@@ -3,6 +3,7 @@ using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 //using KarmaWebAPI.Migrations;
 using KarmaWebAPI.Models;
+using KarmaWebAPI.Serveis;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +15,11 @@ namespace KarmaWebAPI.Controllers
     public class PrivilegiController : ControllerBase
     {
         private readonly DatabaseContext _context;
-
-        public PrivilegiController(DatabaseContext context)
+        private readonly IPrivilegiService _privilegiService;
+        public PrivilegiController(DatabaseContext context, IPrivilegiService privilegiService)
         {
             _context = context;
+            _privilegiService = privilegiService;
         }
 
 
@@ -92,40 +94,34 @@ namespace KarmaWebAPI.Controllers
         [HttpPost]
         [Route("crear")]
         [Authorize(Roles = "AG_Admin")]
-        public async Task<ActionResult<Privilegi>> Crear([FromBody] PrivilegiCrearDto privilegiDto)
+        public async Task<ActionResult<Privilegi>> Crear(PrivilegiCrearDto privilegiDto)
         {
-            var anyEscolar = await _context.AnyEscolar.FindAsync(privilegiDto.IdAnyEscolar);
-            if (anyEscolar == null)
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                return NotFound("Any escolar " + privilegiDto.IdAnyEscolar + " no trobat");
+                try
+                {
+                    var result = await _privilegiService.CrearPrivilegiAsync(privilegiDto);
+                   
+                    if (result.Result is OkObjectResult)
+                    {
+                        await transaction.CommitAsync();
+                    }
+                    else
+                    {
+                       await transaction.RollbackAsync();
+                    }
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
             }
 
-            // Verificar si ya existe un Privilegi con el mismo nombre
-            var existePrivilegi = await _context.Privilegi
-                    .AnyAsync(p => p.Descripcio == privilegiDto.Descripcio);
-
-            if (existePrivilegi)
-            {
-                return Conflict("Ja existeix un privilegi amb la mateixa descripció.");
-            }
-
-
-            var privilegi = new Privilegi
-            {
-                Nivell = privilegiDto.Nivell,
-                Descripcio = privilegiDto.Descripcio,
-                EsIndividualGrup = privilegiDto.EsIndividualGrup,
-                IdAnyEscolar = privilegiDto.IdAnyEscolar,
-                AnyEscolar = anyEscolar // Asignar la instancia recuperada
-            };
-
-            await _context.Privilegi.AddAsync(privilegi);
-            await _context.SaveChangesAsync();
-
-            return Ok("Privilegi creat: " + privilegi.IdPrivilegi.ToString());
         }
 
-       
+
         // PUT: api/Privilegi/5
         [Authorize(Roles = "AG_Admin")]
         [HttpPut("editar")]
@@ -165,7 +161,7 @@ namespace KarmaWebAPI.Controllers
                  return StatusCode(500, e.InnerException != null ? e.InnerException.Message : e.Message);
             }
 
-            return Ok();
+            return Ok(privilegiDto.IdPrivilegi);
         }
 
 
@@ -183,7 +179,7 @@ namespace KarmaWebAPI.Controllers
             _context.Privilegi.Remove(privilegi);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok(idPrivilegi);
         }
         #endregion Serveis
 

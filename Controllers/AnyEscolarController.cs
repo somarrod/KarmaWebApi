@@ -1,6 +1,7 @@
 ﻿using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
+using KarmaWebAPI.Serveis;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,16 @@ namespace KarmaWebAPI.Controllers
     public class AnyEscolarController : ControllerBase
     {
         private readonly DatabaseContext _context;
+        private readonly IAnyEscolarService _anyEscolarService;
+        private readonly IPrivilegiService _privilegiService;
 
-        public AnyEscolarController(DatabaseContext context)
+        public AnyEscolarController(DatabaseContext context, IAnyEscolarService anyEscolarService, IPrivilegiService privilegiService)
         {
             _context = context;
+            _anyEscolarService = anyEscolarService;
+            _privilegiService = privilegiService;
+
+
         }
 
         #region Consultes
@@ -48,32 +55,34 @@ namespace KarmaWebAPI.Controllers
 
 
         #region Serveis
-        // POST: api/AnyEscolars
+        // POST: api/AnyEscolar/crear
         [HttpPost]
         [Route("crear")]
         [Authorize(Roles = "AG_Admin")]
         public async Task<ActionResult<AnyEscolar>> Crear(AnyEscolarCrearDto anyEscolarDto)
         {
-            var anyEscolar = new AnyEscolar
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                IdAnyEscolar = int.Parse(anyEscolarDto.DataIniciCurs.Year.ToString() + anyEscolarDto.DataFiCurs.Year.ToString())  ,
-                DataIniciCurs = anyEscolarDto.DataIniciCurs,
-                DataFiCurs = anyEscolarDto.DataFiCurs,
-                Actiu = anyEscolarDto.Actiu,
-                DiesPeriode = anyEscolarDto.DiesPeriode,
-                Privilegis = new List<Privilegi>()
-            };
+                try
+                {
+                    var result = await _anyEscolarService.CrearAnyEscolarAsync(anyEscolarDto);
 
-            try
-            {
-                await _context.AnyEscolar.AddAsync(anyEscolar);
-                await _context.SaveChangesAsync();
-                return Ok(anyEscolar.IdAnyEscolar);
+                    if (result.Result is OkObjectResult)
+                    {
+                        await transaction.CommitAsync();
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                    }
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
             }
-            catch (Exception e) {
-                return StatusCode(500, e.InnerException != null ? e.InnerException.Message : e.Message);
-            }
-            
         }
 
         #region Comentat - Editar no ha d'estar disponible
@@ -121,12 +130,12 @@ namespace KarmaWebAPI.Controllers
         // DELETE: api/AnyEscolars/5
         [HttpDelete("eliminar")]
         [Authorize(Roles = "AG_Admin")]
-        public async Task<IActionResult> Eliminar(int id)
+        public async Task<IActionResult> Eliminar(int idAnyEscolar)
         {
-            var anyEscolar = await _context.AnyEscolar.FindAsync(id);
+            var anyEscolar = await _context.AnyEscolar.FindAsync(idAnyEscolar);
             if (anyEscolar == null)
             {
-                return NotFound();
+                return NotFound("L'any escolar {idAnyEscolar} no s'ha trobat");
             }
 
             try
@@ -134,7 +143,7 @@ namespace KarmaWebAPI.Controllers
                 _context.AnyEscolar.Remove(anyEscolar);
                 await _context.SaveChangesAsync();
 
-                return Ok();
+                return Ok(idAnyEscolar);
             }
             catch (Exception e)
             {
@@ -142,6 +151,38 @@ namespace KarmaWebAPI.Controllers
             }
         }
         #endregion Serveis
+
+        #region Transaccions
+        // POST: api/AnyEscolar/TCREAR
+        [HttpPost]
+        [Route("tcrear")]
+        [Authorize(Roles = "AG_Admin")]
+        public async Task<ActionResult<AnyEscolar>> TCREAR(AnyEscolarCrearDto anyEscolarDto)
+        {
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    var result = await _anyEscolarService.TCREARAsync(anyEscolarDto);
+
+                    if (result.Result is not OkObjectResult)
+                    {
+                        await transaction.RollbackAsync();
+                        return result;
+                    }
+
+                    await transaction.CommitAsync();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+
+                }
+            }
+        }
+        #endregion Transaccions
 
         #region Auxiliars
         private bool AnyEscolarExists(int id_AnyEscolar)

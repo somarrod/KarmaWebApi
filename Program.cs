@@ -30,6 +30,7 @@ builder.Services.AddDbContext<DatabaseContext>(opt => {
 builder.Services.ConfigureIdentity(); //La forma de infocar la clase ConfigureIdentity que hemos creado
 builder.Services.ConfigureAuthentication();
 builder.Services.ConfigureAuthorization();
+builder.Services.ConfigureServices();
 
 //para evitar el bucle al recuperar las instancias
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -42,6 +43,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 
@@ -59,7 +61,9 @@ using (var scope = app.Services.CreateScope())
         }
     }
 }
- 
+
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

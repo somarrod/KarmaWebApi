@@ -1,22 +1,25 @@
 {
 	"info": {
-		"_postman_id": "e8a0c6d3-4efe-412b-8dd7-b3c371cd8038",
+		"_postman_id": "3f95545e-2302-430e-bcb8-945a4f74c22e",
 		"name": "Karma",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "944621"
+		"_exporter_id": "44392423"
 	},
 	"item": [
 		{
-			"name": "Sprint1",
+			"name": "AnyEscolar",
 			"item": [
 				{
-					"name": "Crear grup",
+					"name": "Instancia",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"p_agranyescolar_oid\": {\r\n    \"id_anyescolar\": 2425\r\n  },\r\n  \"p_agrmateria_oid\": {\r\n    \"id_materia\": 1\r\n  },\r\n  \"p_atrid_grup\": \"1ESOB\",\r\n  \"p_atrnivell\": 1,\r\n  \"p_atrlletra\": \"B\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -24,13 +27,130 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/GrupApi/create_instance",
+							"raw": "{{url}}api/anyescolar/20242025",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
-								"GrupApi",
-								"create_instance"
+								"anyescolar",
+								"20242025"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Llista",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/anyescolar/llista",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"anyescolar",
+								"llista"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"dataIniciCurs\": \"2026-09-01T00:00:00.000Z\",\r\n  \"dataFiCurs\": \"2027-08-31T00:00:00.000Z\",\r\n  \"diesPeriode\": 7\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/anyescolar/crear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"anyescolar",
+								"crear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/anyescolar/eliminar?idAnyEscolar=20292030",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"anyescolar",
+								"eliminar"
+							],
+							"query": [
+								{
+									"key": "idAnyEscolar",
+									"value": "20292030"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TCREAR",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"dataIniciCurs\": \"2029-09-01T00:00:00.000Z\",\r\n  \"dataFiCurs\": \"2030-08-31T00:00:00.000Z\",\r\n  \"diesPeriode\": 7\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/anyescolar/tcrear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"anyescolar",
+								"tcrear"
 							]
 						}
 					},
@@ -39,39 +159,242 @@
 			]
 		},
 		{
-			"name": "Login",
+			"name": "Privilegi",
+			"item": [
+				{
+					"name": "Instancia",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/privilegi/1",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"privilegi",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Llista",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/privilegi/llista",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"privilegi",
+								"llista"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "llista-per-anyescolar",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/privilegi/llista-per-anyescolar?idAnyEscolar=20242025",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"privilegi",
+								"llista-per-anyescolar"
+							],
+							"query": [
+								{
+									"key": "idAnyEscolar",
+									"value": "20242025"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nivell\": 3,\r\n  \"descripcio\": \"privilegi 3\",\r\n  \"esIndividualGrup\": \"I\",\r\n  \"idAnyEscolar\": 20242025\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/privilegi/crear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"privilegi",
+								"crear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idAnyEscolar\": 0,\r\n  \"dataIniciCurs\": \"2025-04-24T15:39:06.628Z\",\r\n  \"dataFiCurs\": \"2025-04-24T15:39:06.628Z\",\r\n  \"actiu\": true,\r\n  \"diesPeriode\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/privilegi/editar",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"privilegi",
+								"editar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/privilegi/eliminar?idPrivilegi=6",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"privilegi",
+								"eliminar"
+							],
+							"query": [
+								{
+									"key": "idPrivilegi",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login AG_Admin",
 			"request": {
 				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded"
-					}
-				],
+				"header": [],
 				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "grant_type",
-							"value": "password",
-							"type": "text"
-						},
-						{
-							"key": "username",
-							"value": "adminKarma",
-							"type": "text"
-						},
-						{
-							"key": "password",
-							"value": "1",
-							"type": "text"
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"Password1!\",\r\n  \"rememberMe\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
 						}
-					]
+					}
 				},
 				"url": {
-					"raw": "{{url}}Token",
+					"raw": "{{url}}api/account/login",
 					"host": [
-						"{{url}}Token"
+						"{{url}}api"
+					],
+					"path": [
+						"account",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/account/logout",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"account",
+						"logout"
 					]
 				}
 			},
