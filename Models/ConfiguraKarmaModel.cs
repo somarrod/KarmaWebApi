@@ -14,10 +14,10 @@ namespace KarmaWebAPI.Models
         public int IdAnyEscolar { get; set; } //identificador de l'any escolar
         
         [Required]
-        public int KarmaMinim { get; set; }; //Karma mínim per a l'usuari
+        public int KarmaMinim { get; set; } //Karma mínim per a l'usuari
         
         [Required]
-        public int KarmaMaxim { get; set; }; //Karma màxim per a l'usuari   
+        public int KarmaMaxim { get; set; } //Karma màxim per a l'usuari   
 
         [Required]
         public String ColorNivell { get; set; }

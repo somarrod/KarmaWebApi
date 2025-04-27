@@ -15,10 +15,12 @@ namespace KarmaWebAPI.Models
         // Clave foránea para referenciar a AnyEscolar
         //És constant per al periode. Sols es solicita al crear el periode (relació estàtica)
         [Required]
+        [ForeignKey("AnyEscolar")]
         public int IdAnyEscolar { get; set; }
 
         // Propiedad de navegación  
-        [ForeignKey("IdAnyEscolar")]
         public AnyEscolar AnyEscolar { get; set; } = null!;
+
+        public ICollection<Puntuacio> Puntuacions { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace KarmaWebAPI.Models
 {
-    public class ProfessorGrup
+    public class ProfessorDeGrup
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

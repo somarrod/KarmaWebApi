@@ -15,6 +15,6 @@ namespace KarmaWebAPI.Models
         [Required]
         public bool Activa { get; set; } = true; //descripcio de la materia
 
-        public ICollection<ProfessorGrup> ProfessorsGrup { get; set; } //relació amb professor grups
+        public ICollection<ProfessorDeGrup> ProfessorsDelGrup { get; set; } //relació amb professor grups
     }
 }
