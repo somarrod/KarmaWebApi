@@ -1,5 +1,4 @@
-﻿using KarmaWebAPI.Data;
-using KarmaWebAPI.Models;
+﻿using KarmaWebAPI.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

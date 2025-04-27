@@ -17,14 +17,15 @@ namespace KarmaWebAPI.Models
         public String Descripcio { get; set; }
         
         [Required] 
-        public String EsIndividualGrup { get; set; }
+        public String EsIndividualGrup { get; set; } //valors possibles: 'I' o 'G'
 
 
         // Clave foránea para referenciar a AnyEscolar
         [Required]
         public int IdAnyEscolar { get; set; }
-        
+
         // Propiedad de navegación
+        [ForeignKey("IdAnyEscolar")]
         public AnyEscolar AnyEscolar { get; set; }
 
     }

@@ -9,8 +9,8 @@ namespace KarmaWebAPI.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int IdAnyEscolar { get; set; } //identificar únic
-        public DateTime DataIniciCurs { get; set; }
-        public DateTime DataFiCurs { get; set; }
+        public DateOnly DataIniciCurs { get; set; }
+        public DateOnly DataFiCurs { get; set; }
         public Boolean Actiu { get; set; }
         public int DiesPeriode { get; set; } // dies per període
 

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
-namespace KarmaWebAPI.Data
+namespace KarmaWebAPI.Models
 {
     public class ApiUser : IdentityUser
     {

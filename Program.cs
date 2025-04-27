@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using KarmaWebAPI.Data;
 using KarmaWebAPI.Configurations;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using KarmaWebAPI.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);

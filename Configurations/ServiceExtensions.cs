@@ -1,4 +1,5 @@
 ﻿using KarmaWebAPI.Data;
+using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components;

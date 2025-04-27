@@ -15,6 +15,8 @@ namespace KarmaWebAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Indica que la vista de base de dades no té clau primària
+            modelBuilder.Entity<VPrivilegiPeriode>().HasNoKey(); 
 
             modelBuilder.Entity<Privilegi>()
                         .HasOne(p => p.AnyEscolar)
