@@ -14,5 +14,9 @@ namespace KarmaWebAPI.Models
         public Boolean Actiu { get; set; } //indica si el professor està actiu o no 
 
         public String Email { get; set; } //correu electrònic del professor
+
+        public ICollection<ProfessorGrup> ProfessorsEnGrup { get; set; } //relació amb professor grups
+
+        public ICollection<Grup> GrupsTutoritzats{ get; set; } //relació amb professor grups
     }
 }

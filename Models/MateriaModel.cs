@@ -8,7 +8,13 @@ namespace KarmaWebAPI.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int IdMateria { get; set; } //identificar únic
+
+        [Required]
         public String Nom { get; set; } //nom de la materia
+
+        [Required]
         public bool Activa { get; set; } = true; //descripcio de la materia
+
+        public ICollection<ProfessorGrup> ProfessorsGrup { get; set; } //relació amb professor grups
     }
 }

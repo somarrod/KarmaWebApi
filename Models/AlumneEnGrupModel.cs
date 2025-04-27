@@ -13,7 +13,12 @@ namespace KarmaWebAPI.Models
         [ForeignKey("Alumne")]
         [Required]
         public String NIA { get; set; } //identificar únic de tamany màxim 10 que assigna gva
-      
+
+
+        [Required]
+        [ForeignKey("Grup")]
+        public String IdAnyEscolar { get; set; } //identificar únic del grup
+
         [Required]
         [ForeignKey("Grup")]
         public String IdGrup { get; set; } //identificar únic del grup
@@ -22,10 +27,8 @@ namespace KarmaWebAPI.Models
         #region Navegacion
         public Alumne Alumne { get; set; }
         public Grup Grup { get; set; } //identificar únic del grup
-
         public List<Puntuacio> Puntuacions{ get; set; } //Puntuacions de l'alumne assignades
-
-        //public List<PrivilegiPeriode> PrivilegisPeriode { get; set; } //Puntuacions de l'alumne assignades
+        public List<VPrivilegiPeriode> PrivilegisPeriode { get; set; } //Puntuacions de l'alumne assignades
 
         #endregion Navegacion
     }

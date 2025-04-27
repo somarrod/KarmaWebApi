@@ -1,18 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace KarmaWebAPI.Models
+
+namespace KarmaWebAPI.DTOs
 {
-    public class Categoria
+
+    public class CategoriaEditarDTO
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Required]
         public int IdCategoria { get; set; } //identificar únic
-        
+
         [Required]
         public String Descripcio { get; set; } //nom 
 
-        [Required]
-        public bool Activa { get; set; } = true; //Activa, per defecte true
     }
+
 }
