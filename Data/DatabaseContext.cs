@@ -9,20 +9,19 @@ namespace KarmaWebAPI.Data
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) 
         { }
 
-        public DbSet<Alumne> Alumne { get; set; } = null!;
-        public DbSet<AnyEscolar> AnyEscolar { get; set; } = null!;
-        public DbSet<Categoria> Categoria { get; set; } = null!;
-        public DbSet<ConfiguraKarma> ConfiguraKarma { get; set; } = null!;
-        public DbSet<Grup> Grup { get; set; } = null!;
-        
-        public DbSet<Materia> Materia { get; set; } = null!;
-        public DbSet<Periode> Periode { get; set; } = null!;
-        public DbSet<PrivilegiAssignat> PrivilegiAssignat { get; set; } = null!;
-        public DbSet<Privilegi> Privilegi{ get; set; } = null!;
-        public DbSet<ProfessorDeGrup> ProfessorDeGrup { get; set; } = null!;
-        public DbSet<Professor> Professor { get; set; } = null!;
-        public DbSet<Puntuacio> Puntuacio { get; set; } = null!;
-        public DbSet<VPrivilegiPeriode> VPrivilegiPeriode { get; set; } = null!;
+        public DbSet<Alumne> Alumnes { get; set; } = null!;
+        public DbSet<AnyEscolar> AnysEscolar { get; set; } = null!;
+        public DbSet<Categoria> Categories { get; set; } = null!;
+        public DbSet<ConfiguraKarma> ConfiguracionsKarma { get; set; } = null!;
+        public DbSet<Grup> Grups { get; set; } = null!;
+        public DbSet<Materia> Materies { get; set; } = null!;
+        public DbSet<Periode> Periodes { get; set; } = null!;
+        public DbSet<PrivilegiAssignat> PrivilegisAssignats { get; set; } = null!;
+        public DbSet<Privilegi> Privilegis{ get; set; } = null!;
+        public DbSet<ProfessorDeGrup> ProfessorsDeGrup { get; set; } = null!;
+        public DbSet<Professor> Professors { get; set; } = null!;
+        public DbSet<Puntuacio> Puntuacions { get; set; } = null!;
+        public DbSet<VPrivilegiPeriode> VPrivilegisPeriode { get; set; } = null!;
 
  
         protected override void OnModelCreating(ModelBuilder modelBuilder)

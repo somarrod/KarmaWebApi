@@ -27,8 +27,8 @@ namespace KarmaWebAPI.Models
         #region Navegacion
         public Alumne Alumne { get; set; }
         public Grup Grup { get; set; } //identificar únic del grup
-        public List<Puntuacio> Puntuacions{ get; set; } //Puntuacions de l'alumne assignades
-        public List<VPrivilegiPeriode> PrivilegisPeriode { get; set; } //Puntuacions de l'alumne assignades
+        public ICollection<Puntuacio> Puntuacions{ get; set; } //Puntuacions de l'alumne assignades
+        public ICollection<VPrivilegiPeriode> PrivilegisPeriode { get; set; } //Puntuacions de l'alumne assignades
 
         #endregion Navegacion
     }

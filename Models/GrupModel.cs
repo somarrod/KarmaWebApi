@@ -12,19 +12,18 @@ namespace KarmaWebAPI.Models
 
         [Key]
         [Column(Order = 1)]
-        //[DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int IdGrup { get; set; } //identificar únic
+        public String IdGrup { get; set; } //identificar únic
 
-        public String Nivell { get; set; }
-
-        public String Lletra{ get; set; } //lletra del grup (A, B, C, ...)
+        public String Descripcio { get; set; }
 
         public String KarmaBase { get; set; } = "CAP KARMA"; //Karma Base: Es el mínim de tots els karmes dels alumnes del grup
 
 
         // Nova propietat per al professor tutor
         [ForeignKey("Professor")]
-        public int IdProfessorTutor { get; set; }
+        public String IdProfessorTutor { get; set; }
+
+        #region Navegacions
 
         // Propietat de navegació
         public AnyEscolar AnyEscolar { get; set; } = null!;
@@ -32,8 +31,9 @@ namespace KarmaWebAPI.Models
         // Propietat de navegació per al professor tutor
         public Professor ProfessorTutor { get; set; } = null!;
 
-        public ICollection<ProfessorDeGrup> ProfessorsGrup { get; set; } = null!;
-        public ICollection<AlumneEnGrup> AlumnesEnGrup { get; set; } = null!;
+        public ICollection<ProfessorDeGrup> ProfessorsGrup { get; set; }
+        public ICollection<AlumneEnGrup> AlumnesEnGrup { get; set; }
+        #endregion Navegacions
 
     }
 }

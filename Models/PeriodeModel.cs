@@ -22,5 +22,7 @@ namespace KarmaWebAPI.Models
         public AnyEscolar AnyEscolar { get; set; } = null!;
 
         public ICollection<Puntuacio> Puntuacions { get; set; }
+
+        public ICollection<VPrivilegiPeriode> PrivilegisPeriode { get; set; } //Puntuacions de l'alumne assignades
     }
 }

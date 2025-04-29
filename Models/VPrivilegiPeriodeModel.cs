@@ -10,7 +10,7 @@ namespace KarmaWebAPI.Models
         public int IdPeriode { get; set; } //identificar únic
         
         [Required]
-        public String IdAlumneGrup { get; set; }
+        public int IdAlumneEnGrup { get; set; }
         
         [Required]
         public int IdPrivilegi { get; set; } //identificar únic

@@ -28,5 +28,7 @@ namespace KarmaWebAPI.Models
         [ForeignKey("IdAnyEscolar")]
         public AnyEscolar AnyEscolar { get; set; }
 
+        public ICollection<VPrivilegiPeriode> PrivilegisPeriode { get; set; } //Puntuacions de l'alumne assignades
+
     }
 }

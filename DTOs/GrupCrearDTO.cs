@@ -16,9 +16,7 @@ namespace KarmaWebAPI.DTOs
         [Required]
         public String IdGrup { get; set; } //identificar únic del grup
 
-        public String Nivell{ get; set; } //nivell
-
-        public String Lletra { get; set; } //lletra
+        public String Descripcio{ get; set; } 
 
     }
 
