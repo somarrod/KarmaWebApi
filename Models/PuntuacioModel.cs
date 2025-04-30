@@ -37,7 +37,5 @@ namespace KarmaWebAPI.Models
 
         public AlumneEnGrup AlumneEnGrup { get; set; } = null!;
 
-
-
     }
 }
