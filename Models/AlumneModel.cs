@@ -7,7 +7,6 @@ namespace KarmaWebAPI.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-
         public String NIA { get; set; } //identificador únic de tamany màxim 10 que assigna gva
         
         [Required]
@@ -20,9 +19,10 @@ namespace KarmaWebAPI.Models
         public Boolean Actiu { get; set; } = true; //indica si està actiu o no 
         
         [Required]
+        [StringLength(255)]
         public String Email { get; set; } //correu electrònic 
 
         public ICollection<AlumneEnGrup> AlumneEnGrups { get; set; } //relació amb alumne grups
-
+        public object AlumnesEnGrup { get; internal set; }
     }
 }
