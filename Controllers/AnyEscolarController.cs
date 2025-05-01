@@ -15,13 +15,13 @@ namespace KarmaWebAPI.Controllers
     {
         private readonly DatabaseContext _context;
         private readonly IAnyEscolarService _anyEscolarService;
-        private readonly IPrivilegiService _privilegiService;
+        //private readonly IPrivilegiService _privilegiService;
 
         public AnyEscolarController(DatabaseContext context, IAnyEscolarService anyEscolarService, IPrivilegiService privilegiService)
         {
             _context = context;
             _anyEscolarService = anyEscolarService;
-            _privilegiService = privilegiService;
+            //_privilegiService = privilegiService;
 
 
         }
@@ -58,6 +58,7 @@ namespace KarmaWebAPI.Controllers
         // POST: api/AnyEscolar/crear
         [HttpPost]
         [Route("crear")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [Authorize(Roles = "AG_Admin")]
         public async Task<ActionResult<AnyEscolar>> Crear(AnyEscolarCrearDto anyEscolarDto)
         {
@@ -135,7 +136,7 @@ namespace KarmaWebAPI.Controllers
             var anyEscolar = await _context.AnyEscolar.FindAsync(idAnyEscolar);
             if (anyEscolar == null)
             {
-                return NotFound("L'any escolar {idAnyEscolar} no s'ha trobat");
+                return NotFound($"L'any escolar {idAnyEscolar} no s'ha trobat");
             }
 
             try

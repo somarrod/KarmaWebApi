@@ -2,6 +2,8 @@
 using KarmaWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using KarmaWebAPI.Data;
+using KarmaWebAPI.DTOs;
+using KarmaWebAPI.Serveis;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -10,17 +12,12 @@ namespace KarmaWebAPI.Controllers
     public class AlumneController : ControllerBase
     {
         private readonly DatabaseContext _context;
+        private readonly IAlumneService _alumneService;
 
-        public AlumneController(DatabaseContext context)
+        public AlumneController(DatabaseContext context, IAlumneService alumneService)
         {
             _context = context;
-        }
-
-        // GET: api/Alumne
-        [HttpGet("llista")]
-        public async Task<ActionResult<IEnumerable<Alumne>>> Llista()
-        {
-            return await _context.Alumne.ToListAsync();
+            _alumneService = alumneService;
         }
 
         // GET: api/Alumne/5
@@ -35,6 +32,47 @@ namespace KarmaWebAPI.Controllers
             }
 
             return alumne;
+        }
+
+        // GET: api/Alumne
+        [HttpGet("llista")]
+        public async Task<ActionResult<IEnumerable<Alumne>>> Llista()
+        {
+            return await _context.Alumne.ToListAsync();
+        }
+
+        // POST: api/Alumne/crear
+        [HttpPost("crear")]
+        public async Task<ActionResult<Alumne>> Crear(AlumneDTO alumneDto)
+        {
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    var result = await _alumneService.CrearAlumneAsync(alumneDto);
+
+                    // Fix: Ensure the result is cast or converted to the correct type
+                    if (result.Result is OkObjectResult okResult && okResult.Value is Alumne alumne)
+                    {
+
+                       //ací if()
+
+
+                        await transaction.CommitAsync();
+                        return CreatedAtAction(nameof(Instancia), new { nia = alumne.NIA }, alumne);
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return BadRequest("Failed to create Alumne.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
         }
 
         // PUT: api/Alumne/editar
@@ -65,16 +103,6 @@ namespace KarmaWebAPI.Controllers
             }
 
             return NoContent();
-        }
-
-        // POST: api/Alumne/crear
-        [HttpPost("crear")]
-        public async Task<ActionResult<Alumne>> Crear(Alumne alumne)
-        {
-            _context.Alumne.Add(alumne);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("Instancia", new { nia = alumne.NIA }, alumne);
         }
 
         // DELETE: api/Alumne/eliminar

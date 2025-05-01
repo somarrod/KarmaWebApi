@@ -26,7 +26,7 @@ namespace KarmaWebAPI.Serveis
 
             var anyEscolar = new AnyEscolar
             {
-                IdAnyEscolar = int.Parse(anyEscolarDto.DataIniciCurs.Year.ToString() + anyEscolarDto.DataFiCurs.Year.ToString()),
+                IdAnyEscolar = int.Parse((anyEscolarDto.DataIniciCurs.Year -2000).ToString() + (anyEscolarDto.DataFiCurs.Year -2000).ToString()),
                 DataIniciCurs = anyEscolarDto.DataIniciCurs,
                 DataFiCurs = anyEscolarDto.DataFiCurs,
                 Actiu = true,
@@ -51,7 +51,7 @@ namespace KarmaWebAPI.Serveis
 
             var anyEscolar = okResult.Value as AnyEscolar;
 
-            for (var i = 0; i <= 3; i++)
+           /* for (var i = 0; i <= 3; i++)
             {
                
 
@@ -68,7 +68,7 @@ namespace KarmaWebAPI.Serveis
                 {
                     return new StatusCodeResult(500); 
                 }
-            }
+            }*/
 
             return new OkObjectResult(anyEscolar);
         }

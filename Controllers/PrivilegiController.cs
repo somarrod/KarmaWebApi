@@ -126,28 +126,24 @@ namespace KarmaWebAPI.Controllers
         [HttpPut("editar")]
         public async Task<IActionResult> Editar(PrivilegiEditarDto privilegiDto)
         {
-
             var anyEscolar = await _context.AnyEscolar.FindAsync(privilegiDto.IdAnyEscolar);
             if (anyEscolar == null)
             {
                 return NotFound("Any escolar " + privilegiDto.IdAnyEscolar + " no trobat");
             }
 
-            var privilegiAUX = await _context.Privilegi.FindAsync(privilegiDto.IdAnyEscolar);
-            if (privilegiAUX == null)
+            var privilegi = await _context.Privilegi.FindAsync(privilegiDto.IdPrivilegi);
+            if (privilegi == null)
             {
                 return NotFound("Privilegi " + privilegiDto.IdPrivilegi + " no trobat");
             }
 
-            Privilegi privilegi = new Privilegi
-            {   
-                IdPrivilegi = privilegiDto.IdPrivilegi,
-                Nivell = privilegiDto.Nivell,
-                Descripcio = privilegiDto.Descripcio,
-                EsIndividualGrup = privilegiDto.EsIndividualGrup,
-                IdAnyEscolar = privilegiDto.IdAnyEscolar,
-                AnyEscolar = anyEscolar // Asignar la instancia recuperada
-            };
+            // Actualizar las propiedades de la entidad existente
+            privilegi.Nivell = privilegiDto.Nivell;
+            privilegi.Descripcio = privilegiDto.Descripcio;
+            privilegi.EsIndividualGrup = privilegiDto.EsIndividualGrup;
+            privilegi.IdAnyEscolar = privilegiDto.IdAnyEscolar;
+            privilegi.AnyEscolar = anyEscolar; // Asignar la instancia recuperada
 
             _context.Entry(privilegi).State = EntityState.Modified;
 
@@ -157,11 +153,12 @@ namespace KarmaWebAPI.Controllers
             }
             catch (Exception e)
             {
-                 return StatusCode(500, e.InnerException != null ? e.InnerException.Message : e.Message);
+                return StatusCode(500, e.InnerException != null ? e.InnerException.Message : e.Message);
             }
 
             return Ok(privilegiDto.IdPrivilegi);
         }
+
 
 
         // DELETE: api/Privilegi/5
