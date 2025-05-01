@@ -2,10 +2,11 @@
 using KarmaWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using KarmaWebAPI.Data;
+using KarmaWebAPI.DTOs;
 
 namespace KarmaWebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/materia")]
     [ApiController]
     public class MateriaController : ControllerBase
     {
@@ -16,18 +17,11 @@ namespace KarmaWebAPI.Controllers
             _context = context;
         }
 
-        // GET: api/Materia
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Materia>>> ObtenerMaterias()
-        {
-            return await _context.Materies.ToListAsync();
-        }
-
         // GET: api/Materia/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Materia>> ObtenerMateria(int id)
+        [HttpGet("{idMateria}")]
+        public async Task<ActionResult<Materia>> ObtenerMateria(int idMateria)
         {
-            var materia = await _context.Materies.FindAsync(id);
+            var materia = await _context.Materia.FindAsync(idMateria);
 
             if (materia == null)
             {
@@ -37,14 +31,42 @@ namespace KarmaWebAPI.Controllers
             return materia;
         }
 
-        // PUT: api/Materia/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> EditarMateria(int id, Materia materia)
+        // GET: api/Materia
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Materia>>> ObtenerMaterias()
         {
-            if (id != materia.IdMateria)
+            return await _context.Materia.ToListAsync();
+        }
+
+
+        // POST: api/Materia
+        [HttpPost]
+        public async Task<ActionResult<Materia>> CrearMateria(MateriaCrearDTO materiaDto)
+        {
+            var materia = new Materia
             {
-                return BadRequest();
-            }
+                Nom = materiaDto.Nom,
+                Activa = true
+            };
+
+            _context.Materia.Add(materia);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("CrearMateria", new { id = materia.IdMateria }, materia);
+        }
+
+
+        // PUT: api/Materia/5
+        [HttpPut("editar")]
+        public async Task<IActionResult> EditarMateria(MateriaEditarDTO materiaDto)
+        {
+
+            var materia = new Materia
+            {
+                IdMateria = materiaDto.IdMateria,
+                Nom = materiaDto.Nom,
+                Activa = materiaDto.Activa
+            };
 
             _context.Entry(materia).State = EntityState.Modified;
 
@@ -54,7 +76,7 @@ namespace KarmaWebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MateriaExiste(id))
+                if (!MateriaExiste(materiaDto.IdMateria))
                 {
                     return NotFound();
                 }
@@ -67,35 +89,26 @@ namespace KarmaWebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Materia
-        [HttpPost]
-        public async Task<ActionResult<Materia>> CrearMateria(Materia materia)
-        {
-            _context.Materies.Add(materia);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("ObtenerMateria", new { id = materia.IdMateria }, materia);
-        }
 
         // DELETE: api/Materia/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> EliminarMateria(int id)
+        public async Task<IActionResult> EliminarMateria(int idMateria)
         {
-            var materia = await _context.Materies.FindAsync(id);
+            var materia = await _context.Materia.FindAsync(idMateria);
             if (materia == null)
             {
                 return NotFound();
             }
 
-            _context.Materies.Remove(materia);
+            _context.Materia.Remove(materia);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool MateriaExiste(int id)
+        private bool MateriaExiste(int idMateria)
         {
-            return _context.Materies.Any(e => e.IdMateria == id);
+            return _context.Materia.Any(e => e.IdMateria == idMateria);
         }
     }
 }

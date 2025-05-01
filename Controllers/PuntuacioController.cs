@@ -20,14 +20,14 @@ namespace KarmaWebAPI.Controllers
         [HttpGet("llista")]
         public async Task<ActionResult<IEnumerable<Puntuacio>>> Llista()
         {
-            return await _context.Puntuacions.ToListAsync();
+            return await _context.Puntuacio.ToListAsync();
         }
 
         // GET: api/Puntuacio/5
         [HttpGet("{idPuntuacio}")]
         public async Task<ActionResult<Puntuacio>> Instancia(int idPuntuacio)
         {
-            var puntuacio = await _context.Puntuacions.FindAsync(idPuntuacio);
+            var puntuacio = await _context.Puntuacio.FindAsync(idPuntuacio);
 
             if (puntuacio == null)
             {
@@ -71,7 +71,7 @@ namespace KarmaWebAPI.Controllers
         [HttpPost("crear")]
         public async Task<ActionResult<Puntuacio>> Crear(Puntuacio puntuacio)
         {
-            _context.Puntuacions.Add(puntuacio);
+            _context.Puntuacio.Add(puntuacio);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("Instancia", new { id = puntuacio.IdPuntuacio }, puntuacio);
@@ -81,13 +81,13 @@ namespace KarmaWebAPI.Controllers
         [HttpDelete("eliminar")]
         public async Task<IActionResult> Eliminar(int idPuntuacio)
         {
-            var puntuacio = await _context.Puntuacions.FindAsync(idPuntuacio);
+            var puntuacio = await _context.Puntuacio.FindAsync(idPuntuacio);
             if (puntuacio == null)
             {
                 return NotFound();
             }
 
-            _context.Puntuacions.Remove(puntuacio);
+            _context.Puntuacio.Remove(puntuacio);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -95,7 +95,7 @@ namespace KarmaWebAPI.Controllers
 
         private bool PuntuacioExisteix(int id)
         {
-            return _context.Puntuacions.Any(e => e.IdPuntuacio == id);
+            return _context.Puntuacio.Any(e => e.IdPuntuacio == id);
         }
     }
 }

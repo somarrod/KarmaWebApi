@@ -19,7 +19,7 @@ namespace KarmaWebAPI.Serveis
 
         public ICollection<VPrivilegiPeriode> GetPrivilegisPeriode(int idAlumneEnGrup)
         {
-            return _context.VPrivilegisPeriode
+            return _context.VPrivilegiPeriode
                             .Where(v => idAlumneEnGrup == v.IdAlumneEnGrup)
                             .ToList();
         }

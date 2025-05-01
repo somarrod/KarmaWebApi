@@ -31,7 +31,7 @@ namespace KarmaWebAPI.Controllers
         // GET: Privilegi/GetAnyEscolar/5
         public async Task<IActionResult> Instancia(int idPrivilegi)
         {
-            var privilegi = await _context.Privilegis
+            var privilegi = await _context.Privilegi
                 .Include(p => p.AnyEscolar)
                 .FirstOrDefaultAsync(m => m.IdPrivilegi == idPrivilegi);
             if (privilegi == null)
@@ -48,7 +48,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<Privilegi>>> Llista()
         {
-            var privilegis = await _context.Privilegis
+            var privilegis = await _context.Privilegi
                                          .Include(p => p.AnyEscolar)
                                          .ToListAsync();
 
@@ -68,13 +68,13 @@ namespace KarmaWebAPI.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<Privilegi>>> LlistaPerAnyEscolar(int idAnyEscolar)
         {
-            var anyEscolar = await _context.AnysEscolar.FindAsync(idAnyEscolar);
+            var anyEscolar = await _context.AnyEscolar.FindAsync(idAnyEscolar);
             if (anyEscolar == null)
             {
                 return NotFound("Any escolar " + idAnyEscolar + " no trobat");
             }
 
-            var privilegis = await _context.Privilegis
+            var privilegis = await _context.Privilegi
                                          .Include(p => p.AnyEscolar)
                                          .Where(p => p.IdAnyEscolar == idAnyEscolar)
                                          .ToListAsync();
@@ -127,13 +127,13 @@ namespace KarmaWebAPI.Controllers
         public async Task<IActionResult> Editar(PrivilegiEditarDto privilegiDto)
         {
 
-            var anyEscolar = await _context.AnysEscolar.FindAsync(privilegiDto.IdAnyEscolar);
+            var anyEscolar = await _context.AnyEscolar.FindAsync(privilegiDto.IdAnyEscolar);
             if (anyEscolar == null)
             {
                 return NotFound("Any escolar " + privilegiDto.IdAnyEscolar + " no trobat");
             }
 
-            var privilegiAUX = await _context.Privilegis.FindAsync(privilegiDto.IdAnyEscolar);
+            var privilegiAUX = await _context.Privilegi.FindAsync(privilegiDto.IdAnyEscolar);
             if (privilegiAUX == null)
             {
                 return NotFound("Privilegi " + privilegiDto.IdPrivilegi + " no trobat");
@@ -169,13 +169,13 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin")]
         public async Task<IActionResult> Eliminar(int idPrivilegi)
         {
-            var privilegi = await _context.Privilegis.FindAsync(idPrivilegi);
+            var privilegi = await _context.Privilegi.FindAsync(idPrivilegi);
             if (privilegi == null)
             {
                 return NotFound("Privilegi " + idPrivilegi + " no trobat");
             }
 
-            _context.Privilegis.Remove(privilegi);
+            _context.Privilegi.Remove(privilegi);
             await _context.SaveChangesAsync();
 
             return Ok(idPrivilegi);
@@ -185,7 +185,7 @@ namespace KarmaWebAPI.Controllers
         #region Auxiliars
         private bool PrivilegiExists(int idPrivilegi)
         {
-            return _context.Privilegis.Any(e => e.IdPrivilegi == idPrivilegi);
+            return _context.Privilegi.Any(e => e.IdPrivilegi == idPrivilegi);
         }
         #endregion Auxiliars
     }

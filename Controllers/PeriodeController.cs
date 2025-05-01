@@ -20,14 +20,14 @@ namespace KarmaWebAPI.Controllers
         [HttpGet("llista")]
         public async Task<ActionResult<IEnumerable<Periode>>> Llista()
         {
-            return await _context.Periodes.ToListAsync();
+            return await _context.Periode.ToListAsync();
         }
 
         // GET: api/Periode/5
         [HttpGet("{idPeriode}")]
         public async Task<ActionResult<Periode>> Instancia(int idPeriode)
         {
-            var periode = await _context.Periodes.FindAsync(idPeriode);
+            var periode = await _context.Periode.FindAsync(idPeriode);
 
             if (periode == null)
             {
@@ -41,7 +41,7 @@ namespace KarmaWebAPI.Controllers
         [HttpPut("editar")]
         public async Task<IActionResult> Editar(int idPeriode, Periode periode)
         {
-            if (idPeriode != periode.IdPeriodo)
+            if (idPeriode != periode.IdPeriode)
             {
                 return BadRequest();
             }
@@ -71,23 +71,23 @@ namespace KarmaWebAPI.Controllers
         [HttpPost("crear")]
         public async Task<ActionResult<Periode>> Crear(Periode periode)
         {
-            _context.Periodes.Add(periode);
+            _context.Periode.Add(periode);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("Instancia", new { id = periode.IdPeriodo }, periode);
+            return CreatedAtAction("Instancia", new { id = periode.IdPeriode }, periode);
         }
 
         // DELETE: api/Periode/eliminar
         [HttpDelete("eliminar")]
         public async Task<IActionResult> Eliminar(int idPeriode)
         {
-            var periode = await _context.Periodes.FindAsync(idPeriode);
+            var periode = await _context.Periode.FindAsync(idPeriode);
             if (periode == null)
             {
                 return NotFound();
             }
 
-            _context.Periodes.Remove(periode);
+            _context.Periode.Remove(periode);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -95,7 +95,7 @@ namespace KarmaWebAPI.Controllers
 
         private bool PeriodeExisteix(int id)
         {
-            return _context.Periodes.Any(e => e.IdPeriodo == id);
+            return _context.Periode.Any(e => e.IdPeriode == id);
         }
     }
 }

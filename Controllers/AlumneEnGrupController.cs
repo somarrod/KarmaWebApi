@@ -20,14 +20,14 @@ namespace KarmaWebAPI.Controllers
         [HttpGet("llista")]
         public async Task<ActionResult<IEnumerable<AlumneEnGrup>>> Llista()
         {
-            return await _context.AlumnesEnGrup.ToListAsync();
+            return await _context.AlumneEnGrup.ToListAsync();
         }
 
         // GET: api/AlumneEnGrup/5
         [HttpGet("{idAlumneEnGrup}")]
         public async Task<ActionResult<AlumneEnGrup>> Instancia(int idAlumneEnGrup)
         {
-            var alumneEnGrup = await _context.AlumnesEnGrup.FindAsync(idAlumneEnGrup);
+            var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(idAlumneEnGrup);
 
             if (alumneEnGrup == null)
             {
@@ -71,7 +71,7 @@ namespace KarmaWebAPI.Controllers
         [HttpPost("crear")]
         public async Task<ActionResult<AlumneEnGrup>> Crear(AlumneEnGrup alumneEnGrup)
         {
-            _context.AlumnesEnGrup.Add(alumneEnGrup);
+            _context.AlumneEnGrup.Add(alumneEnGrup);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("ObtenerAlumneEnGrup", new { id = alumneEnGrup.IdAlumneEnGrup }, alumneEnGrup);
@@ -80,13 +80,13 @@ namespace KarmaWebAPI.Controllers
         [HttpDelete("eliminar")]
         public async Task<IActionResult> Eliminar(int IdAlumneEnGrup)
         {
-            var alumneEnGrup = await _context.AlumnesEnGrup.FindAsync(IdAlumneEnGrup);
+            var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(IdAlumneEnGrup);
             if (alumneEnGrup == null)
             {
                 return NotFound();
             }
 
-            _context.AlumnesEnGrup.Remove(alumneEnGrup);
+            _context.AlumneEnGrup.Remove(alumneEnGrup);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -94,7 +94,7 @@ namespace KarmaWebAPI.Controllers
 
         private bool AlumneEnGrupExisteix(int id)
         {
-            return _context.AlumnesEnGrup.Any(e => e.IdAlumneEnGrup == id);
+            return _context.AlumneEnGrup.Any(e => e.IdAlumneEnGrup == id);
         }
     }
 }

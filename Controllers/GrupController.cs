@@ -22,14 +22,14 @@ namespace KarmaWebAPI.Controllers
         [HttpGet("llista")]
         public async Task<ActionResult<IEnumerable<Grup>>> Llista()
         {
-            return await _context.Grups.ToListAsync();
+            return await _context.Grup.ToListAsync();
         }
 
         // GET: api/Grup/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Grup>> Instancia(int idAnyEscolar, string idGrup)
         {
-            var grup = await _context.Grups.FindAsync(idAnyEscolar, idGrup);
+            var grup = await _context.Grup.FindAsync(idAnyEscolar, idGrup);
 
             if (grup == null)
             {
@@ -59,7 +59,7 @@ namespace KarmaWebAPI.Controllers
                 IdGrup = grupDTO.IdGrup,
                 Descripcio = grupDTO.Descripcio
             };
-            _context.Grups.Add(grup);
+            _context.Grup.Add(grup);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(Instancia), new { idGrup = grup.IdGrup }, grup);
@@ -102,13 +102,13 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin")]
         public async Task<IActionResult> Delete(int idAnyEscolar, string idGrup)
         {
-            var grup = await _context.Grups.FindAsync(idAnyEscolar, idGrup);
+            var grup = await _context.Grup.FindAsync(idAnyEscolar, idGrup);
             if (grup == null)
             {
                 return NotFound();
             }
 
-            _context.Grups.Remove(grup);
+            _context.Grup.Remove(grup);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +117,7 @@ namespace KarmaWebAPI.Controllers
 
         private bool GrupExists(int idAnyEscolar, string idGrup)
         {
-            return _context.Grups.Any(e => e.IdAnyEscolar == idAnyEscolar && e.IdGrup == idGrup);
+            return _context.Grup.Any(e => e.IdAnyEscolar == idAnyEscolar && e.IdGrup == idGrup);
         }
     }
 }

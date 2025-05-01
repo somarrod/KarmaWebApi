@@ -12,7 +12,7 @@ namespace KarmaWebAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Alumnes",
+                name: "Alumne",
                 columns: table => new
                 {
                     NIA = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -23,11 +23,11 @@ namespace KarmaWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Alumnes", x => x.NIA);
+                    table.PrimaryKey("PK_Alumne", x => x.NIA);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AnysEscolar",
+                name: "AnyEscolar",
                 columns: table => new
                 {
                     IdAnyEscolar = table.Column<int>(type: "int", nullable: false),
@@ -38,7 +38,7 @@ namespace KarmaWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AnysEscolar", x => x.IdAnyEscolar);
+                    table.PrimaryKey("PK_AnyEscolar", x => x.IdAnyEscolar);
                 });
 
             migrationBuilder.CreateTable(
@@ -82,7 +82,7 @@ namespace KarmaWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Categories",
+                name: "Categoria",
                 columns: table => new
                 {
                     IdCategoria = table.Column<int>(type: "int", nullable: false),
@@ -91,11 +91,11 @@ namespace KarmaWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.IdCategoria);
+                    table.PrimaryKey("PK_Categoria", x => x.IdCategoria);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Materies",
+                name: "Materia",
                 columns: table => new
                 {
                     IdMateria = table.Column<int>(type: "int", nullable: false)
@@ -105,11 +105,11 @@ namespace KarmaWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Materies", x => x.IdMateria);
+                    table.PrimaryKey("PK_Materia", x => x.IdMateria);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Professors",
+                name: "Professor",
                 columns: table => new
                 {
                     IdProfessor = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -120,11 +120,11 @@ namespace KarmaWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Professors", x => x.IdProfessor);
+                    table.PrimaryKey("PK_Professor", x => x.IdProfessor);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ConfiguracionsKarma",
+                name: "ConfiguracioKarma",
                 columns: table => new
                 {
                     IdConfiguracioKarma = table.Column<int>(type: "int", nullable: false)
@@ -137,20 +137,20 @@ namespace KarmaWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ConfiguracionsKarma", x => x.IdConfiguracioKarma);
+                    table.PrimaryKey("PK_ConfiguracioKarma", x => x.IdConfiguracioKarma);
                     table.ForeignKey(
-                        name: "FK_ConfiguracionsKarma_AnysEscolar_IdAnyEscolar",
+                        name: "FK_ConfiguracioKarma_AnyEscolar_IdAnyEscolar",
                         column: x => x.IdAnyEscolar,
-                        principalTable: "AnysEscolar",
+                        principalTable: "AnyEscolar",
                         principalColumn: "IdAnyEscolar",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Periodes",
+                name: "Periode",
                 columns: table => new
                 {
-                    IdPeriodo = table.Column<int>(type: "int", nullable: false)
+                    IdPeriode = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DataInici = table.Column<DateOnly>(type: "date", nullable: false),
                     DataFi = table.Column<DateOnly>(type: "date", nullable: false),
@@ -158,17 +158,17 @@ namespace KarmaWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Periodes", x => x.IdPeriodo);
+                    table.PrimaryKey("PK_Periode", x => x.IdPeriode);
                     table.ForeignKey(
-                        name: "FK_Periodes_AnysEscolar_IdAnyEscolar",
+                        name: "FK_Periode_AnyEscolar_IdAnyEscolar",
                         column: x => x.IdAnyEscolar,
-                        principalTable: "AnysEscolar",
+                        principalTable: "AnyEscolar",
                         principalColumn: "IdAnyEscolar",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Privilegis",
+                name: "Privilegi",
                 columns: table => new
                 {
                     IdPrivilegi = table.Column<int>(type: "int", nullable: false)
@@ -180,11 +180,11 @@ namespace KarmaWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Privilegis", x => x.IdPrivilegi);
+                    table.PrimaryKey("PK_Privilegi", x => x.IdPrivilegi);
                     table.ForeignKey(
-                        name: "FK_Privilegis_AnysEscolar_IdAnyEscolar",
+                        name: "FK_Privilegi_AnyEscolar_IdAnyEscolar",
                         column: x => x.IdAnyEscolar,
-                        principalTable: "AnysEscolar",
+                        principalTable: "AnyEscolar",
                         principalColumn: "IdAnyEscolar",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -296,7 +296,7 @@ namespace KarmaWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Grups",
+                name: "Grup",
                 columns: table => new
                 {
                     IdAnyEscolar = table.Column<int>(type: "int", nullable: false),
@@ -307,54 +307,56 @@ namespace KarmaWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Grups", x => new { x.IdAnyEscolar, x.IdGrup });
+                    table.PrimaryKey("PK_Grup", x => new { x.IdAnyEscolar, x.IdGrup });
                     table.ForeignKey(
-                        name: "FK_Grups_AnysEscolar_IdAnyEscolar",
+                        name: "FK_Grup_AnyEscolar_IdAnyEscolar",
                         column: x => x.IdAnyEscolar,
-                        principalTable: "AnysEscolar",
+                        principalTable: "AnyEscolar",
                         principalColumn: "IdAnyEscolar",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Grups_Professors_IdProfessorTutor",
+                        name: "FK_Grup_Professor_IdProfessorTutor",
                         column: x => x.IdProfessorTutor,
-                        principalTable: "Professors",
+                        principalTable: "Professor",
                         principalColumn: "IdProfessor",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AlumnesEnGrup",
+                name: "AlumneEnGrup",
                 columns: table => new
                 {
                     IdAlumneEnGrup = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NIA = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IdAnyEscolar = table.Column<int>(type: "int", nullable: false),
-                    IdGrup = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    IdGrup = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PuntuacioTotal = table.Column<double>(type: "float", nullable: false),
+                    Karma = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AlumnesEnGrup", x => x.IdAlumneEnGrup);
+                    table.PrimaryKey("PK_AlumneEnGrup", x => x.IdAlumneEnGrup);
                     table.ForeignKey(
-                        name: "FK_AlumnesEnGrup_Alumnes_NIA",
+                        name: "FK_AlumneEnGrup_Alumne_NIA",
                         column: x => x.NIA,
-                        principalTable: "Alumnes",
+                        principalTable: "Alumne",
                         principalColumn: "NIA",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AlumnesEnGrup_AnysEscolar_IdAnyEscolar",
+                        name: "FK_AlumneEnGrup_AnyEscolar_IdAnyEscolar",
                         column: x => x.IdAnyEscolar,
-                        principalTable: "AnysEscolar",
+                        principalTable: "AnyEscolar",
                         principalColumn: "IdAnyEscolar");
                     table.ForeignKey(
-                        name: "FK_AlumnesEnGrup_Grups_IdAnyEscolar_IdGrup",
+                        name: "FK_AlumneEnGrup_Grup_IdAnyEscolar_IdGrup",
                         columns: x => new { x.IdAnyEscolar, x.IdGrup },
-                        principalTable: "Grups",
+                        principalTable: "Grup",
                         principalColumns: new[] { "IdAnyEscolar", "IdGrup" });
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProfessorsDeGrup",
+                name: "ProfessorDeGrup",
                 columns: table => new
                 {
                     IdProfessorDeGrup = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -365,33 +367,33 @@ namespace KarmaWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProfessorsDeGrup", x => x.IdProfessorDeGrup);
+                    table.PrimaryKey("PK_ProfessorDeGrup", x => x.IdProfessorDeGrup);
                     table.ForeignKey(
-                        name: "FK_ProfessorsDeGrup_AnysEscolar_IdAnyEscolar",
+                        name: "FK_ProfessorDeGrup_AnyEscolar_IdAnyEscolar",
                         column: x => x.IdAnyEscolar,
-                        principalTable: "AnysEscolar",
+                        principalTable: "AnyEscolar",
                         principalColumn: "IdAnyEscolar",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProfessorsDeGrup_Grups_IdAnyEscolar_IdGrup",
+                        name: "FK_ProfessorDeGrup_Grup_IdAnyEscolar_IdGrup",
                         columns: x => new { x.IdAnyEscolar, x.IdGrup },
-                        principalTable: "Grups",
+                        principalTable: "Grup",
                         principalColumns: new[] { "IdAnyEscolar", "IdGrup" });
                     table.ForeignKey(
-                        name: "FK_ProfessorsDeGrup_Materies_IdMateria",
+                        name: "FK_ProfessorDeGrup_Materia_IdMateria",
                         column: x => x.IdMateria,
-                        principalTable: "Materies",
+                        principalTable: "Materia",
                         principalColumn: "IdMateria",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProfessorsDeGrup_Professors_IdProfessor",
+                        name: "FK_ProfessorDeGrup_Professor_IdProfessor",
                         column: x => x.IdProfessor,
-                        principalTable: "Professors",
+                        principalTable: "Professor",
                         principalColumn: "IdProfessor");
                 });
 
             migrationBuilder.CreateTable(
-                name: "PrivilegisAssignats",
+                name: "PrivilegiAssignat",
                 columns: table => new
                 {
                     IdPrivilegiAssignat = table.Column<int>(type: "int", nullable: false)
@@ -406,23 +408,23 @@ namespace KarmaWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PrivilegisAssignats", x => x.IdPrivilegiAssignat);
+                    table.PrimaryKey("PK_PrivilegiAssignat", x => x.IdPrivilegiAssignat);
                     table.ForeignKey(
-                        name: "FK_PrivilegisAssignats_AlumnesEnGrup_IdAlumneEnGrup",
+                        name: "FK_PrivilegiAssignat_AlumneEnGrup_IdAlumneEnGrup",
                         column: x => x.IdAlumneEnGrup,
-                        principalTable: "AlumnesEnGrup",
+                        principalTable: "AlumneEnGrup",
                         principalColumn: "IdAlumneEnGrup",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PrivilegisAssignats_Privilegis_IdPrivilegi",
+                        name: "FK_PrivilegiAssignat_Privilegi_IdPrivilegi",
                         column: x => x.IdPrivilegi,
-                        principalTable: "Privilegis",
+                        principalTable: "Privilegi",
                         principalColumn: "IdPrivilegi",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Puntuacions",
+                name: "Puntuacio",
                 columns: table => new
                 {
                     IdPuntuacio = table.Column<int>(type: "int", nullable: false),
@@ -437,41 +439,41 @@ namespace KarmaWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Puntuacions", x => x.IdPuntuacio);
+                    table.PrimaryKey("PK_Puntuacio", x => x.IdPuntuacio);
                     table.ForeignKey(
-                        name: "FK_Puntuacions_AlumnesEnGrup_IdAlumneEnGrup",
+                        name: "FK_Puntuacio_AlumneEnGrup_IdAlumneEnGrup",
                         column: x => x.IdAlumneEnGrup,
-                        principalTable: "AlumnesEnGrup",
+                        principalTable: "AlumneEnGrup",
                         principalColumn: "IdAlumneEnGrup",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Puntuacions_Categories_IdCategoria",
+                        name: "FK_Puntuacio_Categoria_IdCategoria",
                         column: x => x.IdCategoria,
-                        principalTable: "Categories",
+                        principalTable: "Categoria",
                         principalColumn: "IdCategoria",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Puntuacions_Periodes_IdPeriode",
+                        name: "FK_Puntuacio_Periode_IdPeriode",
                         column: x => x.IdPeriode,
-                        principalTable: "Periodes",
-                        principalColumn: "IdPeriodo",
+                        principalTable: "Periode",
+                        principalColumn: "IdPeriode",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Puntuacions_Professors_ProfessorCreacioIdProfessor",
+                        name: "FK_Puntuacio_Professor_ProfessorCreacioIdProfessor",
                         column: x => x.ProfessorCreacioIdProfessor,
-                        principalTable: "Professors",
+                        principalTable: "Professor",
                         principalColumn: "IdProfessor",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AlumnesEnGrup_IdAnyEscolar_IdGrup",
-                table: "AlumnesEnGrup",
+                name: "IX_AlumneEnGrup_IdAnyEscolar_IdGrup",
+                table: "AlumneEnGrup",
                 columns: new[] { "IdAnyEscolar", "IdGrup" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AlumnesEnGrup_NIA",
-                table: "AlumnesEnGrup",
+                name: "IX_AlumneEnGrup_NIA",
+                table: "AlumneEnGrup",
                 column: "NIA");
 
             migrationBuilder.CreateIndex(
@@ -514,68 +516,68 @@ namespace KarmaWebAPI.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ConfiguracionsKarma_IdAnyEscolar",
-                table: "ConfiguracionsKarma",
+                name: "IX_ConfiguracioKarma_IdAnyEscolar",
+                table: "ConfiguracioKarma",
                 column: "IdAnyEscolar");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Grups_IdProfessorTutor",
-                table: "Grups",
+                name: "IX_Grup_IdProfessorTutor",
+                table: "Grup",
                 column: "IdProfessorTutor");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Periodes_IdAnyEscolar",
-                table: "Periodes",
+                name: "IX_Periode_IdAnyEscolar",
+                table: "Periode",
                 column: "IdAnyEscolar");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Privilegis_IdAnyEscolar",
-                table: "Privilegis",
+                name: "IX_Privilegi_IdAnyEscolar",
+                table: "Privilegi",
                 column: "IdAnyEscolar");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PrivilegisAssignats_IdAlumneEnGrup",
-                table: "PrivilegisAssignats",
+                name: "IX_PrivilegiAssignat_IdAlumneEnGrup",
+                table: "PrivilegiAssignat",
                 column: "IdAlumneEnGrup");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PrivilegisAssignats_IdPrivilegi",
-                table: "PrivilegisAssignats",
+                name: "IX_PrivilegiAssignat_IdPrivilegi",
+                table: "PrivilegiAssignat",
                 column: "IdPrivilegi");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProfessorsDeGrup_IdAnyEscolar_IdGrup",
-                table: "ProfessorsDeGrup",
+                name: "IX_ProfessorDeGrup_IdAnyEscolar_IdGrup",
+                table: "ProfessorDeGrup",
                 columns: new[] { "IdAnyEscolar", "IdGrup" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProfessorsDeGrup_IdMateria",
-                table: "ProfessorsDeGrup",
+                name: "IX_ProfessorDeGrup_IdMateria",
+                table: "ProfessorDeGrup",
                 column: "IdMateria");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProfessorsDeGrup_IdProfessor",
-                table: "ProfessorsDeGrup",
+                name: "IX_ProfessorDeGrup_IdProfessor",
+                table: "ProfessorDeGrup",
                 column: "IdProfessor");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Puntuacions_IdAlumneEnGrup",
-                table: "Puntuacions",
+                name: "IX_Puntuacio_IdAlumneEnGrup",
+                table: "Puntuacio",
                 column: "IdAlumneEnGrup");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Puntuacions_IdCategoria",
-                table: "Puntuacions",
+                name: "IX_Puntuacio_IdCategoria",
+                table: "Puntuacio",
                 column: "IdCategoria");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Puntuacions_IdPeriode",
-                table: "Puntuacions",
+                name: "IX_Puntuacio_IdPeriode",
+                table: "Puntuacio",
                 column: "IdPeriode");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Puntuacions_ProfessorCreacioIdProfessor",
-                table: "Puntuacions",
+                name: "IX_Puntuacio_ProfessorCreacioIdProfessor",
+                table: "Puntuacio",
                 column: "ProfessorCreacioIdProfessor");
         }
 
@@ -598,16 +600,16 @@ namespace KarmaWebAPI.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ConfiguracionsKarma");
+                name: "ConfiguracioKarma");
 
             migrationBuilder.DropTable(
-                name: "PrivilegisAssignats");
+                name: "PrivilegiAssignat");
 
             migrationBuilder.DropTable(
-                name: "ProfessorsDeGrup");
+                name: "ProfessorDeGrup");
 
             migrationBuilder.DropTable(
-                name: "Puntuacions");
+                name: "Puntuacio");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -616,31 +618,31 @@ namespace KarmaWebAPI.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Privilegis");
+                name: "Privilegi");
 
             migrationBuilder.DropTable(
-                name: "Materies");
+                name: "Materia");
 
             migrationBuilder.DropTable(
-                name: "AlumnesEnGrup");
+                name: "AlumneEnGrup");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Categoria");
 
             migrationBuilder.DropTable(
-                name: "Periodes");
+                name: "Periode");
 
             migrationBuilder.DropTable(
-                name: "Alumnes");
+                name: "Alumne");
 
             migrationBuilder.DropTable(
-                name: "Grups");
+                name: "Grup");
 
             migrationBuilder.DropTable(
-                name: "AnysEscolar");
+                name: "AnyEscolar");
 
             migrationBuilder.DropTable(
-                name: "Professors");
+                name: "Professor");
         }
     }
 }

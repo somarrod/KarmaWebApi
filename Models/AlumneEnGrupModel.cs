@@ -23,6 +23,10 @@ namespace KarmaWebAPI.Models
         [ForeignKey("Grup")]
         public String IdGrup { get; set; } //identificar únic del grup
 
+        public Double PuntuacioTotal { get; set; } = 0; //Puntuacio total de l'alumne en el grup i any escolar
+
+        public String Karma { get; set; } = "CREACIÓ"; //Color de Karma assignat a l'alumne
+
 
         #region Navegacion
         public Alumne Alumne { get; set; }

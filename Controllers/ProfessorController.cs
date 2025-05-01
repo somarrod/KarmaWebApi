@@ -20,14 +20,14 @@ namespace KarmaWebAPI.Controllers
         [HttpGet("llista")]
         public async Task<ActionResult<IEnumerable<Professor>>> Llista()
         {
-            return await _context.Professors.ToListAsync();
+            return await _context.Professor.ToListAsync();
         }
 
         // GET: api/Professor/5
         [HttpGet("{idProfessor}")]
         public async Task<ActionResult<Professor>> Instancia(string idProfessor)
         {
-            var professor = await _context.Professors.FindAsync(idProfessor);
+            var professor = await _context.Professor.FindAsync(idProfessor);
 
             if (professor == null)
             {
@@ -71,7 +71,7 @@ namespace KarmaWebAPI.Controllers
         [HttpPost("crear")]
         public async Task<ActionResult<Professor>> Crear(Professor professor)
         {
-            _context.Professors.Add(professor);
+            _context.Professor.Add(professor);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("Instancia", new { id = professor.IdProfessor }, professor);
@@ -81,13 +81,13 @@ namespace KarmaWebAPI.Controllers
         [HttpDelete("eliminar")]
         public async Task<IActionResult> Eliminar(string idProfessor)
         {
-            var professor = await _context.Professors.FindAsync(idProfessor);
+            var professor = await _context.Professor.FindAsync(idProfessor);
             if (professor == null)
             {
                 return NotFound();
             }
 
-            _context.Professors.Remove(professor);
+            _context.Professor.Remove(professor);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -95,7 +95,7 @@ namespace KarmaWebAPI.Controllers
 
         private bool ProfessorExisteix(string id)
         {
-            return _context.Professors.Any(e => e.IdProfessor == id);
+            return _context.Professor.Any(e => e.IdProfessor == id);
         }
     }
 }

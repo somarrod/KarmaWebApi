@@ -14,12 +14,12 @@ public class PeriodeService
 
     public List<Periode> GetPeriodes()
     {
-        return _context.Periodes.ToList();
+        return _context.Periode.ToList();
     }
 
     public ICollection<VPrivilegiPeriode> GetPrivilegisPeriode(int idPeriode)
     {
-        return _context.VPrivilegisPeriode
+        return _context.VPrivilegiPeriode
                         .Where(v => idPeriode == v.IdPeriode)
                         .ToList();
     }

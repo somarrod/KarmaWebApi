@@ -20,14 +20,14 @@ namespace KarmaWebAPI.Controllers
         [HttpGet("llista")]
         public async Task<ActionResult<IEnumerable<PrivilegiAssignat>>> Llista()
         {
-            return await _context.PrivilegisAssignats.ToListAsync();
+            return await _context.PrivilegiAssignat.ToListAsync();
         }
 
         // GET: api/PrivilegiAssignat/5
         [HttpGet("{idPrivilegiAssignat}")]
         public async Task<ActionResult<PrivilegiAssignat>> Instancia(int idPrivilegiAssignat)
         {
-            var privilegiAssignat = await _context.PrivilegisAssignats.FindAsync(idPrivilegiAssignat);
+            var privilegiAssignat = await _context.PrivilegiAssignat.FindAsync(idPrivilegiAssignat);
 
             if (privilegiAssignat == null)
             {
@@ -71,7 +71,7 @@ namespace KarmaWebAPI.Controllers
         [HttpPost("crear")]
         public async Task<ActionResult<PrivilegiAssignat>> Crear(PrivilegiAssignat privilegiAssignat)
         {
-            _context.PrivilegisAssignats.Add(privilegiAssignat);
+            _context.PrivilegiAssignat.Add(privilegiAssignat);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("Instancia", new { id = privilegiAssignat.IdPrivilegiAssignat }, privilegiAssignat);
@@ -81,13 +81,13 @@ namespace KarmaWebAPI.Controllers
         [HttpDelete("eliminar")]
         public async Task<IActionResult> Eliminar(int idPrivilegiAssignat)
         {
-            var privilegiAssignat = await _context.PrivilegisAssignats.FindAsync(idPrivilegiAssignat);
+            var privilegiAssignat = await _context.PrivilegiAssignat.FindAsync(idPrivilegiAssignat);
             if (privilegiAssignat == null)
             {
                 return NotFound();
             }
 
-            _context.PrivilegisAssignats.Remove(privilegiAssignat);
+            _context.PrivilegiAssignat.Remove(privilegiAssignat);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -95,7 +95,7 @@ namespace KarmaWebAPI.Controllers
 
         private bool PrivilegiAssignatExisteix(int id)
         {
-            return _context.PrivilegisAssignats.Any(e => e.IdPrivilegiAssignat == id);
+            return _context.PrivilegiAssignat.Any(e => e.IdPrivilegiAssignat == id);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace KarmaWebAPI.Controllers
         // GET: Privilegi/GetAnyEscolar/5
         public async Task<IActionResult> Instancia(int idAlumneEnGrup, int idPeriode, int idPrivilegi)
         {
-            var vPrivilegiPeriode = await _context.VPrivilegisPeriode
+            var vPrivilegiPeriode = await _context.VPrivilegiPeriode
                 .Include(p => p.AlumneEnGrup)
                 .Include(p => p.Periode)
                 .Include(p => p.Privilegi)
@@ -52,7 +52,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<VPrivilegiPeriode>>> Llista()
         {
-            var privilegis = await _context.VPrivilegisPeriode
+            var privilegis = await _context.VPrivilegiPeriode
                                             .Include(p => p.AlumneEnGrup)
                                             .Include(p => p.Periode)
                                             .Include(p => p.Privilegi)
@@ -72,7 +72,7 @@ namespace KarmaWebAPI.Controllers
 
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("llista-per-privilegi")]
         public IActionResult GetPrivilegisPeriodePerPrivilegi(int idPrivilegi)
         {
             var result = _privilegiService.GetPrivilegisPeriode(idPrivilegi);
@@ -85,7 +85,7 @@ namespace KarmaWebAPI.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("llista-per-periode")]
         public IActionResult GetPrivilegisPeriodePerPeriode(int idPeriode)
         {
             var result = _periodeService.GetPrivilegisPeriode(idPeriode);
@@ -99,6 +99,7 @@ namespace KarmaWebAPI.Controllers
 
         [Authorize]
         [HttpGet]
+        [HttpGet("llista-per-alumneengrup")]
         public IActionResult GetPrivilegisPeriodePerAlumneEnGrup(int idAlumneEnGrup)
         {
             var result = _alumneEnGrupService.GetPrivilegisPeriode(idAlumneEnGrup);

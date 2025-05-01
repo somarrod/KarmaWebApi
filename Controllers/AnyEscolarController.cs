@@ -32,7 +32,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize]
         public async Task<ActionResult<AnyEscolar>> Instancia(int idAnyEscolar)
         {
-            var anyEscolar = await _context.AnysEscolar.FindAsync(idAnyEscolar);
+            var anyEscolar = await _context.AnyEscolar.FindAsync(idAnyEscolar);
 
             if (anyEscolar == null)
             {
@@ -48,7 +48,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<AnyEscolar>>> Llista()
         {
-            var anyEscolar = await _context.AnysEscolar.ToListAsync();
+            var anyEscolar = await _context.AnyEscolar.ToListAsync();
             return Ok(anyEscolar);
         }
         #endregion Consultes
@@ -132,7 +132,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin")]
         public async Task<IActionResult> Eliminar(int idAnyEscolar)
         {
-            var anyEscolar = await _context.AnysEscolar.FindAsync(idAnyEscolar);
+            var anyEscolar = await _context.AnyEscolar.FindAsync(idAnyEscolar);
             if (anyEscolar == null)
             {
                 return NotFound("L'any escolar {idAnyEscolar} no s'ha trobat");
@@ -140,7 +140,7 @@ namespace KarmaWebAPI.Controllers
 
             try
             {
-                _context.AnysEscolar.Remove(anyEscolar);
+                _context.AnyEscolar.Remove(anyEscolar);
                 await _context.SaveChangesAsync();
 
                 return Ok(idAnyEscolar);
@@ -187,7 +187,7 @@ namespace KarmaWebAPI.Controllers
         #region Auxiliars
         private bool AnyEscolarExists(int id_AnyEscolar)
         {
-            return _context.AnysEscolar.Any(e => e.IdAnyEscolar == id_AnyEscolar);
+            return _context.AnyEscolar.Any(e => e.IdAnyEscolar == id_AnyEscolar);
         }
         #endregion Auxiliars
     }

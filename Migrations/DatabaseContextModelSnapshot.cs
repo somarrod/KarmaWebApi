@@ -45,7 +45,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasKey("NIA");
 
-                    b.ToTable("Alumnes");
+                    b.ToTable("Alumne");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.AlumneEnGrup", b =>
@@ -63,9 +63,16 @@ namespace KarmaWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Karma")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NIA")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("PuntuacioTotal")
+                        .HasColumnType("float");
 
                     b.HasKey("IdAlumneEnGrup");
 
@@ -73,7 +80,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasIndex("IdAnyEscolar", "IdGrup");
 
-                    b.ToTable("AlumnesEnGrup");
+                    b.ToTable("AlumneEnGrup");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.AnyEscolar", b =>
@@ -95,7 +102,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasKey("IdAnyEscolar");
 
-                    b.ToTable("AnysEscolar");
+                    b.ToTable("AnyEscolar");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.ApiUser", b =>
@@ -181,7 +188,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasKey("IdCategoria");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categoria");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.ConfiguracioKarma", b =>
@@ -212,7 +219,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasIndex("IdAnyEscolar");
 
-                    b.ToTable("ConfiguracionsKarma");
+                    b.ToTable("ConfiguracioKarma");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.Grup", b =>
@@ -241,7 +248,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasIndex("IdProfessorTutor");
 
-                    b.ToTable("Grups");
+                    b.ToTable("Grup");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.Materia", b =>
@@ -261,16 +268,16 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasKey("IdMateria");
 
-                    b.ToTable("Materies");
+                    b.ToTable("Materia");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.Periode", b =>
                 {
-                    b.Property<int>("IdPeriodo")
+                    b.Property<int>("IdPeriode")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPeriodo"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPeriode"));
 
                     b.Property<DateOnly>("DataFi")
                         .HasColumnType("date");
@@ -281,11 +288,11 @@ namespace KarmaWebAPI.Migrations
                     b.Property<int>("IdAnyEscolar")
                         .HasColumnType("int");
 
-                    b.HasKey("IdPeriodo");
+                    b.HasKey("IdPeriode");
 
                     b.HasIndex("IdAnyEscolar");
 
-                    b.ToTable("Periodes");
+                    b.ToTable("Periode");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.Privilegi", b =>
@@ -314,7 +321,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasIndex("IdAnyEscolar");
 
-                    b.ToTable("Privilegis");
+                    b.ToTable("Privilegi");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.PrivilegiAssignat", b =>
@@ -354,7 +361,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasIndex("IdPrivilegi");
 
-                    b.ToTable("PrivilegisAssignats");
+                    b.ToTable("PrivilegiAssignat");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.Professor", b =>
@@ -379,7 +386,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasKey("IdProfessor");
 
-                    b.ToTable("Professors");
+                    b.ToTable("Professor");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.ProfessorDeGrup", b =>
@@ -410,7 +417,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasIndex("IdAnyEscolar", "IdGrup");
 
-                    b.ToTable("ProfessorsDeGrup");
+                    b.ToTable("ProfessorDeGrup");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.Puntuacio", b =>
@@ -454,7 +461,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasIndex("ProfessorCreacioIdProfessor");
 
-                    b.ToTable("Puntuacions");
+                    b.ToTable("Puntuacio");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.VPrivilegiPeriode", b =>
@@ -471,7 +478,7 @@ namespace KarmaWebAPI.Migrations
                     b.Property<int>("IdPrivilegi")
                         .HasColumnType("int");
 
-                    b.Property<int>("PeriodeIdPeriodo")
+                    b.Property<int>("PeriodeIdPeriode")
                         .HasColumnType("int");
 
                     b.Property<int>("PrivilegiIdPrivilegi")
@@ -479,7 +486,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasIndex("AlumneEnGrupIdAlumneEnGrup");
 
-                    b.HasIndex("PeriodeIdPeriodo");
+                    b.HasIndex("PeriodeIdPeriode");
 
                     b.HasIndex("PrivilegiIdPrivilegi");
 
@@ -799,7 +806,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasOne("KarmaWebAPI.Models.Periode", "Periode")
                         .WithMany()
-                        .HasForeignKey("PeriodeIdPeriodo")
+                        .HasForeignKey("PeriodeIdPeriode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

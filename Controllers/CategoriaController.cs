@@ -22,14 +22,14 @@ namespace KarmaWebAPI.Controllers
         [HttpGet("llista")]
         public async Task<ActionResult<IEnumerable<Categoria>>> Lista()
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categoria.ToListAsync();
         }
 
         // GET: api/Categoria/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Categoria>> Instancia(int id)
         {
-            var categoria = await _context.Categories.FindAsync(id);
+            var categoria = await _context.Categoria.FindAsync(id);
 
             if (categoria == null)
             {
@@ -50,7 +50,7 @@ namespace KarmaWebAPI.Controllers
                 Activa = true // Asignar valor por defecto
             };
 
-            _context.Categories.Add(categoria);
+            _context.Categoria.Add(categoria);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("Crear", new { id = categoria.IdCategoria }, categoria);
@@ -101,13 +101,13 @@ namespace KarmaWebAPI.Controllers
         [Authorize("AG_Admin,AG_Professor")]
         public async Task<IActionResult> Eliminar(int idCategoria)
         {
-            var categoria = await _context.Categories.FindAsync(idCategoria);
+            var categoria = await _context.Categoria.FindAsync(idCategoria);
             if (categoria == null)
             {
                 return NotFound();
             }
 
-            _context.Categories.Remove(categoria);
+            _context.Categoria.Remove(categoria);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -115,7 +115,7 @@ namespace KarmaWebAPI.Controllers
 
         private bool CategoriaExiste(int id)
         {
-            return _context.Categories.Any(e => e.IdCategoria == id);
+            return _context.Categoria.Any(e => e.IdCategoria == id);
         }
     }
 }

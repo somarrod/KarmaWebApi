@@ -26,7 +26,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize]
         public async Task<IActionResult> Instancia(int idConfiguracioKarma)
         {
-            var ConfiguracioKarma = await _context.ConfiguracionsKarma
+            var ConfiguracioKarma = await _context.ConfiguracioKarma
                 .Include(c => c.AnyEscolar)
                 .FirstOrDefaultAsync(m => m.IdConfiguracioKarma == idConfiguracioKarma);
 
@@ -44,7 +44,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<ConfiguracioKarma>>> Llista()
         {
-            var ConfiguracioKarmaList = await _context.ConfiguracionsKarma
+            var ConfiguracioKarmaList = await _context.ConfiguracioKarma
                 .Include(c => c.AnyEscolar)
                 .ToListAsync();
 
@@ -57,13 +57,13 @@ namespace KarmaWebAPI.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<ConfiguracioKarma>>> LlistaPerAnyEscolar(int idAnyEscolar)
         {
-            var anyEscolar = await _context.AnysEscolar.FindAsync(idAnyEscolar);
+            var anyEscolar = await _context.AnyEscolar.FindAsync(idAnyEscolar);
             if (anyEscolar == null)
             {
                 return NotFound($"Any escolar {idAnyEscolar} no trobat");
             }
 
-            var ConfiguracioKarmaList = await _context.ConfiguracionsKarma
+            var ConfiguracioKarmaList = await _context.ConfiguracioKarma
                 .Include(c => c.AnyEscolar)
                 .Where(c => c.IdAnyEscolar == idAnyEscolar)
                 .ToListAsync();
@@ -90,7 +90,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin")]
         public async Task<ActionResult<ConfiguracioKarma>> Crear(ConfiguracioKarma ConfiguracioKarma)
         {
-            _context.ConfiguracionsKarma.Add(ConfiguracioKarma);
+            _context.ConfiguracioKarma.Add(ConfiguracioKarma);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(Instancia), new { idConfiguracioKarma = ConfiguracioKarma.IdConfiguracioKarma }, ConfiguracioKarma);
@@ -101,7 +101,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin")]
         public async Task<IActionResult> Editar(ConfiguracioKarma ConfiguracioKarma)
         {
-            var anyEscolar = await _context.AnysEscolar.FindAsync(ConfiguracioKarma.IdAnyEscolar);
+            var anyEscolar = await _context.AnyEscolar.FindAsync(ConfiguracioKarma.IdAnyEscolar);
             if (anyEscolar == null)
             {
                 return NotFound($"Any escolar {ConfiguracioKarma.IdAnyEscolar} no trobat");
@@ -133,13 +133,13 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin")]
         public async Task<IActionResult> Eliminar(int idConfiguracioKarma)
         {
-            var ConfiguracioKarma = await _context.ConfiguracionsKarma.FindAsync(idConfiguracioKarma);
+            var ConfiguracioKarma = await _context.ConfiguracioKarma.FindAsync(idConfiguracioKarma);
             if (ConfiguracioKarma == null)
             {
                 return NotFound($"ConfiguracioKarma {idConfiguracioKarma} no trobat");
             }
 
-            _context.ConfiguracionsKarma.Remove(ConfiguracioKarma);
+            _context.ConfiguracioKarma.Remove(ConfiguracioKarma);
             await _context.SaveChangesAsync();
 
             return Ok(idConfiguracioKarma);
@@ -151,7 +151,7 @@ namespace KarmaWebAPI.Controllers
 
         private bool ConfiguracioKarmaExists(int idConfiguracioKarma)
         {
-            return _context.ConfiguracionsKarma.Any(e => e.IdConfiguracioKarma == idConfiguracioKarma);
+            return _context.ConfiguracioKarma.Any(e => e.IdConfiguracioKarma == idConfiguracioKarma);
         }
 
         #endregion Auxiliars

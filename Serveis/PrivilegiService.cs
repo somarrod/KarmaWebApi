@@ -19,14 +19,14 @@ namespace KarmaWebAPI.Serveis
 
         public async Task<ActionResult<Privilegi>> CrearPrivilegiAsync(PrivilegiCrearDto privilegiDto) // Change return type to IActionResult
         {
-            var anyEscolar = await _context.AnysEscolar.FindAsync(privilegiDto.IdAnyEscolar);
+            var anyEscolar = await _context.AnyEscolar.FindAsync(privilegiDto.IdAnyEscolar);
             if (anyEscolar == null)
             {
                 return new NotFoundObjectResult("Any escolar " + privilegiDto.IdAnyEscolar + " no trobat"); // Use NotFoundObjectResult
             }
 
             // Verificar si ya existe un Privilegi con el mismo nombre
-            var existePrivilegi = await _context.Privilegis
+            var existePrivilegi = await _context.Privilegi
                     .AnyAsync(p => p.Descripcio == privilegiDto.Descripcio);
 
             if (existePrivilegi)
@@ -43,14 +43,14 @@ namespace KarmaWebAPI.Serveis
                 AnyEscolar = anyEscolar // Asignar la instancia recuperada
             };
 
-            await _context.Privilegis.AddAsync(privilegi);
+            await _context.Privilegi.AddAsync(privilegi);
             await _context.SaveChangesAsync();
             return new OkObjectResult(privilegi.IdPrivilegi); // Return the created object
         }
 
         public ICollection<VPrivilegiPeriode> GetPrivilegisPeriode(int idPrivilegi)
         {
-            return _context.VPrivilegisPeriode
+            return _context.VPrivilegiPeriode
                             .Where(v => idPrivilegi == v.IdPrivilegi)
                             .ToList();
         }

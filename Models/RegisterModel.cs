@@ -14,6 +14,7 @@ namespace KarmaWebAPI.Models
         public string Password { get; set; }
         
         [Required]
+        [RoleValidation]
         public string Role { get; set; }
     }
 

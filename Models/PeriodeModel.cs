@@ -7,7 +7,7 @@ namespace KarmaWebAPI.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdPeriodo { get; set; } //identificar únic
+        public int IdPeriode { get; set; } //identificar únic
 
         public DateOnly DataInici { get; set; }
         public DateOnly DataFi { get; set; }

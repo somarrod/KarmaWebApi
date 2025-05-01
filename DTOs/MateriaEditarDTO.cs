@@ -8,10 +8,13 @@ namespace KarmaWebAPI.DTOs
     public class MateriaEditarDTO
     {
         [Required]
-        public int IdCategoria { get; set; } //identificar únic
+        public int IdMateria { get; set; } //identificar únic
 
         [Required]
         public String Nom { get; set; } //nom de la materia
+
+        [Required]
+        public bool Activa { get; set; }
     }
 
 }

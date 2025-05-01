@@ -34,7 +34,7 @@ namespace KarmaWebAPI.Serveis
                 Privilegis = new List<Privilegi>()
             };
 
-            _context.AnysEscolar.Add(anyEscolar);
+            _context.AnyEscolar.Add(anyEscolar);
             await _context.SaveChangesAsync();
 
             return new OkObjectResult(anyEscolar);
