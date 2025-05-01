@@ -7,6 +7,8 @@ namespace KarmaWebAPI.Serveis
     public interface IPrivilegiService
     {
         public Task<ActionResult<Privilegi>> CrearPrivilegiAsync(PrivilegiCrearDto privilegiDto);
+
+        public ICollection<VPrivilegiPeriode> GetPrivilegisPeriode(int idPrivilegi);
     }
 
 }

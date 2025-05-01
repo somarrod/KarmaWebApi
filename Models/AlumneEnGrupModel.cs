@@ -16,8 +16,8 @@ namespace KarmaWebAPI.Models
 
 
         [Required]
-        [ForeignKey("Grup")]
-        public String IdAnyEscolar { get; set; } //identificar únic del grup
+        [ForeignKey("AnyEscolar")]
+        public int IdAnyEscolar { get; set; } //identificar únic del grup
 
         [Required]
         [ForeignKey("Grup")]
@@ -27,7 +27,10 @@ namespace KarmaWebAPI.Models
         #region Navegacion
         public Alumne Alumne { get; set; }
         public Grup Grup { get; set; } //identificar únic del grup
+        public AnyEscolar AnyEscolar { get; set; } //identificar únic del grup
         public ICollection<Puntuacio> Puntuacions{ get; set; } //Puntuacions de l'alumne assignades
+
+        [NotMapped]
         public ICollection<VPrivilegiPeriode> PrivilegisPeriode { get; set; } //Puntuacions de l'alumne assignades
 
         #endregion Navegacion

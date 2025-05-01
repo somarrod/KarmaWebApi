@@ -11,11 +11,13 @@ using Microsoft.EntityFrameworkCore;
 namespace KarmaWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/vprivilegiperiodo")]
+    [Route("api/privilegiperiode")]
     public class VPrivilegiPeriodeController : ControllerBase
     {
         private readonly DatabaseContext _context;
         private readonly IPrivilegiService _privilegiService;
+        private readonly IPeriodeService _periodeService;
+        private readonly IAlumneEnGrupService _alumneEnGrupService;
         public VPrivilegiPeriodeController(DatabaseContext context)
         {
             _context = context;
@@ -65,6 +67,47 @@ namespace KarmaWebAPI.Controllers
             }
 
             return Ok(privilegis);
+        }
+
+
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult GetPrivilegisPeriodePerPrivilegi(int idPrivilegi)
+        {
+            var result = _privilegiService.GetPrivilegisPeriode(idPrivilegi);
+            if (result == null)
+            {
+                return NotFound($"No s'ha trobat privilegis-periode per al privilegi amb ID {idPrivilegi}.");
+            }
+
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult GetPrivilegisPeriodePerPeriode(int idPeriode)
+        {
+            var result = _periodeService.GetPrivilegisPeriode(idPeriode);
+            if (result == null)
+            {
+                return NotFound($"No s'han trobat privilegis-periode para al periode amb ID {idPeriode}.");
+            }
+
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult GetPrivilegisPeriodePerAlumneEnGrup(int idAlumneEnGrup)
+        {
+            var result = _alumneEnGrupService.GetPrivilegisPeriode(idAlumneEnGrup);
+            if (result == null)
+            {
+                return NotFound($"No s'han trobat privilegis-periode para a l'alumne en grup amb ID {idAlumneEnGrup}.");
+            }
+
+            return Ok(result);
         }
         #endregion Consultes
 

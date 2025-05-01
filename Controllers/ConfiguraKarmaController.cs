@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 namespace KarmaWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/configurakarma")]
-    public class ConfiguraKarmaController : ControllerBase
+    [Route("api/configuraciokarma")]
+    public class ConfiguracioKarmaController : ControllerBase
     {
         private readonly DatabaseContext _context;
 
-        public ConfiguraKarmaController(DatabaseContext context)
+        public ConfiguracioKarmaController(DatabaseContext context)
         {
             _context = context;
         }
@@ -22,40 +22,40 @@ namespace KarmaWebAPI.Controllers
         #region Consultes
 
         // Instancia
-        [HttpGet("{idConfiguraKarma}")]
+        [HttpGet("{idConfiguracioKarma}")]
         [Authorize]
-        public async Task<IActionResult> Instancia(int idConfiguraKarma)
+        public async Task<IActionResult> Instancia(int idConfiguracioKarma)
         {
-            var configuraKarma = await _context.ConfiguracionsKarma
+            var ConfiguracioKarma = await _context.ConfiguracionsKarma
                 .Include(c => c.AnyEscolar)
-                .FirstOrDefaultAsync(m => m.IdConfiguraKarma == idConfiguraKarma);
+                .FirstOrDefaultAsync(m => m.IdConfiguracioKarma == idConfiguracioKarma);
 
-            if (configuraKarma == null)
+            if (ConfiguracioKarma == null)
             {
                 return NotFound();
             }
 
-            return Ok(configuraKarma);
+            return Ok(ConfiguracioKarma);
         }
 
         // Llistes
         [HttpGet]
         [Route("llista")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<ConfiguraKarma>>> Llista()
+        public async Task<ActionResult<IEnumerable<ConfiguracioKarma>>> Llista()
         {
-            var configuraKarmaList = await _context.ConfiguracionsKarma
+            var ConfiguracioKarmaList = await _context.ConfiguracionsKarma
                 .Include(c => c.AnyEscolar)
                 .ToListAsync();
 
-            return Ok(configuraKarmaList);
+            return Ok(ConfiguracioKarmaList);
         }
 
         // Consulta de relacionades
         [HttpGet]
         [Route("llista-per-anyescolar")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<ConfiguraKarma>>> LlistaPerAnyEscolar(int idAnyEscolar)
+        public async Task<ActionResult<IEnumerable<ConfiguracioKarma>>> LlistaPerAnyEscolar(int idAnyEscolar)
         {
             var anyEscolar = await _context.AnysEscolar.FindAsync(idAnyEscolar);
             if (anyEscolar == null)
@@ -63,51 +63,51 @@ namespace KarmaWebAPI.Controllers
                 return NotFound($"Any escolar {idAnyEscolar} no trobat");
             }
 
-            var configuraKarmaList = await _context.ConfiguracionsKarma
+            var ConfiguracioKarmaList = await _context.ConfiguracionsKarma
                 .Include(c => c.AnyEscolar)
                 .Where(c => c.IdAnyEscolar == idAnyEscolar)
                 .ToListAsync();
 
             // Evitar el ciclo de referencias
-            foreach (var configuraKarma in configuraKarmaList)
+            foreach (var ConfiguracioKarma in ConfiguracioKarmaList)
             {
-                configuraKarma.AnyEscolar.ConfiguracionsKarma = null;
-                configuraKarma.AnyEscolar.Privilegis = null;
-                configuraKarma.AnyEscolar.Grups = null;
-                configuraKarma.AnyEscolar.Periodes = null;
+                ConfiguracioKarma.AnyEscolar.ConfiguracionsKarma = null;
+                ConfiguracioKarma.AnyEscolar.Privilegis = null;
+                ConfiguracioKarma.AnyEscolar.Grups = null;
+                ConfiguracioKarma.AnyEscolar.Periodes = null;
             }
 
-            return Ok(configuraKarmaList);
+            return Ok(ConfiguracioKarmaList);
         }
 
         #endregion Consultes
 
         #region Serveis
 
-        // POST: api/ConfiguraKarma
+        // POST: api/ConfiguracioKarma
         [HttpPost]
         [Route("crear")]
         [Authorize(Roles = "AG_Admin")]
-        public async Task<ActionResult<ConfiguraKarma>> Crear(ConfiguraKarma configuraKarma)
+        public async Task<ActionResult<ConfiguracioKarma>> Crear(ConfiguracioKarma ConfiguracioKarma)
         {
-            _context.ConfiguracionsKarma.Add(configuraKarma);
+            _context.ConfiguracionsKarma.Add(ConfiguracioKarma);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Instancia), new { idConfiguraKarma = configuraKarma.IdConfiguraKarma }, configuraKarma);
+            return CreatedAtAction(nameof(Instancia), new { idConfiguracioKarma = ConfiguracioKarma.IdConfiguracioKarma }, ConfiguracioKarma);
         }
 
-        // PUT: api/ConfiguraKarma/editar
+        // PUT: api/ConfiguracioKarma/editar
         [HttpPut("editar")]
         [Authorize(Roles = "AG_Admin")]
-        public async Task<IActionResult> Editar(ConfiguraKarma configuraKarma)
+        public async Task<IActionResult> Editar(ConfiguracioKarma ConfiguracioKarma)
         {
-            var anyEscolar = await _context.AnysEscolar.FindAsync(configuraKarma.IdAnyEscolar);
+            var anyEscolar = await _context.AnysEscolar.FindAsync(ConfiguracioKarma.IdAnyEscolar);
             if (anyEscolar == null)
             {
-                return NotFound($"Any escolar {configuraKarma.IdAnyEscolar} no trobat");
+                return NotFound($"Any escolar {ConfiguracioKarma.IdAnyEscolar} no trobat");
             }
 
-            _context.Entry(configuraKarma).State = EntityState.Modified;
+            _context.Entry(ConfiguracioKarma).State = EntityState.Modified;
 
             try
             {
@@ -115,9 +115,9 @@ namespace KarmaWebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ConfiguraKarmaExists(configuraKarma.IdConfiguraKarma))
+                if (!ConfiguracioKarmaExists(ConfiguracioKarma.IdConfiguracioKarma))
                 {
-                    return NotFound($"ConfiguraKarma {configuraKarma.IdConfiguraKarma} no trobat");
+                    return NotFound($"ConfiguracioKarma {ConfiguracioKarma.IdConfiguracioKarma} no trobat");
                 }
                 else
                 {
@@ -128,30 +128,30 @@ namespace KarmaWebAPI.Controllers
             return NoContent();
         }
 
-        // DELETE: api/ConfiguraKarma/eliminar
+        // DELETE: api/ConfiguracioKarma/eliminar
         [HttpDelete("eliminar")]
         [Authorize(Roles = "AG_Admin")]
-        public async Task<IActionResult> Eliminar(int idConfiguraKarma)
+        public async Task<IActionResult> Eliminar(int idConfiguracioKarma)
         {
-            var configuraKarma = await _context.ConfiguracionsKarma.FindAsync(idConfiguraKarma);
-            if (configuraKarma == null)
+            var ConfiguracioKarma = await _context.ConfiguracionsKarma.FindAsync(idConfiguracioKarma);
+            if (ConfiguracioKarma == null)
             {
-                return NotFound($"ConfiguraKarma {idConfiguraKarma} no trobat");
+                return NotFound($"ConfiguracioKarma {idConfiguracioKarma} no trobat");
             }
 
-            _context.ConfiguracionsKarma.Remove(configuraKarma);
+            _context.ConfiguracionsKarma.Remove(ConfiguracioKarma);
             await _context.SaveChangesAsync();
 
-            return Ok(idConfiguraKarma);
+            return Ok(idConfiguracioKarma);
         }
 
         #endregion Serveis
 
         #region Auxiliars
 
-        private bool ConfiguraKarmaExists(int idConfiguraKarma)
+        private bool ConfiguracioKarmaExists(int idConfiguracioKarma)
         {
-            return _context.ConfiguracionsKarma.Any(e => e.IdConfiguraKarma == idConfiguraKarma);
+            return _context.ConfiguracionsKarma.Any(e => e.IdConfiguracioKarma == idConfiguracioKarma);
         }
 
         #endregion Auxiliars

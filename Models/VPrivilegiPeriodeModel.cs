@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
+using Microsoft.EntityFrameworkCore;
 
 namespace KarmaWebAPI.Models
 {
+    [Keyless]
     public class VPrivilegiPeriode
     {
         [Required]

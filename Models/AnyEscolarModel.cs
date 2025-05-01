@@ -22,7 +22,9 @@ namespace KarmaWebAPI.Models
 
         public ICollection<Grup> Grups { get; set; }
 
-        public ICollection<ConfiguraKarma> ConfiguracionsKarma { get; set; }
+        public ICollection<AlumneEnGrup> AlumnesEnGrup { get; set; }
+
+        public ICollection<ConfiguracioKarma> ConfiguracionsKarma { get; set; }
         #endregion Navegacions
 
     }

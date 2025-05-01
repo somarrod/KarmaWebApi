@@ -31,7 +31,7 @@ namespace KarmaWebAPI.Models
         // Propietat de navegació per al professor tutor
         public Professor ProfessorTutor { get; set; } = null!;
 
-        public ICollection<ProfessorDeGrup> ProfessorsGrup { get; set; }
+        public ICollection<ProfessorDeGrup> ProfessorsDeGrup { get; set; }
         public ICollection<AlumneEnGrup> AlumnesEnGrup { get; set; }
         #endregion Navegacions
 

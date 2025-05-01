@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KarmaWebAPI.Models
 {
-    public class ConfiguraKarma
+    public class ConfiguracioKarma
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdConfiguraKarma { get; set; } //identificador únic
+        public int IdConfiguracioKarma { get; set; } //identificador únic
 
         [Required]
         [ForeignKey("AnyEscolar")]

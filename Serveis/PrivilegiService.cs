@@ -47,6 +47,13 @@ namespace KarmaWebAPI.Serveis
             await _context.SaveChangesAsync();
             return new OkObjectResult(privilegi.IdPrivilegi); // Return the created object
         }
+
+        public ICollection<VPrivilegiPeriode> GetPrivilegisPeriode(int idPrivilegi)
+        {
+            return _context.VPrivilegisPeriode
+                            .Where(v => idPrivilegi == v.IdPrivilegi)
+                            .ToList();
+        }
     }
 
 }
