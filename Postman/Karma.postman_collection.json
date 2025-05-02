@@ -70,13 +70,13 @@
 					"response": []
 				},
 				{
-					"name": "Crear",
+					"name": "Eliminar",
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"dataIniciCurs\": \"2026-09-01T00:00:00.000Z\",\r\n  \"dataFiCurs\": \"2027-08-31T00:00:00.000Z\",\r\n  \"diesPeriode\": 7\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -84,12 +84,137 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/anyescolar/crear",
+							"raw": "{{url}}api/anyescolar/eliminar?idAnyEscolar=2526",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
 								"anyescolar",
+								"eliminar"
+							],
+							"query": [
+								{
+									"key": "idAnyEscolar",
+									"value": "2526"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TCREAR",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"dataIniciCurs\": \"2029-09-01\",\r\n  \"dataFiCurs\": \"2030-08-31\",\r\n  \"diesPeriode\": 7\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/anyescolar/tcrear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"anyescolar",
+								"tcrear"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Alumne",
+			"item": [
+				{
+					"name": "Instancia",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumne/1",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumne",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Llista",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumne/llista",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumne",
+								"llista"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nia\": \"string\",\r\n  \"nom\": \"string\",\r\n  \"cognoms\": \"string\",\r\n  \"email\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumne/crear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumne",
 								"crear"
 							]
 						}
@@ -124,33 +249,6 @@
 									"key": "idAnyEscolar",
 									"value": "20292030"
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "TCREAR",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"dataIniciCurs\": \"2029-09-01T00:00:00.000Z\",\r\n  \"dataFiCurs\": \"2030-08-31T00:00:00.000Z\",\r\n  \"diesPeriode\": 7\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}api/anyescolar/tcrear",
-							"host": [
-								"{{url}}api"
-							],
-							"path": [
-								"anyescolar",
-								"tcrear"
 							]
 						}
 					},
@@ -192,7 +290,7 @@
 					"response": []
 				},
 				{
-					"name": "Llista",
+					"name": "llista",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -239,7 +337,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/privilegi/llista-per-anyescolar?idAnyEscolar=20242025",
+							"raw": "{{url}}api/privilegi/llista-per-anyescolar?idAnyEscolar=2526",
 							"host": [
 								"{{url}}api"
 							],
@@ -250,7 +348,7 @@
 							"query": [
 								{
 									"key": "idAnyEscolar",
-									"value": "20242025"
+									"value": "2526"
 								}
 							]
 						}
@@ -264,7 +362,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"nivell\": 3,\r\n  \"descripcio\": \"privilegi 3\",\r\n  \"esIndividualGrup\": \"I\",\r\n  \"idAnyEscolar\": 20242025\r\n}",
+							"raw": "{\r\n  \"nivell\": 3,\r\n  \"descripcio\": \"privilegi de grup\",\r\n  \"esIndividualGrup\": \"G\",\r\n  \"idAnyEscolar\": 2526\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -291,7 +389,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idAnyEscolar\": 0,\r\n  \"dataIniciCurs\": \"2025-04-24T15:39:06.628Z\",\r\n  \"dataFiCurs\": \"2025-04-24T15:39:06.628Z\",\r\n  \"actiu\": true,\r\n  \"diesPeriode\": 0\r\n}",
+							"raw": "{\r\n  \"idPrivilegi\": 2,\r\n  \"nivell\": 3,\r\n  \"descripcio\": \"Privilegi de grup\",\r\n  \"esIndividualGrup\": \"G\",\r\n  \"idAnyEscolar\": 2526\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -326,7 +424,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/privilegi/eliminar?idPrivilegi=6",
+							"raw": "{{url}}api/privilegi/eliminar?idPrivilegi=2",
 							"host": [
 								"{{url}}api"
 							],
@@ -337,7 +435,7 @@
 							"query": [
 								{
 									"key": "idPrivilegi",
-									"value": "6"
+									"value": "2"
 								}
 							]
 						}
@@ -347,13 +445,40 @@
 			]
 		},
 		{
+			"name": "Register AG_Admin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"P@ssw0rd\",\r\n  \"role\": \"AG_Admin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/account/register",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"account",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Login AG_Admin",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"Password1!\",\r\n  \"rememberMe\": true\r\n}",
+					"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"P@ssw0rd\",\r\n  \"rememberMe\": true\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
