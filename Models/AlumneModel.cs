@@ -23,6 +23,6 @@ namespace KarmaWebAPI.Models
         public String Email { get; set; } //correu electrònic 
 
         public ICollection<AlumneEnGrup> AlumneEnGrups { get; set; } //relació amb alumne grups
-        public object AlumnesEnGrup { get; internal set; }
+        //public object AlumnesEnGrup { get; internal set; }
     }
 }

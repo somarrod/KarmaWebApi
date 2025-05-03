@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KarmaWebAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250501160115_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250503093826_MigracioInicial")]
+    partial class MigracioInicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -125,6 +125,9 @@ namespace KarmaWebAPI.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")

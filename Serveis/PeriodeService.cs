@@ -1,9 +1,10 @@
 ﻿
 using KarmaWebAPI.Data;
 using KarmaWebAPI.Models;
+using KarmaWebAPI.Serveis;
 using Microsoft.EntityFrameworkCore;
 
-public class PeriodeService
+public class PeriodeService: IPeriodeService
 {
     private readonly DatabaseContext _context;
 

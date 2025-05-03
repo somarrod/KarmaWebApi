@@ -52,8 +52,8 @@ namespace KarmaWebAPI.Data
                 .HasKey(a => a.IdAnyEscolar);
 
             // Configuración de la entidad Alumne
-            modelBuilder.Entity<Alumne>()
-                .Ignore(a => a.AlumnesEnGrup);
+            //modelBuilder.Entity<Alumne>()
+            //    .Ignore(a => a.AlumnesEnGrup);
 
             // Configuración de la entidad AlumneEnGrup
             modelBuilder.Entity<AlumneEnGrup>()

@@ -49,8 +49,13 @@ namespace KarmaWebAPI.Configurations
 
         public static void ConfigureServices(this IServiceCollection services)
         {
-            var builder = services.AddScoped<IAnyEscolarService, AnyEscolarService>()
-                                   .AddScoped<IPrivilegiService, PrivilegiService>();
+            var builder = services.AddScoped<IAnyEscolarService, AnyEscolarService>()                                 
+                                  .AddScoped<IAlumneService, AlumneService>()
+                                  .AddScoped<IAlumneEnGrupService, AlumneEnGrupService>()
+                                  .AddScoped<IPeriodeService, PeriodeService>()
+                                  .AddScoped<IPrivilegiService, PrivilegiService>()
+                                  .AddScoped<AccountService>();
+            ;
             // Otros servicios
         }
 

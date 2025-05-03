@@ -7,5 +7,7 @@ namespace KarmaWebAPI.Models
     {
         [Required]
         public string login { get; set; }
+
+        public bool IsActive { get; set; } = true;
     }
 }

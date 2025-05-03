@@ -1,8 +1,11 @@
-﻿using KarmaWebAPI.Data;
+﻿using KarmaWebAPI.Controllers;
+using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KarmaWebAPI.Serveis
 {
@@ -11,12 +14,16 @@ namespace KarmaWebAPI.Serveis
     {
         private readonly DatabaseContext _context;
 
+        private readonly AuthController _authController;
+        private readonly UserManager<ApiUser> _userManager;
+
+
         public AlumneService(DatabaseContext context)
         {
             _context = context;
         }
 
-        public async Task<ActionResult<AnyEscolar>> CrearAlumneAsync(AlumneDTO alumneDto)
+        public async Task<ActionResult<Alumne>> CrearAlumneAsync(AlumneDTO alumneDto)
         {
             var alumne = new Alumne
             {
@@ -30,12 +37,47 @@ namespace KarmaWebAPI.Serveis
             _context.Alumne.Add(alumne);
             await _context.SaveChangesAsync();
 
-            // Fix: Use the correct method `CreatedAtAction` instead of `CreatedAtActionResult`
-            return new CreatedAtActionResult("crear", null, new { nia = alumne.NIA }, alumne);
-            //return new OkObjectResult(alumne);
+            return new OkObjectResult(alumne);
         }
 
-     
+        public async Task<ActionResult<Alumne>> ActivarAlumneAsync(String nia)
+        {
+            var alumne = await _context.Alumne.FindAsync(nia);
+
+            if (alumne == null)
+            {
+                return new NotFoundResult();
+            }
+
+            alumne.Actiu = true;
+
+            _context.Entry(alumne).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            return new OkResult();
+        }
+
+
+        public async Task<ActionResult<Alumne>> DesactivarAlumneAsync(String nia)
+        {
+            var alumne = await _context.Alumne.FindAsync(nia);
+
+            if (alumne == null)
+            {
+                return new NotFoundResult();
+            }
+
+            alumne.Actiu = false;
+
+            _context.Entry(alumne).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            return new OkResult();
+        }
+
+
     }
 
 }

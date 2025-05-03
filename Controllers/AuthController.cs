@@ -49,7 +49,22 @@ namespace KarmaWebAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
+            // Buscar el usuario por email
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return Unauthorized(new { message = "Invàlid intent de login" });
+            }
+
+            // Verificar si el usuario está activo
+            if (!user.IsActive)
+            {
+                return Unauthorized(new { message = "L'usuari està desactivat" });
+            }
+
+            // Intentar iniciar sesión
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, isPersistent: false, lockoutOnFailure: false);
 
             if (result.Succeeded)
             {
@@ -60,7 +75,8 @@ namespace KarmaWebAPI.Controllers
         }
 
 
-        
+
+
         [HttpGet("accessdenied")]
         public IActionResult AccessDenied()
         {
