@@ -3,9 +3,9 @@ using KarmaWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
-using KarmaWebAPI.Serveis;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using KarmaWebAPI.Serveis.Interfaces;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -48,7 +48,7 @@ namespace KarmaWebAPI.Controllers
         }
 
         // POST: api/Alumne/crear
-        [Authorize(Roles = "AG_Admin")]
+        [Authorize(Roles = "AG_Admin, AG_Professor")]
         [HttpPost("crear")]
         public async Task<ActionResult<Alumne>> Crear(AlumneDTO alumneDto)
         {
@@ -61,8 +61,9 @@ namespace KarmaWebAPI.Controllers
                     // Fix: Ensure the result is cast or converted to the correct type
                     if (result.Result is OkObjectResult okResult && okResult.Value is Alumne alumne)
                     {
+                        String password = FuncionsAuxiliars.ConstruirPasswordAlumne(alumneDto);
                         // Utilizar el nuevo método CreateUserAsync
-                        var userCreated = await _accountService.CreateUserAsync(alumneDto.NIA, alumneDto.Email, "AG_Alumne");
+                        var userCreated = await _accountService.CreateUserAsync(alumneDto.NIA, alumneDto.Email, "AG_Alumne", password);
 
                         if (!userCreated.Succeeded)
                         {

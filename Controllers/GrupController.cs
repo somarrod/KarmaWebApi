@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using KarmaWebAPI.Serveis.Interfaces;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -12,10 +13,12 @@ namespace KarmaWebAPI.Controllers
     public class GrupController : ControllerBase
     {
         private readonly DatabaseContext _context;
+        private readonly IProfessorService _professorService;   
 
-        public GrupController(DatabaseContext context)
+        public GrupController(DatabaseContext context, IProfessorService professorService)
         {
             _context = context;
+            _professorService = professorService;
         }
 
         // GET: api/Grup
@@ -52,6 +55,13 @@ namespace KarmaWebAPI.Controllers
                 return BadRequest("El grup no pot ser null");
             }
 
+            //pte validar que existe IdProfessorTutor
+            //validar que existe IdProfessorTutor
+            if (grupDTO.IdProfessorTutor != null && !(_professorService.ProfessorExisteix(grupDTO.IdProfessorTutor)))
+            {
+                return BadRequest("El id del professor introduit no és correcte");
+            }
+
             var grup = new Grup
             {
                 IdAnyEscolar = grupDTO.IdAnyEscolar,
@@ -60,41 +70,71 @@ namespace KarmaWebAPI.Controllers
                 Descripcio = grupDTO.Descripcio
             };
             _context.Grup.Add(grup);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(Instancia), new { idGrup = grup.IdGrup }, grup);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.InnerException != null ? e.InnerException.Message : e.Message);
+            }
+            
+            return Ok(grup);
         }
 
 
-        // PUT: api/Grup/5
-        //[HttpPut("editar")]
-        //public async Task<IActionResult> Editar(int idAnyEscolar, string idGrup, Grup grup)
-        //{
-        //    if (idAnyEscolar != grup.IdAnyEscolar || idGrup != grup.IdGrup)
-        //    {
-        //        return BadRequest();
-        //    }
+        //PUT: api/Grup/5
+        [HttpPut("editar")]
+        public async Task<IActionResult> Editar(GrupEditarDTO grupDto)
+        {
+            if (grupDto == null)
+            {
+                return BadRequest("El grup no pot ser null");
+            }
 
-        //    _context.Entry(grup).State = EntityState.Modified;
+            if (grupDto.IdAnyEscolar == 0 || string.IsNullOrEmpty(grupDto.IdGrup))
+            {
+                return BadRequest("El grup no pot ser null");
+            }
 
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!GrupExists(idAnyEscolar, idGrup))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
+            if (!GrupExists(grupDto.IdAnyEscolar, grupDto.IdGrup))
+            {
+                return NotFound();
+            }
 
-        //    return NoContent();
-        //}
+            //validar que existe IdProfessorTutor
+            if (grupDto.IdProfessorTutor != null && !(_professorService.ProfessorExisteix(grupDto.IdProfessorTutor))) {
+                return BadRequest("El id del professor introduit no és correcte");
+            }
+                    
+
+            var grup = new Grup
+            {
+                IdAnyEscolar = grupDto.IdAnyEscolar,
+                IdGrup = grupDto.IdGrup,
+                IdProfessorTutor = grupDto.IdProfessorTutor,          
+                Descripcio = grupDto.Descripcio
+            };
+
+            _context.Entry(grup).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!GrupExists(grup.IdAnyEscolar, grup.IdGrup))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Ok(grup);
+        }
 
 
         // DELETE: api/Grup/5

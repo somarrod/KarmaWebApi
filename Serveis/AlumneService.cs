@@ -1,9 +1,10 @@
-﻿using KarmaWebAPI.Controllers;
+﻿//using KarmaWebAPI.Controllers;
 using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+using KarmaWebAPI.Serveis.Interfaces;
+//using Microsoft.AspNetCore.Http;
+//using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,8 +15,8 @@ namespace KarmaWebAPI.Serveis
     {
         private readonly DatabaseContext _context;
 
-        private readonly AuthController _authController;
-        private readonly UserManager<ApiUser> _userManager;
+      //  private readonly AuthController _authController;
+      //  private readonly UserManager<ApiUser> _userManager;
 
 
         public AlumneService(DatabaseContext context)

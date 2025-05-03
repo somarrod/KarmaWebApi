@@ -2,7 +2,7 @@
 using KarmaWebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KarmaWebAPI.Serveis
+namespace KarmaWebAPI.Serveis.Interfaces
 {
     public interface IAlumneEnGrupService
     {

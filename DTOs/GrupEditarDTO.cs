@@ -5,21 +5,20 @@ using System.ComponentModel.DataAnnotations;
 namespace KarmaWebAPI.DTOs
 {
 
-    public class GrupCrearDTO
+    public class GrupEditarDTO
     {
         [Required]
-        public int IdAnyEscolar { get; set; } //identificar únic
-        
+        public int IdAnyEscolar { get; set; } //identificar únic  
+
         [Required]
-        public String IdGrup { get; set; } //identificar únic del grup
+        public String IdGrup { get; set; } //identificar únic del grup  
 
         [Required]
         [StringLength(500)] // Corregido: Se usa paréntesis en lugar de '=' y se pasa el argumento requerido.  
-        public String Descripcio{ get; set; }
+        public String Descripcio { get; set; }
 
         [StringLength(50)]
-        public String? IdProfessorTutor { get; set; } //tutor o tutora del grup
-
+        public String? IdProfessorTutor { get; set; } //tutor o tutora del grup  
     }
 
 }

@@ -7,131 +7,6 @@
 	},
 	"item": [
 		{
-			"name": "AnyEscolar",
-			"item": [
-				{
-					"name": "Instancia",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}api/anyescolar/20242025",
-							"host": [
-								"{{url}}api"
-							],
-							"path": [
-								"anyescolar",
-								"20242025"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Llista",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}api/anyescolar/llista",
-							"host": [
-								"{{url}}api"
-							],
-							"path": [
-								"anyescolar",
-								"llista"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Eliminar",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}api/anyescolar/eliminar?idAnyEscolar=2526",
-							"host": [
-								"{{url}}api"
-							],
-							"path": [
-								"anyescolar",
-								"eliminar"
-							],
-							"query": [
-								{
-									"key": "idAnyEscolar",
-									"value": "2526"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "TCREAR",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"dataIniciCurs\": \"2029-09-01\",\r\n  \"dataFiCurs\": \"2030-08-31\",\r\n  \"diesPeriode\": 7\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}api/anyescolar/tcrear",
-							"host": [
-								"{{url}}api"
-							],
-							"path": [
-								"anyescolar",
-								"tcrear"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "Alumne",
 			"item": [
 				{
@@ -152,13 +27,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/alumne/1",
+							"raw": "{{url}}api/alumne/123456787",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
 								"alumne",
-								"1"
+								"123456787"
 							]
 						}
 					},
@@ -222,6 +97,421 @@
 					"response": []
 				},
 				{
+					"name": "activar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumne/activar?nia=123456787",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumne",
+								"activar"
+							],
+							"query": [
+								{
+									"key": "nia",
+									"value": "123456787"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editar PTE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumne/activar?nia=123456787",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumne",
+								"activar"
+							],
+							"query": [
+								{
+									"key": "nia",
+									"value": "123456787"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "desactivar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumne/desactivar?nia=123456787",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumne",
+								"desactivar"
+							],
+							"query": [
+								{
+									"key": "nia",
+									"value": "123456787"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminar - Pte act AspNetUsrs",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumne/eliminar?nia=123456786",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumne",
+								"eliminar"
+							],
+							"query": [
+								{
+									"key": "nia",
+									"value": "123456786"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AlumneEnGrup - Pendent",
+			"item": [
+				{
+					"name": "Instancia",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumne/123456787",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumne",
+								"123456787"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Llista",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumne/llista",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumne",
+								"llista"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nia\": \"string\",\r\n  \"nom\": \"string\",\r\n  \"cognoms\": \"string\",\r\n  \"email\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumne/crear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumne",
+								"crear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumne/activar?nia=123456787",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumne",
+								"activar"
+							],
+							"query": [
+								{
+									"key": "nia",
+									"value": "123456787"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "desactivar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumne/desactivar?nia=123456787",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumne",
+								"desactivar"
+							],
+							"query": [
+								{
+									"key": "nia",
+									"value": "123456787"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminar - Pte act AspNetUsrs",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumne/eliminar?nia=123456786",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumne",
+								"eliminar"
+							],
+							"query": [
+								{
+									"key": "nia",
+									"value": "123456786"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AnyEscolar",
+			"item": [
+				{
+					"name": "Instancia",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/anyescolar/20242025",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"anyescolar",
+								"20242025"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Llista",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/anyescolar/llista",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"anyescolar",
+								"llista"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TCREAR",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"dataIniciCurs\": \"2029-09-01\",\r\n  \"dataFiCurs\": \"2030-08-31\",\r\n  \"diesPeriode\": 7\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/anyescolar/tcrear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"anyescolar",
+								"tcrear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Eliminar",
 					"request": {
 						"method": "DELETE",
@@ -236,7 +526,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/anyescolar/eliminar?idAnyEscolar=20292030",
+							"raw": "{{url}}api/anyescolar/eliminar?idAnyEscolar=2526",
 							"host": [
 								"{{url}}api"
 							],
@@ -247,7 +537,159 @@
 							"query": [
 								{
 									"key": "idAnyEscolar",
-									"value": "20292030"
+									"value": "2526"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Grup",
+			"item": [
+				{
+					"name": "Instancia",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/grup/123456787",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"grup",
+								"123456787"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Llista",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/grup/llista",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"grup",
+								"llista"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crear",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idAnyEscolar\": 2526,\r\n  \"idProfessorTutor\": null,\r\n  \"idGrup\": \"1ESOB\",\r\n  \"descripcio\": \"1er ESO - B\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/grup/crear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"grup",
+								"crear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idAnyEscolar\": 2526,\r\n  \"idGrup\": \"1ESOA\",\r\n  \"descripcio\": \"1ER DE LA ESO\",\r\n  \"idProfessorTutor\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/grup/editar",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"grup",
+								"editar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminar - Pte acabar",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/professor/eliminar?idprofessor=",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"professor",
+								"eliminar"
+							],
+							"query": [
+								{
+									"key": "idprofessor",
+									"value": ""
 								}
 							]
 						}
@@ -445,6 +887,197 @@
 			]
 		},
 		{
+			"name": "Professor",
+			"item": [
+				{
+					"name": "Instancia",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/jprofessor/1000",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"jprofessor",
+								"1000"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Llista",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/professor/llista",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"professor",
+								"llista"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idProfessor\": \"1\",\r\n  \"nom\": \"Sofia\",\r\n  \"cognoms\": \"Martí\",\r\n  \"email\": \"smarti@professor.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/professor/crear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"professor",
+								"crear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "desactivar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/professor/desactivar?idprofessor=1000",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"professor",
+								"desactivar"
+							],
+							"query": [
+								{
+									"key": "idprofessor",
+									"value": "1000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/professor/activar?idprofessor=1000",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"professor",
+								"activar"
+							],
+							"query": [
+								{
+									"key": "idprofessor",
+									"value": "1000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminar - Pte act AspNetUsrs",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumne/eliminar?nia=123456786",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumne",
+								"eliminar"
+							],
+							"query": [
+								{
+									"key": "nia",
+									"value": "123456786"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Register AG_Admin",
 			"request": {
 				"method": "POST",
@@ -479,6 +1112,60 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"P@ssw0rd\",\r\n  \"rememberMe\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/account/login",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"account",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login AG_Alumne",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"smarti7@example.com\",\r\n  \"password\": \"Password1!\",\r\n  \"rememberMe\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/account/login",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"account",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login AG_Professor",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"smarti7@example.com\",\r\n  \"password\": \"Password1!\",\r\n  \"rememberMe\": true\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

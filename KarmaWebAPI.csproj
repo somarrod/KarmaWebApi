@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\ProfessorDeGrup.cs" />
+    <Compile Remove="Controllers\ProfessorDeGrupController.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Controllers\ProfessorDeGrup.cs" />
+    <None Include="Controllers\ProfessorDeGrupController.cs" />
   </ItemGroup>
 
 </Project>

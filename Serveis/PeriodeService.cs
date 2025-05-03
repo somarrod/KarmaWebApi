@@ -1,7 +1,7 @@
 ﻿
 using KarmaWebAPI.Data;
 using KarmaWebAPI.Models;
-using KarmaWebAPI.Serveis;
+using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 public class PeriodeService: IPeriodeService

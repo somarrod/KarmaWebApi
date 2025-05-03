@@ -5,17 +5,17 @@ using System.ComponentModel.DataAnnotations;
 namespace KarmaWebAPI.DTOs
 {
 
-    public class AlumneDTO
+    public class ProfessorDTO
     {
         [Required]
-        [StringLength(10)] 
-        public string NIA { get; set; }
+        [StringLength(50)]
+        public String IdProfessor { get; set; }
 
         [Required]
-        public string Nom { get; set; } //nom de l'alumne 
+        public String Nom { get; set; } //nom de l'alumne 
         
         [Required]
-        public string Cognoms { get; set; } //cognoms de l'alumne 
+        public String Cognoms { get; set; } //cognoms de l'alumne 
 
         [Required] 
         public string Email { get; set; } //correu electrònic 

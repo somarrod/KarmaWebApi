@@ -3,7 +3,7 @@ using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 //using KarmaWebAPI.Migrations;
 using KarmaWebAPI.Models;
-using KarmaWebAPI.Serveis;
+using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

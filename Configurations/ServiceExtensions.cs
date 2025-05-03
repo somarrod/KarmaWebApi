@@ -1,6 +1,7 @@
 ﻿using KarmaWebAPI.Data;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis;
+using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
@@ -54,12 +55,11 @@ namespace KarmaWebAPI.Configurations
                                   .AddScoped<IAlumneEnGrupService, AlumneEnGrupService>()
                                   .AddScoped<IPeriodeService, PeriodeService>()
                                   .AddScoped<IPrivilegiService, PrivilegiService>()
-                                  .AddScoped<AccountService>();
+                                  .AddScoped<AccountService>()
+                                  .AddScoped<IProfessorService, ProfessorService>();
             ;
             // Otros servicios
         }
-
-
 
     }
 }

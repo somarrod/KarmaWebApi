@@ -3,7 +3,7 @@ using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 //using KarmaWebAPI.Migrations;
 using KarmaWebAPI.Models;
-using KarmaWebAPI.Serveis;
+using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,9 +18,12 @@ namespace KarmaWebAPI.Controllers
         private readonly IPrivilegiService _privilegiService;
         private readonly IPeriodeService _periodeService;
         private readonly IAlumneEnGrupService _alumneEnGrupService;
-        public VPrivilegiPeriodeController(DatabaseContext context)
+        public VPrivilegiPeriodeController(DatabaseContext context, IPrivilegiService privilegiService, IPeriodeService periodeService, IAlumneEnGrupService alumneEnGrupService)
         {
             _context = context;
+            _privilegiService = privilegiService;
+            _periodeService = periodeService;
+            _alumneEnGrupService = alumneEnGrupService;
         }
 
         #region Consultes

@@ -17,7 +17,7 @@ public class AccountService
         _context = context;
     }
 
-    public async Task<IdentityResult> CreateUserAsync(string id, string email, string role)
+    public async Task<IdentityResult> CreateUserAsync(string id, string email, string role, string password)
     {
         // Verificar si el email ya existe en la base de datos
         var existingUser = await _context.Users
@@ -42,7 +42,7 @@ public class AccountService
             login = email
         };
 
-        var userCreated = await _userManager.CreateAsync(user, "Password1!");
+        var userCreated = await _userManager.CreateAsync(user, password);
 
         if (userCreated.Succeeded)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using KarmaWebAPI.DTOs;
 
 namespace KarmaWebAPI
 {
@@ -48,5 +49,26 @@ namespace KarmaWebAPI
             }
             return new string(array);
         }
+
+
+
+        public static string ConstruirPasswordProfessor(ProfessorDTO professorDTO)
+        {
+
+            char primeraLletraNom = char.ToUpper(professorDTO.Nom[0]);
+            char primeraLletraCognoms = char.ToLower(professorDTO.Cognoms[0]);
+
+            return $"{primeraLletraNom}{primeraLletraCognoms}@{professorDTO.IdProfessor}";
+        }
+
+        public static string ConstruirPasswordAlumne(AlumneDTO alumneDTO)
+        {
+
+            char primeraLletraNom = char.ToUpper(alumneDTO.Nom[0]);
+            char primeraLletraCognoms = char.ToLower(alumneDTO.Cognoms[0]);
+
+            return $"{primeraLletraNom}{primeraLletraCognoms}{alumneDTO.NIA}!";
+        }
+
     }
 }

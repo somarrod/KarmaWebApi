@@ -7,6 +7,7 @@ namespace KarmaWebAPI.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [StringLength(10)]
         public String NIA { get; set; } //identificador únic de tamany màxim 10 que assigna gva
         
         [Required]

@@ -14,6 +14,8 @@ namespace KarmaWebAPI.Models
         [Column(Order = 1)]
         public String IdGrup { get; set; } //identificar únic
 
+        [Required]
+        [StringLength(500)] // Corregido: Se usa paréntesis en lugar de '=' y se pasa el argumento requerido.  
         public String Descripcio { get; set; }
 
         public String KarmaBase { get; set; } = "CAP KARMA"; //Karma Base: Es el mínim de tots els karmes dels alumnes del grup
@@ -21,7 +23,8 @@ namespace KarmaWebAPI.Models
 
         // Nova propietat per al professor tutor
         [ForeignKey("Professor")]
-        public String IdProfessorTutor { get; set; }
+        [StringLength(50)]
+        public String? IdProfessorTutor { get; set; }
 
         #region Navegacions
 
