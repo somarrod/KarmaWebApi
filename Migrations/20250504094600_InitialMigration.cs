@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KarmaWebAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class MigracioInicial : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +15,7 @@ namespace KarmaWebAPI.Migrations
                 name: "Alumne",
                 columns: table => new
                 {
-                    NIA = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    NIA = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Cognoms = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Actiu = table.Column<bool>(type: "bit", nullable: false),
@@ -86,7 +86,8 @@ namespace KarmaWebAPI.Migrations
                 name: "Categoria",
                 columns: table => new
                 {
-                    IdCategoria = table.Column<int>(type: "int", nullable: false),
+                    IdCategoria = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Descripcio = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Activa = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -113,11 +114,11 @@ namespace KarmaWebAPI.Migrations
                 name: "Professor",
                 columns: table => new
                 {
-                    IdProfessor = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdProfessor = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Cognoms = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Actiu = table.Column<bool>(type: "bit", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -302,9 +303,9 @@ namespace KarmaWebAPI.Migrations
                 {
                     IdAnyEscolar = table.Column<int>(type: "int", nullable: false),
                     IdGrup = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Descripcio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descripcio = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     KarmaBase = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IdProfessorTutor = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    IdProfessorTutor = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -319,8 +320,7 @@ namespace KarmaWebAPI.Migrations
                         name: "FK_Grup_Professor_IdProfessorTutor",
                         column: x => x.IdProfessorTutor,
                         principalTable: "Professor",
-                        principalColumn: "IdProfessor",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdProfessor");
                 });
 
             migrationBuilder.CreateTable(
@@ -329,7 +329,7 @@ namespace KarmaWebAPI.Migrations
                 {
                     IdAlumneEnGrup = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NIA = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    NIA = table.Column<string>(type: "nvarchar(10)", nullable: false),
                     IdAnyEscolar = table.Column<int>(type: "int", nullable: false),
                     IdGrup = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PuntuacioTotal = table.Column<double>(type: "float", nullable: false),
@@ -361,7 +361,7 @@ namespace KarmaWebAPI.Migrations
                 columns: table => new
                 {
                     IdProfessorDeGrup = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IdProfessor = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdProfessor = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     IdMateria = table.Column<int>(type: "int", nullable: false),
                     IdAnyEscolar = table.Column<int>(type: "int", nullable: false),
                     IdGrup = table.Column<string>(type: "nvarchar(450)", nullable: false)
@@ -436,7 +436,7 @@ namespace KarmaWebAPI.Migrations
                     IdPeriode = table.Column<int>(type: "int", nullable: false),
                     IdCategoria = table.Column<int>(type: "int", nullable: false),
                     IdAlumneEnGrup = table.Column<int>(type: "int", nullable: false),
-                    ProfessorCreacioIdProfessor = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    ProfessorCreacioIdProfessor = table.Column<string>(type: "nvarchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {

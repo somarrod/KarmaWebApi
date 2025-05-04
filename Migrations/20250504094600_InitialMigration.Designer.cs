@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KarmaWebAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250503093826_MigracioInicial")]
-    partial class MigracioInicial
+    [Migration("20250504094600_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,7 +28,8 @@ namespace KarmaWebAPI.Migrations
             modelBuilder.Entity("KarmaWebAPI.Models.Alumne", b =>
                 {
                     b.Property<string>("NIA")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<bool>("Actiu")
                         .HasColumnType("bit");
@@ -72,7 +73,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<string>("NIA")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<double>("PuntuacioTotal")
                         .HasColumnType("float");
@@ -183,7 +184,10 @@ namespace KarmaWebAPI.Migrations
             modelBuilder.Entity("KarmaWebAPI.Models.Categoria", b =>
                 {
                     b.Property<int>("IdCategoria")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCategoria"));
 
                     b.Property<bool>("Activa")
                         .HasColumnType("bit");
@@ -240,11 +244,12 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<string>("Descripcio")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("IdProfessorTutor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("KarmaBase")
                         .IsRequired()
@@ -373,7 +378,8 @@ namespace KarmaWebAPI.Migrations
             modelBuilder.Entity("KarmaWebAPI.Models.Professor", b =>
                 {
                     b.Property<string>("IdProfessor")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("Actiu")
                         .HasColumnType("bit");
@@ -384,7 +390,8 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Nom")
                         .IsRequired()
@@ -413,7 +420,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<string>("IdProfessor")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("IdProfessorDeGrup");
 
@@ -452,7 +459,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<string>("ProfessorCreacioIdProfessor")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Punts")
                         .HasColumnType("int");
@@ -682,9 +689,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasOne("KarmaWebAPI.Models.Professor", "ProfessorTutor")
                         .WithMany("GrupsTutoritzats")
-                        .HasForeignKey("IdProfessorTutor")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdProfessorTutor");
 
                     b.Navigation("AnyEscolar");
 
