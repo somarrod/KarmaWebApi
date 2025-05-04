@@ -41,7 +41,7 @@ namespace KarmaWebAPI.Controllers
 
         // POST: api/Categoria
         [HttpPost("crear")]
-        [Authorize("AG_Admin,AG_Professor")]
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
         public async Task<ActionResult<Categoria>> Crear(CategoriaCrearDTO categoriaDTO)
         {
             var categoria = new Categoria
@@ -51,15 +51,22 @@ namespace KarmaWebAPI.Controllers
             };
 
             _context.Categoria.Add(categoria);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();                
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+            }
 
-            return CreatedAtAction("Crear", new { id = categoria.IdCategoria }, categoria);
+            return new OkObjectResult(categoria);
         }
 
 
         // PUT: api/Categoria/5
         [HttpPut("editar")]
-        [Authorize("AG_Admin,AG_Professor")]
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
         public async Task<IActionResult> Editar(int id, CategoriaEditarDTO categoriaDto)
         {
             if (id != categoriaDto.IdCategoria)
@@ -98,7 +105,7 @@ namespace KarmaWebAPI.Controllers
 
         // DELETE: api/Categoria/5
         [HttpDelete("eliminar")]
-        [Authorize("AG_Admin,AG_Professor")]
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
         public async Task<IActionResult> Eliminar(int idCategoria)
         {
             var categoria = await _context.Categoria.FindAsync(idCategoria);

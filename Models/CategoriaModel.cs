@@ -6,7 +6,7 @@ namespace KarmaWebAPI.Models
     public class Categoria
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int IdCategoria { get; set; } //identificar únic
         
         [Required]
