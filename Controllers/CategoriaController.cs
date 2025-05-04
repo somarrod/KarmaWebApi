@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using KarmaWebAPI.Serveis.Interfaces;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -67,18 +68,12 @@ namespace KarmaWebAPI.Controllers
         // PUT: api/Categoria/5
         [HttpPut("editar")]
         [Authorize(Roles = "AG_Admin,AG_Professor")]
-        public async Task<IActionResult> Editar(int id, CategoriaEditarDTO categoriaDto)
+        public async Task<IActionResult> Editar(CategoriaEditarDTO categoriaDto)
         {
-            if (id != categoriaDto.IdCategoria)
-            {
-                return BadRequest();
-            }
-
             var categoria = new Categoria
             {
                 IdCategoria = categoriaDto.IdCategoria,
-                Descripcio = categoriaDto.Descripcio,
-                Activa = true // Asignar valor por defecto
+                Descripcio = categoriaDto.Descripcio
             };
 
             _context.Entry(categoria).State = EntityState.Modified;
@@ -89,7 +84,7 @@ namespace KarmaWebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CategoriaExiste(id))
+                if (!CategoriaExiste(categoriaDto.IdCategoria))
                 {
                     return NotFound();
                 }
@@ -99,7 +94,79 @@ namespace KarmaWebAPI.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(categoria);
+        }
+
+
+        // PUT: api/Categoria/activar
+        [HttpPut("activar")]
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
+        public async Task<IActionResult> ActivarCategoria(int idCategoria)
+        {
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    var categoria = await _context.Categoria.FindAsync(idCategoria);
+
+                    if (categoria != null)
+                    {
+                        categoria.Activa = true;
+
+                        _context.Entry(categoria).State = EntityState.Modified;
+                        await _context.SaveChangesAsync();
+                        await _context.Database.CommitTransactionAsync();
+
+                        return Ok(categoria);
+                    }
+                    else 
+                    {
+                        await transaction.RollbackAsync();
+                        return NotFound("La categoria indicada no existeix");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                }
+            }
+        }
+
+
+        // PUT: api/Categoria/desactivar
+        [HttpPut("desactivar")]
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
+        public async Task<IActionResult> DesactivarCategoria(int idCategoria)
+        {
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    var categoria = await _context.Categoria.FindAsync(idCategoria);
+
+                    if (categoria != null)
+                    {
+                        categoria.Activa = false;
+
+                        _context.Entry(categoria).State = EntityState.Modified;
+                        await _context.SaveChangesAsync();
+                        await _context.Database.CommitTransactionAsync();
+
+                        return Ok(categoria);
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return NotFound("La categoria indicada no existeix");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                }
+            }
         }
 
 

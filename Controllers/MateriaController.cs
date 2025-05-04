@@ -3,6 +3,7 @@ using KarmaWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -25,22 +26,39 @@ namespace KarmaWebAPI.Controllers
 
             if (materia == null)
             {
-                return NotFound();
+                return NotFound("Matèria no trobada");
             }
 
-            return materia;
+            if (User.IsInRole("AG_Professor") && !materia.Activa) 
+            {
+                return NotFound("Matèria no trobada");
+            }
+
+                return materia;
         }
 
         // GET: api/Materia
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Materia>>> ObtenerMaterias()
+        [HttpGet("llista")]
+        [Authorize(Roles = "AG_Admin, AG_Professor")]
+        public async Task<ActionResult<IEnumerable<Materia>>> Llista()
         {
-            return await _context.Materia.ToListAsync();
+
+            if (User.IsInRole("AG_Admin"))
+            {
+                // Devuelve todas las materias si el usuario tiene el rol AG_Admin
+                return await _context.Materia.ToListAsync();
+            }
+            else 
+            {
+                // Devuelve solo las materias activas si el usuario tiene el rol AG_Professor
+                return await _context.Materia.Where(m => m.Activa).ToListAsync();
+            }
         }
 
 
         // POST: api/Materia
-        [HttpPost]
+        [HttpPost("crear")]
+        [Authorize(Roles = "AG_Admin")]
         public async Task<ActionResult<Materia>> CrearMateria(MateriaCrearDTO materiaDto)
         {
             var materia = new Materia
@@ -58,6 +76,7 @@ namespace KarmaWebAPI.Controllers
 
         // PUT: api/Materia/5
         [HttpPut("editar")]
+        [Authorize(Roles = "AG_Admin")]
         public async Task<IActionResult> EditarMateria(MateriaEditarDTO materiaDto)
         {
 
@@ -89,9 +108,80 @@ namespace KarmaWebAPI.Controllers
             return NoContent();
         }
 
+        // PUT: api/Materia/activar
+        [HttpPut("activar")]
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
+        public async Task<IActionResult> ActivarMateria(int idMateria)
+        {
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    var materia = await _context.Materia.FindAsync(idMateria);
+
+                    if (materia != null)
+                    {
+                        materia.Activa = true;
+
+                        _context.Entry(materia).State = EntityState.Modified;
+                        await _context.SaveChangesAsync();
+                        await _context.Database.CommitTransactionAsync();
+
+                        return Ok(materia);
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return NotFound("La matèria indicada no existeix");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                }
+            }
+        }
+
+
+        // PUT: api/Categoria/desactivar
+        [HttpPut("desactivar")]
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
+        public async Task<IActionResult> DesactivarMateria(int idMateria)
+        {
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    var materia = await _context.Materia.FindAsync(idMateria);
+
+                    if (materia != null)
+                    {
+                        materia.Activa = false;
+
+                        _context.Entry(materia).State = EntityState.Modified;
+                        await _context.SaveChangesAsync();
+                        await _context.Database.CommitTransactionAsync();
+
+                        return Ok(materia);
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return NotFound("La matèria indicada no existeix");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                }
+            }
+        }
 
         // DELETE: api/Materia/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "AG_Admin")]
         public async Task<IActionResult> EliminarMateria(int idMateria)
         {
             var materia = await _context.Materia.FindAsync(idMateria);

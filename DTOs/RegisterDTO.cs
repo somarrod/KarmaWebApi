@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace KarmaWebAPI.Models
+namespace KarmaWebAPI.DTOs
 {
 
-    public class RegisterModel
+    public class RegisterDTO
     {
         [Required]
         [EmailAddress]
@@ -13,9 +13,9 @@ namespace KarmaWebAPI.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
         
-        [Required]
-        [RoleValidation]
-        public string Role { get; set; }
+        //[Required]
+        //[RoleValidation]
+        //public string Role { get; set; }
     }
 
 }

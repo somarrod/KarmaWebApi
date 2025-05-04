@@ -1,4 +1,5 @@
-﻿using KarmaWebAPI.Models;
+﻿using KarmaWebAPI.DTOs;
+using KarmaWebAPI.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -22,8 +23,8 @@ namespace KarmaWebAPI.Controllers
         }
 
         
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        [HttpPost("registeradmin")]
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterDTO model)
         {
             var user = new ApiUser { UserName = model.Email, Email = model.Email, login = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -32,14 +33,14 @@ namespace KarmaWebAPI.Controllers
             {
 
                 // Asignar el rol al usuario
-                var roleResult = await _userManager.AddToRoleAsync(user, model.Role);
+                var roleResult = await _userManager.AddToRoleAsync(user, "AG_Admin");
                 if (!roleResult.Succeeded)
                 {
                     return BadRequest(roleResult.Errors);
                 }
 
                 await _signInManager.SignInAsync(user, isPersistent: false);
-                return Ok();
+                return Ok("Administrador creat correctament.");
             }
 
             return BadRequest(result.Errors);
@@ -93,6 +94,64 @@ namespace KarmaWebAPI.Controllers
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
             return Ok(new { message = "Logout correcte" });
         }
+
+
+        [HttpPost("canviapassword")]
+        [Authorize]
+        public async Task<IActionResult> CanviaPassword([FromBody] AuthCanviaPasswordDTO model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (User.Identity is null) 
+            {
+                return NotFound("Usuari no connectat");
+            }
+
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return NotFound("Usuari no trobat");
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.PasswordActual, model.NouPassword);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok("Password canviat correctament");
+        }
+
+
+        [Authorize(Roles = "AG_Admin")]
+        [HttpPost("resetpassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] AuthResetPasswordDTO model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return NotFound("Usuari no trobat");
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, model.NouPassword);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok($"Password canviat correctament. Nou Password = {model.NouPassword}");
+        }
+
+
 
 
     }
