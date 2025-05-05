@@ -3,6 +3,8 @@ using KarmaWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using KarmaWebAPI.Data;
 using Microsoft.AspNetCore.Authorization;
+using KarmaWebAPI.DTOs;
+using KarmaWebAPI.DTOs.DisplaySets;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -72,55 +74,94 @@ namespace KarmaWebAPI.Controllers
                 }
             }
 
+
+            var AlumneEnGrupDTOList = AlumneEnGrupList.Select(a => new AlumneEnGrupDisplaySet
+            {
+                IdAlumneEnGrup = a.IdAlumneEnGrup,
+                NIA = a.Alumne.NIA,
+                IdAnyEscolar = a.IdAnyEscolar,
+                IdGrup = a.Grup.IdGrup,
+                PuntuacioTotal = a.PuntuacioTotal,
+                Karma = a.Karma
+            }).ToList();
+
+            return Ok(AlumneEnGrupDTOList);
+
             return AlumneEnGrupList;
         }
 
 
         // POST: api/AlumneEnGrup
         [HttpPost("crear")]
-        public async Task<ActionResult<AlumneEnGrup>> Crear(AlumneEnGrup alumneEnGrup)
+        public async Task<ActionResult<AlumneEnGrup>> Crear(AlumneEnGrupTCREARDTO alumneEnGrupDto)
         {
+
+            // Comprovar si ja existeix un registre per al mateix alumne i grup
+            var existentAlumneEnGrup = await _context.AlumneEnGrup
+                                       .FirstOrDefaultAsync(a => a.NIA == alumneEnGrupDto.NIA && 
+                                                            a.IdGrup == alumneEnGrupDto.IdGrup && 
+                                                            a.IdAnyEscolar == alumneEnGrupDto.IdAnyEscolar);
+
+            if (existentAlumneEnGrup != null)
+            {
+                return BadRequest("Ja existeix un registre per a aquest alumne en aquest grup.");
+            }
+
+            var alumneEnGrup = new AlumneEnGrup
+            {
+                NIA = alumneEnGrupDto.NIA,
+                IdGrup = alumneEnGrupDto.IdGrup,
+                IdAnyEscolar = alumneEnGrupDto.IdAnyEscolar,
+                PuntuacioTotal = 0,
+                Karma = "CREACIÓ"
+            };
             _context.AlumneEnGrup.Add(alumneEnGrup);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("ObtenerAlumneEnGrup", new { id = alumneEnGrup.IdAlumneEnGrup }, alumneEnGrup);
+            return Ok(alumneEnGrup);
         }
 
-        // PUT: api/AlumneEnGrup/5
+
+        // PUT: api/AlumneEnGrup/editar
         [HttpPut("editar")]
-        public async Task<IActionResult> Editar(int idAlumneEnGrup, AlumneEnGrup alumneEnGrup)
+        public async Task<IActionResult> Editar(AlumneEnGrupEditarDTO alumneEnGrupDto)
         {
-            if (idAlumneEnGrup != alumneEnGrup.IdAlumneEnGrup)
+            var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(alumneEnGrupDto.IdAlumneEnGrup);
+            if (alumneEnGrup == null)
             {
-                return BadRequest();
+                return NotFound($"AlumneEnGrup amb Id {alumneEnGrupDto.IdAlumneEnGrup} no trobat");
             }
 
-            _context.Entry(alumneEnGrup).State = EntityState.Modified;
+            alumneEnGrup.PuntuacioTotal = alumneEnGrupDto.PuntuacioTotal;
+
+            _context.AlumneEnGrup.Update(alumneEnGrup);
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!AlumneEnGrupExisteix(idAlumneEnGrup))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
             }
 
-            return NoContent();
+            return Ok(alumneEnGrup);
         }
+
 
 
         [HttpDelete("eliminar")]
         public async Task<IActionResult> Eliminar(int IdAlumneEnGrup)
         {
             var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(IdAlumneEnGrup);
+            var alumneEnGrupDS = new AlumneEnGrupDisplaySet
+            {
+                IdGrup = alumneEnGrup.IdGrup,
+                IdAnyEscolar = alumneEnGrup.IdAnyEscolar,
+                NIA = alumneEnGrup.NIA
+            };
+        
+
             if (alumneEnGrup == null)
             {
                 return NotFound();
@@ -129,8 +170,8 @@ namespace KarmaWebAPI.Controllers
             _context.AlumneEnGrup.Remove(alumneEnGrup);
             await _context.SaveChangesAsync();
 
-            return NoContent();
-                }
+            return Ok($"L'alumne {alumneEnGrupDS.NIA} ha segut esborrat del grup {alumneEnGrupDS.IdGrup} de l'any escolar {alumneEnGrupDS.IdAnyEscolar}");
+        }
 
         private bool AlumneEnGrupExisteix(int id)
         {

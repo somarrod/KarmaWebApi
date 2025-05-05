@@ -151,7 +151,7 @@ namespace KarmaWebAPI.Controllers
             _context.Grup.Remove(grup);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok($"Grup {idGrup} de l'any escolar {idAnyEscolar} ha estat esborrat");
         }
         #endregion Serveis
 

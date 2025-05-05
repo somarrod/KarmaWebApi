@@ -12,6 +12,7 @@ namespace KarmaWebAPI.Models
 
         [ForeignKey("Alumne")]
         [Required]
+        [StringLength(10)]
         public String NIA { get; set; } //identificar únic de tamany màxim 10 que assigna gva
 
 
@@ -21,10 +22,12 @@ namespace KarmaWebAPI.Models
 
         [Required]
         [ForeignKey("Grup")]
+        [StringLength(50)]
         public String IdGrup { get; set; } //identificar únic del grup
 
-        public Double PuntuacioTotal { get; set; } = 0; //Puntuacio total de l'alumne en el grup i any escolar
+        public int PuntuacioTotal { get; set; } = 0; //Puntuacio total de l'alumne en el grup i any escolar
 
+        [StringLength(10)]
         public String Karma { get; set; } = "CREACIÓ"; //Color de Karma assignat a l'alumne
 
 
