@@ -3,8 +3,9 @@ using System.Linq;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Data;
+using KarmaWebAPI.Serveis.Interfaces;
 
-public class ConfiguracioKarmaService
+public class ConfiguracioKarmaService: IConfiguracioKarmaService
 {
     private readonly DatabaseContext _context;
 
@@ -13,15 +14,16 @@ public class ConfiguracioKarmaService
         _context = context;
     }
 
-    public bool ValidateKarmaRange(int karmaMinim, int karmaMaxim)
+    public bool ValidateKarmaRange(int idConfiguracioKarma, int karmaMinim, int karmaMaxim)
     {
         var existingConfigurations = _context.ConfiguracioKarma.ToList();
 
         foreach (var config in existingConfigurations)
         {
-            if ((karmaMinim >= config.KarmaMinim && karmaMinim <= config.KarmaMaxim) ||
-                (karmaMaxim >= config.KarmaMinim && karmaMaxim <= config.KarmaMaxim) ||
-                (karmaMinim <= config.KarmaMinim && karmaMaxim >= config.KarmaMaxim))
+            if (config.IdConfiguracioKarma != idConfiguracioKarma && 
+               ((karmaMinim >= config.KarmaMinim && karmaMinim <= config.KarmaMaxim) ||
+               (karmaMaxim >= config.KarmaMinim && karmaMaxim <= config.KarmaMaxim) ||
+               (karmaMinim <= config.KarmaMinim && karmaMaxim >= config.KarmaMaxim)))
             {
                 return false; // Solapament trobat
             }
@@ -30,9 +32,10 @@ public class ConfiguracioKarmaService
         return true; // No hi ha solapaments
     }
 
-    public void CrearConfiguracioKarma(ConfiguracioKarmaCrearDTO dto)
+
+    public async Task CrearConfiguracioKarmaAsync(ConfiguracioKarmaCrearDTO dto)
     {
-        if (!ValidateKarmaRange(dto.KarmaMinim, dto.KarmaMaxim))
+        if (!ValidateKarmaRange(0, dto.KarmaMinim, dto.KarmaMaxim))
         {
             throw new InvalidOperationException("El rang de karma solapa amb una configuració existent.");
         }
@@ -47,6 +50,32 @@ public class ConfiguracioKarmaService
         };
 
         _context.ConfiguracioKarma.Add(newConfig);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
+
+
+    public async Task EditarConfiguracioKarmaAsync(ConfiguracioKarmaEditarDTO dto)
+    {
+        if (!ValidateKarmaRange(dto.IdConfiguracioKarma, dto.KarmaMinim, dto.KarmaMaxim))
+        {
+            throw new InvalidOperationException("El rang de karma solapa amb una configuració existent.");
+        }
+
+        var existingConfig = await _context.ConfiguracioKarma.FindAsync(dto.IdConfiguracioKarma);
+        if (existingConfig == null)
+        {
+            throw new InvalidOperationException("La configuració de karma no existeix.");
+        }
+
+        existingConfig.IdAnyEscolar = dto.IdAnyEscolar;
+        existingConfig.KarmaMinim = dto.KarmaMinim;
+        existingConfig.KarmaMaxim = dto.KarmaMaxim;
+        existingConfig.ColorNivell = dto.ColorNivell;
+        existingConfig.NivellPrivilegis = dto.NivellPrivilegis;
+
+        _context.ConfiguracioKarma.Update(existingConfig);
+        await _context.SaveChangesAsync();
+    }
+
+
 }

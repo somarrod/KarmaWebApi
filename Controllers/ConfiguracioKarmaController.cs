@@ -31,7 +31,7 @@ namespace KarmaWebAPI.Controllers
 
         // Instancia
         [HttpGet("{idConfiguracioKarma}")]
-        [Authorize(Roles = "AG_Admin, AG_Professor")]
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
         public async Task<IActionResult> Instancia(int idConfiguracioKarma)
         {
             var ConfiguracioKarma = await _context.ConfiguracioKarma
@@ -83,13 +83,25 @@ namespace KarmaWebAPI.Controllers
                     .Where(c => c.AnyEscolar.Actiu == true)
                     .ToListAsync();
             }
+
+
+            // Replacing the incorrect "for each" syntax with the correct "foreach" syntax
+            foreach (ConfiguracioKarma conf in ConfiguracioKarmaList)
+            {
+                // Add logic here if needed
+                conf.AnyEscolar.ConfiguracionsKarma = null;
+                conf.AnyEscolar.Privilegis = null;
+                conf.AnyEscolar.Grups = null;
+                conf.AnyEscolar.Periodes = null;
+            }
+
             return Ok(ConfiguracioKarmaList);
         }
 
         // Consulta de relacionades
         [HttpGet]
         [Route("llista-per-anyescolar")]
-        [Authorize]
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
         public async Task<ActionResult<IEnumerable<ConfiguracioKarma>>> LlistaPerAnyEscolar(int idAnyEscolar)
         {
             var anyEscolar = await _context.AnyEscolar.FindAsync(idAnyEscolar);
@@ -123,7 +135,7 @@ namespace KarmaWebAPI.Controllers
         {
             if (configuracioKarmaDTO == null)
             {
-                return BadRequest("ConfiguracioKarmaDTO no pot ser null");
+                return BadRequest("Falten els arguments d'entrada");
             }
 
             var anyEscolar = await _context.AnyEscolar.FindAsync(configuracioKarmaDTO.IdAnyEscolar);
@@ -143,7 +155,7 @@ namespace KarmaWebAPI.Controllers
 
             try
             {
-                _configuracioKarmaService.CrearConfiguracioKarma(configuracioKarmaDTO);
+                await _configuracioKarmaService.CrearConfiguracioKarmaAsync(configuracioKarmaDTO);
             }
             catch (InvalidOperationException ex)
             {
@@ -154,66 +166,39 @@ namespace KarmaWebAPI.Controllers
         }
     
 
-        //public async Task<ActionResult<ConfiguracioKarma>> Crear(ConfiguracioKarmaCrearDTO configuracioKarmaDTO)
-        //{
-        //    var anyEscolar = await _context.AnyEscolar.FindAsync(configuracioKarmaDTO.IdAnyEscolar);
-        //    if (anyEscolar == null)
-        //    {
-        //        return NotFound($"Any escolar {configuracioKarmaDTO.IdAnyEscolar} no trobat");
-        //    }
-
-        //    var configuracioKarma = new ConfiguracioKarma
-        //    {
-        //        IdAnyEscolar = configuracioKarmaDTO.IdAnyEscolar,
-        //        KarmaMinim = configuracioKarmaDTO.KarmaMinim,
-        //        KarmaMaxim = configuracioKarmaDTO.KarmaMaxim,
-        //        ColorNivell = configuracioKarmaDTO.ColorNivell,
-        //        NivellPrivilegis = configuracioKarmaDTO.NivellPrivilegis
-        //    };
-
-
-        //    _context.ConfiguracioKarma.Add(configuracioKarma);
-        //    await _context.SaveChangesAsync();
-
-        //    return Ok (configuracioKarma);
-        //}
-
-        // PUT: api/ConfiguracioKarma/editar
+// PUT: api/ConfiguracioKarma/editar
         [HttpPut("editar")]
         [Authorize(Roles = "AG_Admin")]
-        public async Task<IActionResult> Editar(ConfiguracioKarmaEditarDTO configuracioKarmaDto)
+        public async Task<ActionResult<ConfiguracioKarma>> Editar([Required] ConfiguracioKarmaEditarDTO configuracioKarmaDTO)
         {
-
-            var configuracioKarma = await _context.ConfiguracioKarma.FindAsync(configuracioKarmaDto.IdConfiguracioKarma);
-
-            if (configuracioKarma == null)
+            if (configuracioKarmaDTO == null)
             {
-                return NotFound($"ConfiguracioKarma {configuracioKarmaDto.IdConfiguracioKarma} no trobat");
+                return BadRequest("ConfiguracioKarmaDTO no pot ser null");
             }
 
-            var anyEscolar = await _context.AnyEscolar.FindAsync(configuracioKarmaDto.IdAnyEscolar);
+            var anyEscolar = await _context.AnyEscolar.FindAsync(configuracioKarmaDTO.IdAnyEscolar);
             if (anyEscolar == null)
             {
-                return NotFound($"Any escolar {configuracioKarmaDto.IdAnyEscolar} no trobat");
+                return NotFound($"Any escolar {configuracioKarmaDTO.IdAnyEscolar} no trobat");
             }
 
-            configuracioKarma.IdAnyEscolar = configuracioKarmaDto.IdAnyEscolar;
-            configuracioKarma.KarmaMinim = configuracioKarmaDto.KarmaMinim;
-            configuracioKarma.KarmaMaxim = configuracioKarmaDto.KarmaMaxim;
-            configuracioKarma.ColorNivell = configuracioKarmaDto.ColorNivell;
-            configuracioKarma.NivellPrivilegis = configuracioKarmaDto.NivellPrivilegis;
-            
-
-            _context.Entry(configuracioKarma).State = EntityState.Modified;
+            var configuracioKarma = new ConfiguracioKarmaEditarDTO // Corrected variable name
+            {
+                IdConfiguracioKarma = configuracioKarmaDTO.IdConfiguracioKarma,
+                IdAnyEscolar = configuracioKarmaDTO.IdAnyEscolar,
+                KarmaMinim = configuracioKarmaDTO.KarmaMinim,
+                KarmaMaxim = configuracioKarmaDTO.KarmaMaxim,
+                ColorNivell = configuracioKarmaDTO.ColorNivell,
+                NivellPrivilegis = configuracioKarmaDTO.NivellPrivilegis
+            };
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _configuracioKarmaService.EditarConfiguracioKarmaAsync(configuracioKarma);
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-               return StatusCode(500, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
-
+                return BadRequest(ex.Message);
             }
 
             return Ok(configuracioKarma);

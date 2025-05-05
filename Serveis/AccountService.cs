@@ -39,7 +39,7 @@ public class AccountService
         {
             UserName = id,
             Email = email,
-            login = email
+            Login = email
         };
 
         var userCreated = await _userManager.CreateAsync(user, password);

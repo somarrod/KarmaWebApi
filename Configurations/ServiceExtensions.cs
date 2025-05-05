@@ -56,7 +56,8 @@ namespace KarmaWebAPI.Configurations
                                   .AddScoped<IPeriodeService, PeriodeService>()
                                   .AddScoped<IPrivilegiService, PrivilegiService>()
                                   .AddScoped<AccountService>()
-                                  .AddScoped<IProfessorService, ProfessorService>();
+                                  .AddScoped<IProfessorService, ProfessorService>()
+                                  .AddScoped<ConfiguracioKarmaService>();
             ;
             // Otros servicios
         }

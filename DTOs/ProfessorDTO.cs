@@ -12,12 +12,15 @@ namespace KarmaWebAPI.DTOs
         public String IdProfessor { get; set; }
 
         [Required]
-        public String Nom { get; set; } //nom de l'alumne 
+        [StringLength(200)]
+        public string Nom { get; set; } //nom de l'alumne 
         
         [Required]
-        public String Cognoms { get; set; } //cognoms de l'alumne 
+        [StringLength(200)]
+        public string Cognoms { get; set; } //cognoms de l'alumne 
 
-        [Required] 
+        [Required]
+        [StringLength(255)]
         public string Email { get; set; } //correu electrònic 
     }
 

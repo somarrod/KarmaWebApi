@@ -6,8 +6,9 @@ namespace KarmaWebAPI.Models
     public class ApiUser : IdentityUser
     {
         [Required]
-        public string login { get; set; }
+        public string Login { get; set; }
 
+        [Required]
         public bool IsActive { get; set; } = true;
     }
 }

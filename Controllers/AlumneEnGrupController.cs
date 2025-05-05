@@ -2,6 +2,7 @@
 using KarmaWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using KarmaWebAPI.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -16,15 +17,9 @@ namespace KarmaWebAPI.Controllers
             _context = context;
         }
 
-        // GET: api/AlumneEnGrup
-        [HttpGet("llista")]
-        public async Task<ActionResult<IEnumerable<AlumneEnGrup>>> Llista()
-        {
-            return await _context.AlumneEnGrup.ToListAsync();
-        }
-
         // GET: api/AlumneEnGrup/5
         [HttpGet("{idAlumneEnGrup}")]
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
         public async Task<ActionResult<AlumneEnGrup>> Instancia(int idAlumneEnGrup)
         {
             var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(idAlumneEnGrup);
@@ -35,6 +30,60 @@ namespace KarmaWebAPI.Controllers
             }
 
             return alumneEnGrup;
+        }
+
+        // GET: api/AlumneEnGrup
+        [HttpGet("llista")]
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
+        public async Task<ActionResult<IEnumerable<AlumneEnGrup>>> Llista()
+        {
+            var AlumneEnGrupList = new List<AlumneEnGrup>();
+            var userName = User.Identity.Name;
+
+            if (User.IsInRole("AG_Admin"))
+            {
+                // Retornar tots els alumnes en del grup
+                AlumneEnGrupList = await _context.AlumneEnGrup
+                            .Include(c => c.Grup)
+                            .Include(c=> c.Alumne)
+                            .ToListAsync();
+            }
+            else
+            {
+                if (User.IsInRole("AG_Professor"))
+                    //AG_Professor
+                    //EXIST(Grup.AnyEscolar) WHERE(Grup.AnyEscolar.Actiu = true) = true AND
+                    //EXIST(Grup.ProfessorsDeGrup ) WHERE(Grup.ProfessorsDeGrup.Professor = Agent.Professor) = true
+                    AlumneEnGrupList = await _context.AlumneEnGrup
+                            .Include(c => c.Grup)
+                            .Include(c => c.Alumne)
+                            .Include(c => c.AnyEscolar)
+                             .Where(c => c.AnyEscolar.Actiu == true
+                                            && _context.ProfessorDeGrup.Any(pg => pg.IdProfessor == userName && pg.IdGrup == c.IdGrup))
+                            .ToListAsync();
+                else
+                {
+                    AlumneEnGrupList = await _context.AlumneEnGrup
+                            .Include(c => c.Grup)
+                            .Include(a => a.Alumne)
+                            .Include(c => c.AnyEscolar)
+                            .Where(c => c.AnyEscolar.Actiu == true && c.Alumne.NIA == userName)
+                            .ToListAsync();
+                }
+            }
+
+            return AlumneEnGrupList;
+        }
+
+
+        // POST: api/AlumneEnGrup
+        [HttpPost("crear")]
+        public async Task<ActionResult<AlumneEnGrup>> Crear(AlumneEnGrup alumneEnGrup)
+        {
+            _context.AlumneEnGrup.Add(alumneEnGrup);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("ObtenerAlumneEnGrup", new { id = alumneEnGrup.IdAlumneEnGrup }, alumneEnGrup);
         }
 
         // PUT: api/AlumneEnGrup/5
@@ -67,15 +116,6 @@ namespace KarmaWebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/AlumneEnGrup
-        [HttpPost("crear")]
-        public async Task<ActionResult<AlumneEnGrup>> Crear(AlumneEnGrup alumneEnGrup)
-        {
-            _context.AlumneEnGrup.Add(alumneEnGrup);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("ObtenerAlumneEnGrup", new { id = alumneEnGrup.IdAlumneEnGrup }, alumneEnGrup);
-        }
 
         [HttpDelete("eliminar")]
         public async Task<IActionResult> Eliminar(int IdAlumneEnGrup)

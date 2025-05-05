@@ -26,7 +26,7 @@ namespace KarmaWebAPI.Controllers
         [HttpPost("registeradmin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterDTO model)
         {
-            var user = new ApiUser { UserName = model.Email, Email = model.Email, login = model.Email };
+            var user = new ApiUser { UserName = model.Email, Email = model.Email, Login = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)

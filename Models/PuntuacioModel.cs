@@ -18,7 +18,7 @@ namespace KarmaWebAPI.Models
         public String Motiu { get; set; }
 
         [ForeignKey("Professor")] 
-        public int IdProfessorCreacio { get; set; } //Estàtica
+        public string IdProfessorCreacio { get; set; } //Estàtica
 
         [ForeignKey("Periode")]
         [Required]
@@ -27,6 +27,7 @@ namespace KarmaWebAPI.Models
         [ForeignKey("Categoria")]
         public int IdCategoria { get; set; } //identificar únic
 
+        [ForeignKey("AlumneEnGrup")]
         public int IdAlumneEnGrup { get; set; } //identificar únic
 
         //Navegacions
