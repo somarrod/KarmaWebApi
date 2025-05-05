@@ -11,6 +11,7 @@ namespace KarmaWebAPI.DTOs
         public int IdAnyEscolar { get; set; } //identificar únic
         
         [Required]
+        [StringLength(50)]
         public String IdGrup { get; set; } //identificar únic del grup
 
         [Required]

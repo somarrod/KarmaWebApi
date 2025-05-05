@@ -1,7 +1,7 @@
 ﻿namespace KarmaWebAPI.DTOs
 {
 
-    public class PeriodeTCREARDto
+    public class PeriodeTCREARDTO
     {
         //No crearem create_instance, sino directament TCREAR
         public DateOnly DataInici { get; set; }

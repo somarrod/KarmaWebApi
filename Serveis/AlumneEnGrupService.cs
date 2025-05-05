@@ -24,6 +24,21 @@ namespace KarmaWebAPI.Serveis
                             .Where(v => idAlumneEnGrup == v.IdAlumneEnGrup)
                             .ToList();
         }
+
+
+        public async Task<ActionResult<AlumneEnGrup>> EditPuntuacioAsync(int idAlumneEnGrup, int Punts)
+        {
+            var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(idAlumneEnGrup);
+            if (alumneEnGrup == null)
+            {
+                throw new InvalidOperationException($"Alumne en grup amb Id {idAlumneEnGrup} no trobat");
+            }
+            alumneEnGrup.PuntuacioTotal = alumneEnGrup.PuntuacioTotal + Punts;
+            _context.AlumneEnGrup.Update(alumneEnGrup);
+            await _context.SaveChangesAsync();
+
+            return new ActionResult<AlumneEnGrup>(alumneEnGrup); // Ensure a value is returned
+        }
     }
 
 }

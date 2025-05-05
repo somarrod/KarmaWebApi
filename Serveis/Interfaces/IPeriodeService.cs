@@ -7,5 +7,7 @@ namespace KarmaWebAPI.Serveis.Interfaces
     public interface IPeriodeService
     {
         ICollection<VPrivilegiPeriode> GetPrivilegisPeriode(int idPeriode);
+        Task<Periode> TCrearAsync(PeriodeTCREARDTO periodeDto);
+
     }
 }

@@ -62,18 +62,21 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<string>("IdGrup")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Karma")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("NIA")
                         .IsRequired()
+                        .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<double>("PuntuacioTotal")
-                        .HasColumnType("float");
+                    b.Property<int>("PuntuacioTotal")
+                        .HasColumnType("int");
 
                     b.HasKey("IdAlumneEnGrup");
 
@@ -134,6 +137,10 @@ namespace KarmaWebAPI.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -160,10 +167,6 @@ namespace KarmaWebAPI.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("login")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -236,7 +239,8 @@ namespace KarmaWebAPI.Migrations
                         .HasColumnOrder(0);
 
                     b.Property<string>("IdGrup")
-                        .HasColumnType("nvarchar(450)")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnOrder(1);
 
                     b.Property<string>("Descripcio")
@@ -383,7 +387,8 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<string>("Cognoms")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -392,7 +397,8 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<string>("Nom")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("IdProfessor");
 
@@ -410,7 +416,8 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<string>("IdGrup")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("IdMateria")
                         .HasColumnType("int");
@@ -433,7 +440,10 @@ namespace KarmaWebAPI.Migrations
             modelBuilder.Entity("KarmaWebAPI.Models.Puntuacio", b =>
                 {
                     b.Property<int>("IdPuntuacio")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPuntuacio"));
 
                     b.Property<DateOnly>("DataEntrada")
                         .HasColumnType("date");
@@ -447,12 +457,15 @@ namespace KarmaWebAPI.Migrations
                     b.Property<int>("IdPeriode")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdProfessorCreacio")
-                        .HasColumnType("int");
+                    b.Property<string>("IdProfessorCreacio")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Motiu")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("ProfessorCreacioIdProfessor")
                         .IsRequired()

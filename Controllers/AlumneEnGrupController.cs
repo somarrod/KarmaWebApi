@@ -86,8 +86,6 @@ namespace KarmaWebAPI.Controllers
             }).ToList();
 
             return Ok(AlumneEnGrupDTOList);
-
-            return AlumneEnGrupList;
         }
 
 

@@ -2,6 +2,8 @@
 using KarmaWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using KarmaWebAPI.Data;
+using KarmaWebAPI.DTOs;
+using KarmaWebAPI.Serveis;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -10,10 +12,12 @@ namespace KarmaWebAPI.Controllers
     public class PuntuacioController : ControllerBase
     {
         private readonly DatabaseContext _context;
+        private PuntuacioService _puntuacioService;
 
-        public PuntuacioController(DatabaseContext context)
+        public PuntuacioController(DatabaseContext context, PuntuacioService puntuacioService)
         {
             _context = context;
+            _puntuacioService = puntuacioService;
         }
 
         // GET: api/Puntuacio
@@ -36,6 +40,15 @@ namespace KarmaWebAPI.Controllers
 
             return puntuacio;
         }
+
+        // POST: api/Puntuacio/crear
+        [HttpPost("crear")]
+       public async Task<ActionResult<Puntuacio>> Crear(PuntuacioCrearDTO puntuacioDto)
+        {
+            var puntuacio = await _puntuacioService.CrearPuntuacioAsync(puntuacioDto);
+            return Ok(puntuacio);
+        }
+
 
         // PUT: api/Puntuacio/editar
         [HttpPut("editar")]
@@ -67,15 +80,6 @@ namespace KarmaWebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Puntuacio/crear
-        [HttpPost("crear")]
-        public async Task<ActionResult<Puntuacio>> Crear(Puntuacio puntuacio)
-        {
-            _context.Puntuacio.Add(puntuacio);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("Instancia", new { id = puntuacio.IdPuntuacio }, puntuacio);
-        }
 
         // DELETE: api/Puntuacio/eliminar
         [HttpDelete("eliminar")]
@@ -92,6 +96,7 @@ namespace KarmaWebAPI.Controllers
 
             return NoContent();
         }
+
 
         private bool PuntuacioExisteix(int id)
         {

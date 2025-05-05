@@ -19,6 +19,7 @@ namespace KarmaWebAPI.Models
         public int IdAnyEscolar { get; set; } //identificar únic del grup
 
         [ForeignKey("Grup")]
+        [StringLength(50)]
         public String IdGrup { get; set; } //identificar únic del grup
 
 

@@ -6,7 +6,7 @@ namespace KarmaWebAPI.Models
     public class Puntuacio
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int IdPuntuacio { get; set; } //identificar únic
 
         [Required]
@@ -15,9 +15,12 @@ namespace KarmaWebAPI.Models
         [Required]
         [Range(-3, 3, ErrorMessage = "El valor ha de ser mínim -3 i màxim 3.")]
         public int Punts { get; set; } = 0; //Activa, per defecte true
+        
+        [StringLength(255)]
         public String Motiu { get; set; }
 
-        [ForeignKey("Professor")] 
+        [ForeignKey("Professor")]
+        [StringLength(50)]
         public string IdProfessorCreacio { get; set; } //Estàtica
 
         [ForeignKey("Periode")]

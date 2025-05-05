@@ -12,6 +12,7 @@ namespace KarmaWebAPI.Models
 
         [Key]
         [Column(Order = 1)]
+        [StringLength(50)]
         public String IdGrup { get; set; } //identificar únic
 
         [Required]

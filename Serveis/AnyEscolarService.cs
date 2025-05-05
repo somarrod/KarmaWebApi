@@ -11,12 +11,12 @@ namespace KarmaWebAPI.Serveis
     public class AnyEscolarService : IAnyEscolarService
     {
         private readonly DatabaseContext _context;
-        private readonly IPrivilegiService _privilegiService;
+        private readonly IPeriodeService _periodeService;
 
-        public AnyEscolarService(DatabaseContext context, IPrivilegiService privilegiService)
+        public AnyEscolarService(DatabaseContext context, IPeriodeService periodeService)
         {
             _context = context;
-            _privilegiService = privilegiService;
+            _periodeService = periodeService;
         }
 
         public async Task<ActionResult<AnyEscolar>> CrearAnyEscolarAsync(AnyEscolarCrearDto anyEscolarDto)
@@ -52,24 +52,11 @@ namespace KarmaWebAPI.Serveis
 
             var anyEscolar = okResult.Value as AnyEscolar;
 
-           /* for (var i = 0; i <= 3; i++)
+            await _periodeService.TCrearAsync(new PeriodeTCREARDTO
             {
-               
-
-                var privilegiDto = new PrivilegiCrearDto
-                {
-                    Descripcio = "Privilegi TEST" + i,
-                    Nivell = i,
-                    EsIndividualGrup = "I",
-                    IdAnyEscolar = anyEscolar.IdAnyEscolar
-                };
-                var resPrivilegi = await _privilegiService.CrearPrivilegiAsync(privilegiDto);
-
-                if (resPrivilegi.Result is not OkObjectResult)
-                {
-                    return new StatusCodeResult(500); 
-                }
-            }*/
+                IdAnyEscolar = anyEscolar.IdAnyEscolar,
+                DataInici = anyEscolar.DataIniciCurs,
+            });
 
             return new OkObjectResult(anyEscolar);
         }
