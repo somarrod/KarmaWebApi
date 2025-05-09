@@ -15,7 +15,7 @@ namespace KarmaWebAPI.DTOs
         public int IdPeriode { get; set; }
 
         [ForeignKey("Categoria")]
-        public int IdCategoria { get; set; } //identificar únic
+        public int? IdCategoria { get; set; } //identificar únic
 
         [Required]
         [Range(-3, 3, ErrorMessage = "El valor ha de ser mínim -3 i màxim 3.")]

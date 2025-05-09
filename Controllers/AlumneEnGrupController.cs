@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using KarmaWebAPI.Models;
-using Microsoft.EntityFrameworkCore;
-using KarmaWebAPI.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+
+using KarmaWebAPI.Data;
+using KarmaWebAPI.Models;
 using KarmaWebAPI.DTOs;
 using KarmaWebAPI.DTOs.DisplaySets;
 
@@ -93,6 +94,17 @@ namespace KarmaWebAPI.Controllers
         [HttpPost("crear")]
         public async Task<ActionResult<AlumneEnGrup>> Crear(AlumneEnGrupTCREARDTO alumneEnGrupDto)
         {
+            var anyEscolar = await _context.AnyEscolar.FindAsync(alumneEnGrupDto.IdAnyEscolar);
+            var grup = await _context.Grup.FindAsync(alumneEnGrupDto.IdAnyEscolar, alumneEnGrupDto.IdGrup);
+
+            if (grup == null) 
+            {
+                return BadRequest("El grup introduit no existeix.");
+            }
+            if ( anyEscolar == null)
+            {
+                return BadRequest("El any escolar introduit no existeix.");
+            }
 
             // Comprovar si ja existeix un registre per al mateix alumne i grup
             var existentAlumneEnGrup = await _context.AlumneEnGrup

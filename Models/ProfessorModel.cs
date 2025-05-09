@@ -8,7 +8,7 @@ namespace KarmaWebAPI.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [StringLength(50)]
-        public string IdProfessor { get; set; } //identificar únic de tamany màxim 50 que assigna gva
+        public String IdProfessor { get; set; } //identificar únic de tamany màxim 50 que assigna gva
         
         [StringLength(200)]
         public string Nom { get; set; } //nom del professor   

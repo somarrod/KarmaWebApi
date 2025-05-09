@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KarmaWebAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class novaMigracio : Migration
+    public partial class MigracionInicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -360,7 +360,8 @@ namespace KarmaWebAPI.Migrations
                 name: "ProfessorDeGrup",
                 columns: table => new
                 {
-                    IdProfessorDeGrup = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdProfessorDeGrup = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     IdProfessor = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     IdMateria = table.Column<int>(type: "int", nullable: false),
                     IdAnyEscolar = table.Column<int>(type: "int", nullable: false),
@@ -433,11 +434,10 @@ namespace KarmaWebAPI.Migrations
                     DataEntrada = table.Column<DateOnly>(type: "date", nullable: false),
                     Punts = table.Column<int>(type: "int", nullable: false),
                     Motiu = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    IdProfessorCreacio = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    UsuariCreacio = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     IdPeriode = table.Column<int>(type: "int", nullable: false),
-                    IdCategoria = table.Column<int>(type: "int", nullable: false),
-                    IdAlumneEnGrup = table.Column<int>(type: "int", nullable: false),
-                    ProfessorCreacioIdProfessor = table.Column<string>(type: "nvarchar(50)", nullable: false)
+                    IdCategoria = table.Column<int>(type: "int", nullable: true),
+                    IdAlumneEnGrup = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -452,19 +452,12 @@ namespace KarmaWebAPI.Migrations
                         name: "FK_Puntuacio_Categoria_IdCategoria",
                         column: x => x.IdCategoria,
                         principalTable: "Categoria",
-                        principalColumn: "IdCategoria",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdCategoria");
                     table.ForeignKey(
                         name: "FK_Puntuacio_Periode_IdPeriode",
                         column: x => x.IdPeriode,
                         principalTable: "Periode",
                         principalColumn: "IdPeriode",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Puntuacio_Professor_ProfessorCreacioIdProfessor",
-                        column: x => x.ProfessorCreacioIdProfessor,
-                        principalTable: "Professor",
-                        principalColumn: "IdProfessor",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -576,11 +569,6 @@ namespace KarmaWebAPI.Migrations
                 name: "IX_Puntuacio_IdPeriode",
                 table: "Puntuacio",
                 column: "IdPeriode");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Puntuacio_ProfessorCreacioIdProfessor",
-                table: "Puntuacio",
-                column: "ProfessorCreacioIdProfessor");
         }
 
         /// <inheritdoc />

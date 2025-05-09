@@ -7,7 +7,7 @@ namespace KarmaWebAPI.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public String IdProfessorDeGrup { get; set; } //identificar únic de tamany màxim 50 que assigna gva
+        public int IdProfessorDeGrup { get; set; } //identificar únic de tamany màxim 50 que assigna gva
 
         [ForeignKey("Professor")]
         public String IdProfessor { get; set; } //identificar únic de tamany màxim 50 que assigna gva

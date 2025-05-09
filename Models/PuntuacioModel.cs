@@ -19,22 +19,20 @@ namespace KarmaWebAPI.Models
         [StringLength(255)]
         public String Motiu { get; set; }
 
-        [ForeignKey("Professor")]
         [StringLength(50)]
-        public string IdProfessorCreacio { get; set; } //Estàtica
+        public String? UsuariCreacio { get; set; } 
 
         [ForeignKey("Periode")]
         [Required]
         public int IdPeriode { get; set; }
 
         [ForeignKey("Categoria")]
-        public int IdCategoria { get; set; } //identificar únic
+        public int? IdCategoria { get; set; } //identificar únic
 
         [ForeignKey("AlumneEnGrup")]
         public int IdAlumneEnGrup { get; set; } //identificar únic
 
         //Navegacions
-        public Professor ProfessorCreacio { get; set; }
         public Periode Periode { get; set; } = null!;
 
         public Categoria Categoria { get; set; }

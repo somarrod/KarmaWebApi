@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Serveis;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -43,10 +45,25 @@ namespace KarmaWebAPI.Controllers
 
         // POST: api/Puntuacio/crear
         [HttpPost("crear")]
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
+
        public async Task<ActionResult<Puntuacio>> Crear(PuntuacioCrearDTO puntuacioDto)
         {
-            var puntuacio = await _puntuacioService.CrearPuntuacioAsync(puntuacioDto);
-            return Ok(puntuacio);
+            String? UsuariCreacio = null;
+
+            var user = User.Identity.Name;
+
+            try
+            { 
+                var puntuacio = await _puntuacioService.CrearPuntuacioAsync(puntuacioDto, UsuariCreacio);
+                return Ok(puntuacio);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.InnerException!=null ? ex.InnerException.Message : ex.Message);
+            }
+           
         }
 
 

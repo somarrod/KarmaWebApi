@@ -407,9 +407,11 @@ namespace KarmaWebAPI.Migrations
 
             modelBuilder.Entity("KarmaWebAPI.Models.ProfessorDeGrup", b =>
                 {
-                    b.Property<string>("IdProfessorDeGrup")
+                    b.Property<int>("IdProfessorDeGrup")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProfessorDeGrup"));
 
                     b.Property<int>("IdAnyEscolar")
                         .HasColumnType("int");
@@ -451,28 +453,23 @@ namespace KarmaWebAPI.Migrations
                     b.Property<int>("IdAlumneEnGrup")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdCategoria")
+                    b.Property<int?>("IdCategoria")
                         .HasColumnType("int");
 
                     b.Property<int>("IdPeriode")
                         .HasColumnType("int");
-
-                    b.Property<string>("IdProfessorCreacio")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Motiu")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("ProfessorCreacioIdProfessor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<int>("Punts")
                         .HasColumnType("int");
+
+                    b.Property<string>("UsuariCreacio")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("IdPuntuacio");
 
@@ -481,8 +478,6 @@ namespace KarmaWebAPI.Migrations
                     b.HasIndex("IdCategoria");
 
                     b.HasIndex("IdPeriode");
-
-                    b.HasIndex("ProfessorCreacioIdProfessor");
 
                     b.ToTable("Puntuacio");
                 });
@@ -792,19 +787,11 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasOne("KarmaWebAPI.Models.Categoria", "Categoria")
                         .WithMany()
-                        .HasForeignKey("IdCategoria")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdCategoria");
 
                     b.HasOne("KarmaWebAPI.Models.Periode", "Periode")
                         .WithMany("Puntuacions")
                         .HasForeignKey("IdPeriode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KarmaWebAPI.Models.Professor", "ProfessorCreacio")
-                        .WithMany()
-                        .HasForeignKey("ProfessorCreacioIdProfessor")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -813,8 +800,6 @@ namespace KarmaWebAPI.Migrations
                     b.Navigation("Categoria");
 
                     b.Navigation("Periode");
-
-                    b.Navigation("ProfessorCreacio");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.VPrivilegiPeriode", b =>
