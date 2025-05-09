@@ -7,8 +7,8 @@ namespace KarmaWebAPI.Serveis.Interfaces
 {
     public interface IPuntuacioService
     {
-        public Task<Puntuacio> CrearPuntuacioAsync(PuntuacioCrearDTO puntuacioDto, String? usuariCreacio);
+        public Task<ActionResult<Puntuacio>> CrearPuntuacioAsync(PuntuacioCrearDTO puntuacioDto, String? usuariCreacio);
 
-        public Task<Puntuacio> TCREARAsync(PuntuacioCrearDTO puntuacioDto, String? usuariCreacio);
+        public Task<ActionResult<Puntuacio>> TCREARAsync(PuntuacioCrearDTO puntuacioDto, String? usuariCreacio);
     }
 }

@@ -39,13 +39,8 @@ namespace KarmaWebAPI.Controllers
 
 		// PUT: api/Professor/editar
 		[HttpPut("editar")]
-		public async Task<IActionResult> Editar(string idProfessor, Professor professor)
+		public async Task<IActionResult> Editar(Professor professor)
 		{
-			if (idProfessor != professor.IdProfessor)
-			{
-				return BadRequest();
-			}
-
 			_context.Entry(professor).State = EntityState.Modified;
 
 			try
@@ -64,7 +59,7 @@ namespace KarmaWebAPI.Controllers
 				}
 			}
 
-			return NoContent();
+			return Ok(professor);
 		}
 
 		// POST: api/Professor/crear

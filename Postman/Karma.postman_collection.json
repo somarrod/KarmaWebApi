@@ -76,7 +76,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"nia\": \"1234567890\",\r\n  \"nom\": \"Sofia\",\r\n  \"cognoms\": \"Martí\",\r\n  \"email\": \"smarti@alumne.com\"\r\n}",
+							"raw": "{\r\n  \"nia\": \"1234567891\",\r\n  \"nom\": \"Reina\",\r\n  \"cognoms\": \"Peiró\",\r\n  \"email\": \"rpeiro@alumne.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -294,7 +294,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"nia\": \"1234567890\",\r\n  \"idAnyEscolar\": 2526,\r\n  \"idGrup\": \"1ESOA\"\r\n}",
+							"raw": "{\r\n  \"nia\": \"1234567890\",\r\n  \"idAnyEscolar\": 2526,\r\n  \"idGrup\": \"1ESOC\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -479,7 +479,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"dataIniciCurs\": \"2029-09-01\",\r\n  \"dataFiCurs\": \"2030-08-31\",\r\n  \"diesPeriode\": 7\r\n}",
+							"raw": "{\r\n  \"dataIniciCurs\": \"2025-09-01\",\r\n  \"dataFiCurs\": \"2026-08-31\",\r\n  \"diesPeriode\": 15\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1037,7 +1037,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idAnyEscolar\": 2526,\r\n  \"idGrup\": \"1ESOA\",\r\n  \"descripcio\": \"1ER DE LA ESO\",\r\n  \"idProfessorTutor\": null\r\n}",
+							"raw": "{\r\n  \"idAnyEscolar\": 2526,\r\n  \"idGrup\": \"1ESOC\",\r\n  \"descripcio\": \"1ER DE LA ESO C\",\r\n  \"idProfessorTutor\": \"1000\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1795,13 +1795,231 @@
 			]
 		},
 		{
+			"name": "Puntuacio",
+			"item": [
+				{
+					"name": "Instancia",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/puntuacio/1",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"puntuacio",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Llista",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/puntuacio/llista",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"puntuacio",
+								"llista"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crear",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idAlumneEnGrup\": 1,\r\n  \"idPeriode\": 1,\r\n  \"idCategoria\": null,\r\n  \"punts\": 1,\r\n  \"motiu\": \"La única persona que ha arribat a l'hora a classe\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/puntuacio/crear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"puntuacio",
+								"crear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TCREAR",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idAlumneEnGrup\": 1,\r\n  \"idPeriode\": 1,\r\n  \"idCategoria\": null,\r\n  \"punts\": 1,\r\n  \"motiu\": \"La única persona que ha arribat a l'hora a classe\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/puntuacio/TCREAR",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"puntuacio",
+								"TCREAR"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "desactivar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/professor/desactivar?idprofessor=1000",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"professor",
+								"desactivar"
+							],
+							"query": [
+								{
+									"key": "idprofessor",
+									"value": "1000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/professor/activar?idprofessor=1000",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"professor",
+								"activar"
+							],
+							"query": [
+								{
+									"key": "idprofessor",
+									"value": "1000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminar - Pte act AspNetUsrs",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumne/eliminar?nia=123456786",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumne",
+								"eliminar"
+							],
+							"query": [
+								{
+									"key": "nia",
+									"value": "123456786"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Register AG_Admin",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"email\": \"admin2@example.com\",\r\n  \"password\": \"P@ssw0rd\"\r\n}",
+					"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"P@ssw0rd\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

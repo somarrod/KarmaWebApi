@@ -2,34 +2,36 @@
 {
     using System;
     using System.Linq;
+    using System.Security.Cryptography;
     using System.Threading.Tasks;
     using KarmaWebAPI.Data;
     using KarmaWebAPI.DTOs;
     using KarmaWebAPI.Models;
     using KarmaWebAPI.Serveis.Interfaces;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
 
-    public class PuntuacioService: IPuntuacioService
+    public class PuntuacioService : IPuntuacioService
     {
         private readonly DatabaseContext _context;
         private readonly IAlumneEnGrupService _alumneEnGrupService;
+        private readonly IGrupService _grupService;
 
-        public PuntuacioService(DatabaseContext context, IAlumneEnGrupService alumneEnGrupService )
+        public PuntuacioService(DatabaseContext context, IAlumneEnGrupService alumneEnGrupService, IGrupService grupService)
         {
             _context = context;
             _alumneEnGrupService = alumneEnGrupService;
+            _grupService = grupService;
         }
 
-
-        public async Task<Puntuacio> CrearPuntuacioAsync(PuntuacioCrearDTO puntuacioDto, String? usuariCreacio)
+        public async Task<ActionResult<Puntuacio>> CrearPuntuacioAsync(PuntuacioCrearDTO puntuacioDto, String? usuariCreacio)
         {
-      
-
             var puntuacio = new Puntuacio
             {
                 Motiu = puntuacioDto.Motiu,
                 Punts = puntuacioDto.Punts,
                 IdCategoria = puntuacioDto.IdCategoria,
+                IdPeriode = puntuacioDto.IdPeriode,
                 IdAlumneEnGrup = puntuacioDto.IdAlumneEnGrup,
                 DataEntrada = DateOnly.FromDateTime(DateTime.Now),
                 UsuariCreacio = usuariCreacio
@@ -38,39 +40,33 @@
             _context.Puntuacio.Add(puntuacio);
             await _context.SaveChangesAsync();
 
-            return puntuacio;
+            return new OkObjectResult(puntuacio);
         }
 
-
-        public async Task<Puntuacio> TCREARAsync(PuntuacioCrearDTO puntuacioDto, String? usuariCreacio)
+        public async Task<ActionResult<Puntuacio>> TCREARAsync(PuntuacioCrearDTO puntuacioDto, String? usuariCreacio)
         {
-            // Crear instancia de puntuación
-            var puntuacio = new Puntuacio
+            var puntuacio = await CrearPuntuacioAsync(puntuacioDto, usuariCreacio);
+
+            if (puntuacio == null)
             {
-                Motiu = puntuacioDto.Motiu,
-                Punts = puntuacioDto.Punts,
-                IdCategoria = puntuacioDto.IdCategoria,
-                IdAlumneEnGrup = puntuacioDto.IdAlumneEnGrup,
-                DataEntrada = DateOnly.FromDateTime(DateTime.Now),
-                UsuariCreacio = usuariCreacio
-            };
+                return new ObjectResult("No s'ha pogut crear la puntuació")
+                {
+                    StatusCode = 500
+                };
+            }
 
-            await _context.Puntuacio.AddAsync(puntuacio);
-            await _context.SaveChangesAsync();
-
-            // Editar puntuación del alumno en grupo
             var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(puntuacioDto.IdAlumneEnGrup);
 
             if (alumneEnGrup != null)
             {
-                await _alumneEnGrupService.EditPuntuacioAsync(puntuacioDto.IdAlumneEnGrup, alumneEnGrup.PuntuacioTotal + puntuacioDto.Punts);
+                int total = alumneEnGrup.PuntuacioTotal + puntuacioDto.Punts;
+                int idAlumneEnGrup = puntuacioDto.IdAlumneEnGrup;
+                // Specify the interface explicitly to resolve ambiguity
+                var resultado = await _alumneEnGrupService.EditPuntuacioAsync(idAlumneEnGrup, total);
 
-                // Calcular karma base del grupo PENDENT ACÍ
-                //alumneEnGrup.Grup.calculaKarmaBase();
-                //await _context.SaveChangesAsync();
+                await _grupService.calculaKarmaBaseAsync(alumneEnGrup.IdAnyEscolar, alumneEnGrup.IdGrup);
             }
-
-            return puntuacio; // Reemplazar 'OkResult' con el objeto 'puntuacio' directamente.
+            return puntuacio;
         }
     }
 

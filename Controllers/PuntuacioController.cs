@@ -6,6 +6,7 @@ using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Serveis;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using KarmaWebAPI.Serveis.Interfaces;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -14,9 +15,9 @@ namespace KarmaWebAPI.Controllers
     public class PuntuacioController : ControllerBase
     {
         private readonly DatabaseContext _context;
-        private PuntuacioService _puntuacioService;
+        private IPuntuacioService _puntuacioService;
 
-        public PuntuacioController(DatabaseContext context, PuntuacioService puntuacioService)
+        public PuntuacioController(DatabaseContext context, IPuntuacioService puntuacioService)
         {
             _context = context;
             _puntuacioService = puntuacioService;
@@ -45,17 +46,13 @@ namespace KarmaWebAPI.Controllers
 
         // POST: api/Puntuacio/crear
         [HttpPost("crear")]
-        [Authorize(Roles = "AG_Admin,AG_Professor")]
-
-       public async Task<ActionResult<Puntuacio>> Crear(PuntuacioCrearDTO puntuacioDto)
+        public async Task<ActionResult<Puntuacio>> Crear(PuntuacioCrearDTO puntuacioDto)
         {
-            String? UsuariCreacio = null;
-
-            var user = User.Identity.Name;
+            String? usuariCreacio  = User.Identity.Name;
 
             try
             { 
-                var puntuacio = await _puntuacioService.CrearPuntuacioAsync(puntuacioDto, UsuariCreacio);
+                var puntuacio = await _puntuacioService.CrearPuntuacioAsync(puntuacioDto, usuariCreacio);
                 return Ok(puntuacio);
             }
             catch (Exception ex)
@@ -64,6 +61,26 @@ namespace KarmaWebAPI.Controllers
                 return BadRequest(ex.InnerException!=null ? ex.InnerException.Message : ex.Message);
             }
            
+        }
+
+        [HttpPost("tcrear")]
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
+
+        public async Task<ActionResult<Puntuacio>> TCREAR(PuntuacioCrearDTO puntuacioDto)
+        {
+            String? usuariCreacio = User.Identity.Name;
+
+            try
+            {
+                var puntuacio = await _puntuacioService.TCREARAsync(puntuacioDto, usuariCreacio);
+                return Ok(puntuacio);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+            }
+
         }
 
 
@@ -94,7 +111,7 @@ namespace KarmaWebAPI.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(puntuacio);
         }
 
 
@@ -111,7 +128,7 @@ namespace KarmaWebAPI.Controllers
             _context.Puntuacio.Remove(puntuacio);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("$Puntuació {idPuntuacio} eliminida");
         }
 
 

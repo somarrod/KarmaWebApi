@@ -25,7 +25,6 @@ namespace KarmaWebAPI.Serveis
                             .ToList();
         }
 
-
         public async Task<ActionResult<AlumneEnGrup>> EditPuntuacioAsync(int idAlumneEnGrup, int Punts)
         {
             var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(idAlumneEnGrup);
@@ -39,6 +38,8 @@ namespace KarmaWebAPI.Serveis
 
             return new ActionResult<AlumneEnGrup>(alumneEnGrup); // Ensure a value is returned
         }
+
+
     }
 
 }

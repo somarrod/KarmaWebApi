@@ -15,11 +15,7 @@ namespace KarmaWebAPI.Serveis
     {
         private readonly DatabaseContext _context;
 
-      //  private readonly AuthController _authController;
-      //  private readonly UserManager<ApiUser> _userManager;
-
-
-        public AlumneService(DatabaseContext context)
+       public AlumneService(DatabaseContext context)
         {
             _context = context;
         }

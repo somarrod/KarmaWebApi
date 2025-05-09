@@ -6,9 +6,7 @@ using KarmaWebAPI.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using KarmaWebAPI.Serveis.Interfaces;
-using static KarmaWebAPI.FuncionsAuxiliars; // Cambiar a una directiva de uso estático para evitar el error CS0138
 
-using static KarmaWebAPI.FuncionsAuxiliars;
 namespace KarmaWebAPI.Controllers
 {
     [Route("api/professor")]
