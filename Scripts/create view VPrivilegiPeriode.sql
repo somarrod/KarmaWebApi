@@ -1,5 +1,5 @@
 
-CREATE VIEW V_PrivilegiPeriode AS 
+CREATE VIEW VPrivilegiPeriode AS 
 SELECT	ag.idAlumneEnGrup, pd.idPeriode, pv.idPrivilegi
 FROM	Privilegi pv, Periode pd, AlumneEnGrup ag, ConfiguracioKarma cg
 WHERE	pv.Nivell = cg.NivellPrivilegis AND 

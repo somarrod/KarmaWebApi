@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace KarmaWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/privilegiperiode")]
+    [Route("api/vprivilegiperiode")]
     public class VPrivilegiPeriodeController : ControllerBase
     {
         private readonly DatabaseContext _context;
@@ -52,16 +52,50 @@ namespace KarmaWebAPI.Controllers
         // GET: api/llista
         [HttpGet]
         [Route("llista")]
-        [Authorize]
+        [Authorize(Roles ="AG_Professor,AG_Alumne,AG_Admin")]
         public async Task<ActionResult<IEnumerable<VPrivilegiPeriode>>> Llista()
         {
-            var privilegis = await _context.VPrivilegiPeriode
-                                            .Include(p => p.AlumneEnGrup)
-                                            .Include(p => p.Periode)
-                                            .Include(p => p.Privilegi)
-                                            .ToListAsync();
 
-            // Evitar el ciclo de referencias
+            var userId = User.Identity.Name;
+
+            var privilegis = new List<VPrivilegiPeriode>();
+
+            if (User.IsInRole("AG_Admin"))
+            {
+                privilegis = await _context.VPrivilegiPeriode
+                                    .Include(p => p.AlumneEnGrup)
+                                    .Include(p => p.Periode)
+                                    .Include(p => p.Privilegi)
+                                    .ToListAsync();
+            }
+            else 
+            {
+                if (User.IsInRole("AG_Professor"))
+                {
+                    //EXIST( AlumneEnGrup.Grup.ProfessorsDeGrup ) WHERE (AlumneEnGrup.Grup.ProfessorsDeGrup.Professor = Agent.Professor) = true
+                    // Filtrar privilegis basados en el rol de profesor
+                    privilegis = await _context.VPrivilegiPeriode
+                                 .Include(p => p.AlumneEnGrup)
+                                 .Include(p => p.Periode)
+                                 .Include(p => p.Privilegi)
+                                 .Where(p => p.AlumneEnGrup.Grup.ProfessorsDeGrup.Any(pg => pg.Professor.IdProfessor == userId))
+                                 .ToListAsync();
+                }
+                else 
+                {
+                    if (User.IsInRole("AG_Alumne")) 
+                    {
+                        privilegis = await _context.VPrivilegiPeriode
+                                     .Include(p => p.AlumneEnGrup)
+                                     .Include(p => p.Periode)
+                                     .Include(p => p.Privilegi)
+                                     .Where(p => p.AlumneEnGrup.NIA == userId)
+                                     .ToListAsync();
+                    }
+                }
+            }
+
+             // Evitar el ciclo de referencias
             foreach (var privilegi in privilegis)
             {
                 privilegi.AlumneEnGrup.PrivilegisPeriode = null;

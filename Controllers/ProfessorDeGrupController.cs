@@ -2,95 +2,112 @@
 using KarmaWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using KarmaWebAPI.Data;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace KarmaWebAPI.Controllers
 {
-	[Route("api/professordegrup")]
-	[ApiController]
-	public class ProfessorController : ControllerBase
-	{
-		private readonly DatabaseContext _context;
+    [ApiController]
+    [Route("api/professordegrup")]
+    public class ProfessorDeGrupController : ControllerBase
+    {
+        private readonly DatabaseContext _context;
 
-		public ProfessorController(DatabaseContext context)
-		{
-			_context = context;
-		}
+        public ProfessorDeGrupController(DatabaseContext context)
+        {
+            _context = context;
+        }
 
-		// GET: api/Professor
-		[HttpGet("llista")]
-		public async Task<ActionResult<IEnumerable<Professor>>> Llista()
-		{
-			return await _context.Professor.ToListAsync();
-		}
+        // GET: api/professordegrup/{id}
+        [HttpGet("{id}")]
+        [Authoritze(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
+        public async Task<ActionResult<ProfessorDeGrup>> Instancia(int id)
+        {
+            var professorDeGrup = await _context.ProfessorDeGrup
+                .Include(p => p.Professor)
+                .Include(p => p.Materia)
+                .Include(p => p.AnyEscolar)
+                .Include(p => p.Grup)
+                .FirstOrDefaultAsync(p => p.IdProfessorDeGrup == id);
 
-		// GET: api/Professor/5
-		[HttpGet("{idProfessor}")]
-		public async Task<ActionResult<Professor>> Instancia(string idProfessor)
-		{
-			var professor = await _context.Professor.FindAsync(idProfessor);
+            if (professorDeGrup == null)
+            {
+                return NotFound();
+            }
 
-			if (professor == null)
-			{
-				return NotFound();
-			}
+            return professorDeGrup;
+        }
 
-			return professor;
-		}
+        // GET: api/professordegrup/llista
+        [HttpGet("llista")]
+        [Authoritze(Roles="AG_Admin,AG_Professor,AG_Alumne")]
+        public async Task<ActionResult<IEnumerable<ProfessorDeGrup>>> Llista()
+        {
+            return await _context.ProfessorDeGrup
+                .Include(p => p.Professor)
+                .Include(p => p.Materia)
+                .Include(p => p.AnyEscolar)
+                .Include(p => p.Grup)
+                .ToListAsync();
+        }
 
-		// PUT: api/Professor/editar
-		[HttpPut("editar")]
-		public async Task<IActionResult> Editar(Professor professor)
-		{
-			_context.Entry(professor).State = EntityState.Modified;
 
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!ProfessorExisteix(idProfessor))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
-			}
+        // POST: api/professordegrup/crear
+        [HttpPost("crear")]
+        [Authoritze(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
+        public async Task<ActionResult<ProfessorDeGrup>> Crear(ProfessorDeGrup professorDeGrup)
+        {
+            _context.ProfessorDeGrup.Add(professorDeGrup);
+            await _context.SaveChangesAsync();
 
-			return Ok(professor);
-		}
+            return Ok(professorDeGrup); 
+        }
 
-		// POST: api/Professor/crear
-		[HttpPost("crear")]
-		public async Task<ActionResult<Professor>> Crear(Professor professor)
-		{
-			_context.Professor.Add(professor);
-			await _context.SaveChangesAsync();
 
-			return CreatedAtAction("Instancia", new { id = professor.IdProfessor }, professor);
-		}
+        // PUT: api/professordegrup/editar
+        [HttpPut("editar")]
+        public async Task<IActionResult> Editar(ProfessorDeGrup professorDeGrup)
+        {
+            _context.Entry(professorDeGrup).State = EntityState.Modified;
 
-		// DELETE: api/Professor/eliminar
-		[HttpDelete("eliminar")]
-		public async Task<IActionResult> Eliminar(string idProfessor)
-		{
-			var professor = await _context.Professor.FindAsync(idProfessor);
-			if (professor == null)
-			{
-				return NotFound();
-			}
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProfessorDeGrupExisteix(professorDeGrup.IdProfessorDeGrup))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-			_context.Professor.Remove(professor);
-			await _context.SaveChangesAsync();
+            return Ok(professorDeGrup);
+        }
 
-			return NoContent();
-		}
+        // DELETE: api/professordegrup/eliminar/{id}
+        [HttpDelete("eliminar/{id}")]
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            var professorDeGrup = await _context.ProfessorDeGrup.FindAsync(id);
+            if (professorDeGrup == null)
+            {
+                return NotFound();
+            }
 
-		private bool ProfessorExisteix(string id)
-		{
-			return _context.Professor.Any(e => e.IdProfessor == id);
-		}
-	}
+            _context.ProfessorDeGrup.Remove(professorDeGrup);
+            await _context.SaveChangesAsync();
+
+            return Ok($"ProfessorDeGrup amb Id {id} esborrat");
+        }
+
+        private bool ProfessorDeGrupExisteix(int id)
+        {
+            return _context.ProfessorDeGrup.Any(e => e.IdProfessorDeGrup == id);
+        }
+    }
 }

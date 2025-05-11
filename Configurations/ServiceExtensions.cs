@@ -46,8 +46,6 @@ namespace KarmaWebAPI.Configurations
                 // Configura tus políticas de autorización aquí
             });
         }
-
-
         public static void ConfigureServices(this IServiceCollection services)
         {
             var builder = services.AddScoped<IAnyEscolarService, AnyEscolarService>()                                 

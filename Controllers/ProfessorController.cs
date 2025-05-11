@@ -15,14 +15,12 @@ namespace KarmaWebAPI.Controllers
     {
         private readonly DatabaseContext _context;
         private readonly IProfessorService _professorService;   
-        private readonly UserManager<ApiUser> _userManager;
         private readonly AccountService _accountService;
 
         public ProfessorController(DatabaseContext context, IProfessorService professorService , UserManager<ApiUser> userManager, AccountService accountService)
         {
             _context = context;
             _professorService = professorService;
-            _userManager = userManager;
             _accountService = accountService;
         }
 
