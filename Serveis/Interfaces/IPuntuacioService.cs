@@ -10,5 +10,7 @@ namespace KarmaWebAPI.Serveis.Interfaces
         public Task<ActionResult<Puntuacio>> CrearPuntuacioAsync(PuntuacioCrearDTO puntuacioDto, String? usuariCreacio);
 
         public Task<ActionResult<Puntuacio>> TCREARAsync(PuntuacioCrearDTO puntuacioDto, String? usuariCreacio);
+
+        public Task<ActionResult<String>> TELIMINARAsync(int idPuntuacio);
     }
 }

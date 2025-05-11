@@ -31,22 +31,24 @@ namespace KarmaWebAPI.Serveis
                                   .Where(a => a.IdGrup == idGrup && a.IdAnyEscolar == idAnyEscolar)
                                   .MinAsync(a => a.PuntuacioTotal);
 
-            // Obtenir l'any escolar del grup específic
-            var grup = await _context.Grup
-                                     .Where(g => g.IdGrup == idGrup && g.IdAnyEscolar == idAnyEscolar)
-                                     .FirstOrDefaultAsync();
-
 
             // Obtenir el color del nivell de karma basat en la puntuació mínima i l'any escolar
             var karmaConfig = await _context.ConfiguracioKarma
-                                    .Where(k => k.IdAnyEscolar == grup.IdAnyEscolar)
+                                    .Where(k => k.IdAnyEscolar == idAnyEscolar)
                                     .FirstOrDefaultAsync(k => k.KarmaMinim <= puntuacioMinimaGrup && k.KarmaMaxim >= puntuacioMinimaGrup);
-            if (karmaConfig != null)
+
+            var grup = await _context.Grup
+                         .Where(g => g.IdGrup == idGrup && g.IdAnyEscolar == idAnyEscolar)
+                         .FirstOrDefaultAsync();
+
+            if (karmaConfig != null && grup !=null)
             {
-                return karmaConfig.ColorNivell;
+                grup.KarmaBase = karmaConfig.ColorNivell;
+                _context.Grup.Update(grup);
+                await _context.SaveChangesAsync();
             }
 
-            return "No trobat!"; // O un valor per defecte si no es troba cap coincidència
+            return grup.KarmaBase;
         }
 
     }

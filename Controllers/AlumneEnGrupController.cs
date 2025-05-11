@@ -6,6 +6,8 @@ using KarmaWebAPI.Data;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.DTOs;
 using KarmaWebAPI.DTOs.DisplaySets;
+using KarmaWebAPI.Serveis;
+using KarmaWebAPI.Serveis.Interfaces;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -14,10 +16,12 @@ namespace KarmaWebAPI.Controllers
     public class AlumneEnGrupController : ControllerBase
     {
         private readonly DatabaseContext _context;
+        private readonly IAlumneEnGrupService _alumneEnGrupService; 
 
-        public AlumneEnGrupController(DatabaseContext context)
+        public AlumneEnGrupController(DatabaseContext context, IAlumneEnGrupService alumneEnGrupService)
         {
             _context = context;
+            _alumneEnGrupService = alumneEnGrupService;
         }
 
         // GET: api/AlumneEnGrup/5
@@ -182,6 +186,23 @@ namespace KarmaWebAPI.Controllers
 
             return Ok($"L'alumne {alumneEnGrupDS.NIA} ha segut esborrat del grup {alumneEnGrupDS.IdGrup} de l'any escolar {alumneEnGrupDS.IdAnyEscolar}");
         }
+
+
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
+        [HttpPut("actualitzakarma")]
+        public async Task<IActionResult> ActualitzaKarma(int idAnyEscolar)
+        {
+            try
+            {
+                var result = await _alumneEnGrupService.ActualitzaKarmaAsync(idAnyEscolar);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+    
 
         private bool AlumneEnGrupExisteix(int id)
         {

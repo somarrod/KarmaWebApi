@@ -65,70 +65,44 @@ namespace KarmaWebAPI.Controllers
 
         [HttpPost("tcrear")]
         [Authorize(Roles = "AG_Admin,AG_Professor")]
-
         public async Task<ActionResult<Puntuacio>> TCREAR(PuntuacioCrearDTO puntuacioDto)
         {
             String? usuariCreacio = User.Identity.Name;
 
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 var puntuacio = await _puntuacioService.TCREARAsync(puntuacioDto, usuariCreacio);
+
+                await transaction.CommitAsync();
                 return Ok(puntuacio);
             }
             catch (Exception ex)
             {
-
+                await transaction.RollbackAsync();
                 return BadRequest(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
             }
-
-        }
-
-
-        // PUT: api/Puntuacio/editar
-        [HttpPut("editar")]
-        public async Task<IActionResult> Editar(int idPuntuacio, Puntuacio puntuacio)
-        {
-            if (idPuntuacio != puntuacio.IdPuntuacio)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(puntuacio).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PuntuacioExisteix(idPuntuacio))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Ok(puntuacio);
         }
 
 
         // DELETE: api/Puntuacio/eliminar
-        [HttpDelete("eliminar")]
-        public async Task<IActionResult> Eliminar(int idPuntuacio)
+        [HttpDelete("teliminar")]
+        public async Task<IActionResult> TELIMINAR(int idPuntuacio)
         {
-            var puntuacio = await _context.Puntuacio.FindAsync(idPuntuacio);
-            if (puntuacio == null)
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                return NotFound();
+                var resultat = await _puntuacioService.TELIMINARAsync(idPuntuacio);
+
+                await transaction.CommitAsync();
+                return resultat.Result;// Convertir explícitamente a IActionResult
             }
-
-            _context.Puntuacio.Remove(puntuacio);
-            await _context.SaveChangesAsync();
-
-            return Ok("$Puntuació {idPuntuacio} eliminida");
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return BadRequest(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+            }
         }
 
 

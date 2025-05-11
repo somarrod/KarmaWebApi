@@ -45,6 +45,7 @@
 
         public async Task<ActionResult<Puntuacio>> TCREARAsync(PuntuacioCrearDTO puntuacioDto, String? usuariCreacio)
         {
+
             var puntuacio = await CrearPuntuacioAsync(puntuacioDto, usuariCreacio);
 
             if (puntuacio == null)
@@ -66,8 +67,52 @@
 
                 await _grupService.calculaKarmaBaseAsync(alumneEnGrup.IdAnyEscolar, alumneEnGrup.IdGrup);
             }
+            await _context.SaveChangesAsync();
+
             return puntuacio;
         }
+    
+
+        public async Task<ActionResult<String>> TELIMINARAsync(int idPuntuacio)
+        {
+            try { 
+            var puntuacio = await _context.Puntuacio.FindAsync(idPuntuacio);
+
+            if (puntuacio == null)
+            {
+                return new ObjectResult($"No existeix la puntuació amb id {idPuntuacio}")
+                {
+                    StatusCode = 500
+                };
+            }
+
+            var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(puntuacio.IdAlumneEnGrup);
+
+            if (alumneEnGrup != null)
+            {
+                int total = alumneEnGrup.PuntuacioTotal - puntuacio.Punts;
+                int idAlumneEnGrup = puntuacio.IdAlumneEnGrup;
+
+                var resultado = await _alumneEnGrupService.EditPuntuacioAsync(idAlumneEnGrup, total);
+
+                await _grupService.calculaKarmaBaseAsync(alumneEnGrup.IdAnyEscolar, alumneEnGrup.IdGrup);
+            }
+
+            _context.Puntuacio.Remove(puntuacio);
+
+            await _context.SaveChangesAsync();
+
+            return new OkObjectResult($"La puntuació amb Id {idPuntuacio} ha estat esborrada");
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult($"Error: {ex.Message}")
+                {
+                    StatusCode = 500
+                };
+            }
+        }
     }
+
 
 }

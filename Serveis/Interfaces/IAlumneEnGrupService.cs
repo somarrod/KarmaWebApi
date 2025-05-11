@@ -8,6 +8,8 @@ namespace KarmaWebAPI.Serveis.Interfaces
     {
         public ICollection<VPrivilegiPeriode> GetPrivilegisPeriode(int idAlumneEnGrup);
         public Task<ActionResult<AlumneEnGrup>> EditPuntuacioAsync(int idAlumneEnGrup, int Punts);
+
+        public Task<IActionResult> ActualitzaKarmaAsync(int anyEscolar);
     }
 
 }

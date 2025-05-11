@@ -51,6 +51,14 @@ public class ConfiguracioKarmaService: IConfiguracioKarmaService
 
         _context.ConfiguracioKarma.Add(newConfig);
         await _context.SaveChangesAsync();
+
+        _context.AlumneEnGrup
+            .Where(a => a.IdAnyEscolar == dto.IdAnyEscolar &&
+                        a.PuntuacioTotal >= dto.KarmaMinim &&
+                        a.PuntuacioTotal <= dto.KarmaMaxim)
+            .ToList()
+            .ForEach(a => a.Karma = dto.ColorNivell);
+        await _context.SaveChangesAsync();
     }
 
 
