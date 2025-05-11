@@ -2,13 +2,16 @@
 using KarmaWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using KarmaWebAPI.Data;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using KarmaWebAPI.DTOs;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using KarmaWebAPI.Serveis.Interfaces;
 
 namespace KarmaWebAPI.Controllers
 {
-    [ApiController]
     [Route("api/professordegrup")]
+    [ApiController]
+
     public class ProfessorDeGrupController : ControllerBase
     {
         private readonly DatabaseContext _context;
@@ -40,7 +43,7 @@ namespace KarmaWebAPI.Controllers
 
         // GET: api/professordegrup/llista
         [HttpGet("llista")]
-        [Authoritze(Roles="AG_Admin,AG_Professor,AG_Alumne")]
+        [Authoritze(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
         public async Task<ActionResult<IEnumerable<ProfessorDeGrup>>> Llista()
         {
             return await _context.ProfessorDeGrup
@@ -60,7 +63,7 @@ namespace KarmaWebAPI.Controllers
             _context.ProfessorDeGrup.Add(professorDeGrup);
             await _context.SaveChangesAsync();
 
-            return Ok(professorDeGrup); 
+            return Ok(professorDeGrup);
         }
 
 
@@ -105,9 +108,9 @@ namespace KarmaWebAPI.Controllers
             return Ok($"ProfessorDeGrup amb Id {id} esborrat");
         }
 
-        private bool ProfessorDeGrupExisteix(int id)
-        {
-            return _context.ProfessorDeGrup.Any(e => e.IdProfessorDeGrup == id);
-        }
+        //private bool ProfessorDeGrupExisteix(int id)
+        //{
+        //    return _context.ProfessorDeGrup.Any(e => e.IdProfessorDeGrup == id);
+        //}
     }
 }
