@@ -23,7 +23,7 @@ namespace KarmaWebAPI.Controllers
 
         // GET: api/professordegrup/{id}
         [HttpGet("{id}")]
-        [Authoritze(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
         public async Task<ActionResult<ProfessorDeGrup>> Instancia(int id)
         {
             var professorDeGrup = await _context.ProfessorDeGrup
@@ -43,7 +43,7 @@ namespace KarmaWebAPI.Controllers
 
         // GET: api/professordegrup/llista
         [HttpGet("llista")]
-        [Authoritze(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
         public async Task<ActionResult<IEnumerable<ProfessorDeGrup>>> Llista()
         {
             return await _context.ProfessorDeGrup
@@ -57,7 +57,7 @@ namespace KarmaWebAPI.Controllers
 
         // POST: api/professordegrup/crear
         [HttpPost("crear")]
-        [Authoritze(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
         public async Task<ActionResult<ProfessorDeGrup>> Crear(ProfessorDeGrup professorDeGrup)
         {
             _context.ProfessorDeGrup.Add(professorDeGrup);
@@ -108,9 +108,9 @@ namespace KarmaWebAPI.Controllers
             return Ok($"ProfessorDeGrup amb Id {id} esborrat");
         }
 
-        //private bool ProfessorDeGrupExisteix(int id)
-        //{
-        //    return _context.ProfessorDeGrup.Any(e => e.IdProfessorDeGrup == id);
-        //}
+        private bool ProfessorDeGrupExisteix(int id)
+        {
+            return _context.ProfessorDeGrup.Any(e => e.IdProfessorDeGrup == id);
+        }
     }
 }
