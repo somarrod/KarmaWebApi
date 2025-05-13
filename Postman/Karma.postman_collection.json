@@ -342,7 +342,7 @@
 					"response": []
 				},
 				{
-					"name": "desactivar",
+					"name": "ActualitzaKarma",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -356,18 +356,18 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/alumne/desactivar?nia=123456787",
+							"raw": "{{url}}api/alumneengrup/actualitzakarma?idanyescolar=2526",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
-								"alumne",
-								"desactivar"
+								"alumneengrup",
+								"actualitzakarma"
 							],
 							"query": [
 								{
-									"key": "nia",
-									"value": "123456787"
+									"key": "idanyescolar",
+									"value": "2526"
 								}
 							]
 						}
@@ -858,7 +858,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idAnyEscolar\": 2526,\r\n  \"karmaMinim\": 11,\r\n  \"karmaMaxim\": 15,\r\n  \"colorNivell\": \"VIOLETA\",\r\n  \"nivellPrivilegis\": 2\r\n}",
+							"raw": "{\r\n  \"idAnyEscolar\": 2526,\r\n  \"karmaMinim\": -5,\r\n  \"karmaMaxim\": 0,\r\n  \"colorNivell\": \"TARONJA\",\r\n  \"nivellPrivilegis\": 0\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -885,7 +885,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\"idConfiguracioKarma\": 1,\r\n\"idAnyEscolar\": 2526,\r\n\"karmaMinim\": -2,\r\n\"karmaMaxim\": 5,\r\n\"colorNivell\": \"TARONJA\",\r\n\"nivellPrivilegis\": 0\r\n}",
+							"raw": "{\r\n\"idConfiguracioKarma\": 5,\r\n\"idAnyEscolar\": 2526,\r\n\"karmaMinim\": -100,\r\n\"karmaMaxim\": -11,\r\n\"colorNivell\": \"NEGRE\",\r\n\"nivellPrivilegis\": 0\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -920,18 +920,18 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/karmaconfiguracio/eliminar?idKarmaConfiguracio=1",
+							"raw": "{{url}}api/configuraciokarma/eliminar?idconfiguraciokarma=6",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
-								"karmaconfiguracio",
+								"configuraciokarma",
 								"eliminar"
 							],
 							"query": [
 								{
-									"key": "idKarmaConfiguracio",
-									"value": "1"
+									"key": "idconfiguraciokarma",
+									"value": "6"
 								}
 							]
 						}
@@ -1795,6 +1795,131 @@
 			]
 		},
 		{
+			"name": "ProfessorDeGrup",
+			"item": [
+				{
+					"name": "Instancia",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/professordegrup/1",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"professordegrup",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Llista",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/professordegrup/llista",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"professordegrup",
+								"llista"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crear",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idProfessor\": \"1000\",\r\n  \"idMateria\": 2,\r\n  \"idAnyEscolar\": 2526,\r\n  \"idGrup\": \"1ESOC\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/professordegrup/crear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"professordegrup",
+								"crear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminar",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/professordegrup/eliminar?idprofessordegrup=1",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"professordegrup",
+								"eliminar"
+							],
+							"query": [
+								{
+									"key": "idprofessordegrup",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Puntuacio",
 			"item": [
 				{
@@ -1815,13 +1940,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/puntuacio/1",
+							"raw": "{{url}}api/puntuacio/3",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
 								"puntuacio",
-								"1"
+								"3"
 							]
 						}
 					},
@@ -1858,33 +1983,6 @@
 					"response": []
 				},
 				{
-					"name": "crear",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"idAlumneEnGrup\": 1,\r\n  \"idPeriode\": 1,\r\n  \"idCategoria\": null,\r\n  \"punts\": 1,\r\n  \"motiu\": \"La única persona que ha arribat a l'hora a classe\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}api/puntuacio/crear",
-							"host": [
-								"{{url}}api"
-							],
-							"path": [
-								"puntuacio",
-								"crear"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "TCREAR",
 					"request": {
 						"method": "POST",
@@ -1912,73 +2010,7 @@
 					"response": []
 				},
 				{
-					"name": "desactivar",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}api/professor/desactivar?idprofessor=1000",
-							"host": [
-								"{{url}}api"
-							],
-							"path": [
-								"professor",
-								"desactivar"
-							],
-							"query": [
-								{
-									"key": "idprofessor",
-									"value": "1000"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "activar",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}api/professor/activar?idprofessor=1000",
-							"host": [
-								"{{url}}api"
-							],
-							"path": [
-								"professor",
-								"activar"
-							],
-							"query": [
-								{
-									"key": "idprofessor",
-									"value": "1000"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "eliminar - Pte act AspNetUsrs",
+					"name": "TELIMINAR",
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -1992,19 +2024,84 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/alumne/eliminar?nia=123456786",
+							"raw": "{{url}}api/puntuacio/TELIMINAR?idpuntuacio=17",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
-								"alumne",
-								"eliminar"
+								"puntuacio",
+								"TELIMINAR"
 							],
 							"query": [
 								{
-									"key": "nia",
-									"value": "123456786"
+									"key": "idpuntuacio",
+									"value": "17"
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "VPrivilegiPeriode",
+			"item": [
+				{
+					"name": "Instancia",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/puntuacio/3",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"puntuacio",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Llista",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/vprivilegiperiode/llista",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"vprivilegiperiode",
+								"llista"
 							]
 						}
 					},
@@ -2046,7 +2143,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"P@ssw0rd\",\r\n  \"rememberMe\": true\r\n}",
+					"raw": "{\r\n  \"email\": \"admin2@example.com\",\r\n  \"password\": \"P@ssw0rd\",\r\n  \"rememberMe\": true\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

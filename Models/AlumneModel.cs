@@ -11,9 +11,11 @@ namespace KarmaWebAPI.Models
         public String NIA { get; set; } //identificador únic de tamany màxim 10 que assigna gva
         
         [Required]
+        [StringLength(200)]
         public String Nom { get; set; } //nom de l'alumne   
         
         [Required]
+        [StringLength(200)]
         public String Cognoms { get; set; } //cognoms de l'alumne   
 
         [Required]

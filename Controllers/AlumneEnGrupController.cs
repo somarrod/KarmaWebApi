@@ -8,6 +8,7 @@ using KarmaWebAPI.DTOs;
 using KarmaWebAPI.DTOs.DisplaySets;
 using KarmaWebAPI.Serveis;
 using KarmaWebAPI.Serveis.Interfaces;
+using System.Net.NetworkInformation;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -30,6 +31,21 @@ namespace KarmaWebAPI.Controllers
         public async Task<ActionResult<AlumneEnGrup>> Instancia(int idAlumneEnGrup)
         {
             var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(idAlumneEnGrup);
+
+            if (alumneEnGrup == null)
+            {
+                return NotFound();
+            }
+
+            return alumneEnGrup;
+        }
+
+        // GET: api/AlumneEnGrup/5
+        [HttpGet("instancia-per-camps")]
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
+        public async Task<ActionResult<AlumneEnGrup>> InstanciaPerCamps(String nia, int idAnyEscolar, String idGrup)
+        {
+            var alumneEnGrup = await _context.AlumneEnGrup.FirstOrDefaultAsync(a => a.NIA == nia && a.IdAnyEscolar == idAnyEscolar && a.IdGrup == idGrup);
 
             if (alumneEnGrup == null)
             {

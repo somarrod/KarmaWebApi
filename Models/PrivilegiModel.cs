@@ -13,7 +13,8 @@ namespace KarmaWebAPI.Models
         [Required]
         public int Nivell { get; set; }
 
-        [Required] 
+        [Required]
+        [StringLength(255)]
         public String Descripcio { get; set; }
         
         [Required] 

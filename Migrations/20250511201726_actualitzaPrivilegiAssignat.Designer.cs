@@ -4,6 +4,7 @@ using KarmaWebAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KarmaWebAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250511201726_actualitzaPrivilegiAssignat")]
+    partial class actualitzaPrivilegiAssignat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -347,8 +350,8 @@ namespace KarmaWebAPI.Migrations
                     b.Property<DateOnly>("DataAssignacio")
                         .HasColumnType("date");
 
-                    b.Property<DateOnly?>("DataExecucio")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("DataExecucio")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Descripcio")
                         .IsRequired()

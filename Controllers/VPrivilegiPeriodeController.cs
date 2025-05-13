@@ -1,6 +1,8 @@
 ﻿using System.Drawing;
 using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
+using KarmaWebAPI.DTOs.DisplaySets;
+
 //using KarmaWebAPI.Migrations;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
@@ -29,7 +31,7 @@ namespace KarmaWebAPI.Controllers
         #region Consultes
 
         //Instancia
-        [HttpGet("instancia")]
+        [HttpGet("instancia-per-camps")]
         [Authorize]
         // GET: Privilegi/GetAnyEscolar/5
         public async Task<IActionResult> Instancia(int idAlumneEnGrup, int idPeriode, int idPrivilegi)
@@ -39,8 +41,8 @@ namespace KarmaWebAPI.Controllers
                 .Include(p => p.Periode)
                 .Include(p => p.Privilegi)
                 .FirstOrDefaultAsync(m => m.IdPrivilegi == idPrivilegi && 
-                                     m.IdPeriode == idPeriode && 
-                                     m.IdAlumneEnGrup == idAlumneEnGrup);
+                                            m.IdPeriode == idPeriode && 
+                                            m.IdAlumneEnGrup == idAlumneEnGrup);
             if (vPrivilegiPeriode == null)
             {
                 return NotFound();
@@ -106,22 +108,86 @@ namespace KarmaWebAPI.Controllers
             return Ok(privilegis);
         }
 
-
-
-        [Authorize]
-        [HttpGet("llista-per-privilegi")]
-        public IActionResult GetPrivilegisPeriodePerPrivilegi(int idPrivilegi)
+       
+        [HttpGet("llista-condicionada")]
+        [Authorize(Roles = "AG_Professor,AG_Alumne,AG_Admin")]
+        public async Task<ActionResult<IEnumerable<VPrivilegiPeriodeDisplaySet>>> Llista(int? idPrivilegi, int? idPeriode, string? idGrup, int? idAnyEscolar, string? nia)
         {
-            var result = _privilegiService.GetPrivilegisPeriode(idPrivilegi);
-            if (result == null)
+            var userId = User.Identity.Name;
+
+            var query = _context.VPrivilegiPeriode
+                                .Include(p => p.AlumneEnGrup)
+                                    .ThenInclude(aeg => aeg.Grup)
+                                .Include(p => p.AlumneEnGrup)
+                                    .ThenInclude(aeg => aeg.Alumne)
+                                .Include(p => p.Periode)
+                                .Include(p => p.Privilegi)
+                                .AsQueryable();
+
+            if (idPrivilegi.HasValue)
             {
-                return NotFound($"No s'ha trobat privilegis-periode per al privilegi amb ID {idPrivilegi}.");
+                query = query.Where(p => p.IdPrivilegi == idPrivilegi.Value);
             }
+
+            if (idPeriode.HasValue)
+            {
+                query = query.Where(p => p.IdPeriode == idPeriode.Value);
+            }
+
+            if (!string.IsNullOrEmpty(idGrup))
+            {
+                query = query.Where(p => p.AlumneEnGrup.IdGrup == idGrup);
+            }
+
+            if (idAnyEscolar.HasValue)
+            {
+                query = query.Where(p => p.AlumneEnGrup.IdAnyEscolar == idAnyEscolar.Value);
+            }
+
+            if (!string.IsNullOrEmpty(nia))
+            {
+                query = query.Where(p => p.AlumneEnGrup.NIA == nia);
+            }
+
+            var privilegisPeriode = new List<VPrivilegiPeriode>();
+
+            if (User.IsInRole("AG_Admin"))
+            {
+                privilegisPeriode = await query.ToListAsync();
+            }
+            else if (User.IsInRole("AG_Professor"))
+            {
+                privilegisPeriode = await query
+                                 .Where(p => p.AlumneEnGrup.Grup.ProfessorsDeGrup.Any(pg => pg.Professor.IdProfessor == userId))
+                                 .ToListAsync();
+            }
+            else if (User.IsInRole("AG_Alumne"))
+            {
+                privilegisPeriode = await query
+                                 .Where(p => p.AlumneEnGrup.NIA == userId)
+                                 .ToListAsync();
+            }
+
+            // Convertir els resultats a VPrivilegiPeriodeDisplaySet
+            var result = privilegisPeriode.Select(p => new VPrivilegiPeriodeDisplaySet
+            {
+                IdAnyEscolar = p.AlumneEnGrup.IdAnyEscolar,
+                IdGrup = p.AlumneEnGrup.IdGrup,
+                DescripcioGrup = p.AlumneEnGrup.Grup.Descripcio,
+                IdPeriode = p.Periode.IdPeriode,
+                DataInici = p.Periode.DataInici,
+                DataFi = p.Periode.DataFi,
+                NIA = p.AlumneEnGrup.NIA,
+                NomCompletAlumne = p.AlumneEnGrup.Alumne.Nom + " " + p.AlumneEnGrup.Alumne.Cognoms,
+                IdPrivilegi = p.IdPrivilegi,
+                DescripcioPrivilegi = p.Privilegi.Descripcio
+            }).ToList();
 
             return Ok(result);
         }
 
-        [Authorize]
+
+        [Authorize(Roles = "AG_Professor,AG_Alumne,AG_Admin")]
         [HttpGet("llista-per-periode")]
         public IActionResult GetPrivilegisPeriodePerPeriode(int idPeriode)
         {
@@ -134,7 +200,7 @@ namespace KarmaWebAPI.Controllers
             return Ok(result);
         }
 
-        [Authorize]
+        [Authorize(Roles = "AG_Professor,AG_Alumne,AG_Admin")]
         [HttpGet]
         [HttpGet("llista-per-alumneengrup")]
         public IActionResult GetPrivilegisPeriodePerAlumneEnGrup(int idAlumneEnGrup)

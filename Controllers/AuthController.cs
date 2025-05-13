@@ -46,7 +46,29 @@ namespace KarmaWebAPI.Controllers
             return BadRequest(result.Errors);
         }
 
-        
+
+        [HttpGet("agents")]
+        [Authorize(Roles = "AG_Admin")]
+        public async Task<IActionResult> GetAgents()
+        {
+            var users = _userManager.Users.ToList();
+            var agents = new List<AgentDTO>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                agents.Add(new AgentDTO
+                {
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Roles = roles
+                });
+            }
+
+            return Ok(agents);
+        }
+    
+      
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
@@ -74,9 +96,6 @@ namespace KarmaWebAPI.Controllers
 
             return Unauthorized(new { message = "Invàlid intent de login" });
         }
-
-
-
 
         [HttpGet("accessdenied")]
         public IActionResult AccessDenied()

@@ -29,7 +29,7 @@ namespace KarmaWebAPI.Models
         [Required]
         public DateOnly DataAssignacio { get; set; } //data assignació
 
-        public DateTime DataExecucio { get; set; } //data en el que 
+        public DateOnly? DataExecucio { get; set; } = null; //data en el que 
 
 
         #region Navegacions

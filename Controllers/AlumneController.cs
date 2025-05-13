@@ -6,6 +6,8 @@ using KarmaWebAPI.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using KarmaWebAPI.Serveis.Interfaces;
+using KarmaWebAPI.Serveis;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -89,6 +91,72 @@ namespace KarmaWebAPI.Controllers
                 }
             }
         }
+
+
+        [HttpPut("editar")]
+        [Authorize(Roles = "AG_Admin, AG_Professor")]
+        public async Task<IActionResult> EditarAlumne([FromBody] AlumneDTO alumneDto)
+        {
+            var alumne = await _context.Alumne.FindAsync(alumneDto.NIA);
+            if (alumne == null)
+            {
+                return NotFound();
+            }
+
+            // Comprovar si l'email ja existeix en altres alumnes
+            var emailExists =   await _context.Alumne.AnyAsync(a => a.Email == alumneDto.Email && a.NIA != alumneDto.NIA);
+
+            if (emailExists)
+            {
+                return BadRequest("L'email ja està en ús per un altre alumne.");
+            }
+
+            // Iniciar la transacció
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    // Actualitzar les dades de l'alumne
+                    alumne.Nom = alumneDto.Nom;
+                    alumne.Cognoms = alumneDto.Cognoms;
+                    alumne.Email = alumneDto.Email;
+
+                    _context.Alumne.Update(alumne);
+                    await _context.SaveChangesAsync();
+
+                    // Actualitzar l'email en AspNetUsers
+                    var user = await _userManager.FindByNameAsync(alumneDto.NIA);
+                    if (user != null)
+                    {
+                        user.Email = alumneDto.Email;
+
+                        var result = await _userManager.UpdateAsync(user);
+                        if (!result.Succeeded)
+                        {
+                            throw new Exception("Error actualitzant l'email en AspNetUsers.");
+                        }
+                        await _context.SaveChangesAsync();
+                    } 
+                    else 
+                    {
+                        throw new Exception("Error actualitzant l'email en AspNetUsers.");
+                    }
+                    
+
+                    // Confirmar la transacció
+                    await transaction.CommitAsync();
+
+                    return Ok(alumne);
+                }
+                catch (Exception ex)
+                {
+                    // Tirar enrere la transacció en cas d'error
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, $"Error actualitzant l'alumne: {ex.Message}");
+                }
+            }
+        }
+       
 
         // PUT: api/Alumne/editar
         [HttpPut("activar")]
@@ -184,9 +252,9 @@ namespace KarmaWebAPI.Controllers
             }
         }
 
-        // DELETE: api/Alumne/eliminar
         [HttpDelete("eliminar")]
-        public async Task<IActionResult> Eliminar(string nia)
+        [Authorize(Roles = "AG_Admin, AG_Professor")]
+        public async Task<IActionResult> Eliminar(String nia)
         {
             var alumne = await _context.Alumne.FindAsync(nia);
             if (alumne == null)
@@ -194,11 +262,52 @@ namespace KarmaWebAPI.Controllers
                 return NotFound();
             }
 
-            _context.Alumne.Remove(alumne);
-            await _context.SaveChangesAsync();
+            // Comprovar si l'alumne està en una relació en AlumneEnGrup
+            var alumneEnGrupExists = await _context.AlumneEnGrup.AnyAsync(aeg => aeg.NIA== nia);
+            if (alumneEnGrupExists)
+            {
+                return BadRequest("No es pot esborrar l'alumne perquè està en un grup. El pot inactivar.");
+            }
 
-            return NoContent();
+            // Iniciar la transacció
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    // Eliminar l'alumne
+                    _context.Alumne.Remove(alumne);
+                    await _context.SaveChangesAsync();
+
+                    // Eliminar l'usuari en AspNetUsers
+                    var user = await _userManager.FindByNameAsync(nia);
+                    if (user != null)
+                    {
+                        var result = await _userManager.DeleteAsync(user);
+                        if (!result.Succeeded)
+                        {
+                            throw new Exception("Error eliminant l'usuari en AspNetUsers.");
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        throw new Exception("Error eliminant l'usuari en AspNetUsers.");
+                    }
+
+                    // Confirmar la transacció
+                    await transaction.CommitAsync();
+
+                    return Ok("Alumne eliminat correctament.");
+                }
+                catch (Exception ex)
+                {
+                    // Tirar enrere la transacció en cas d'error
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, $"Error eliminant l'alumne: {ex.Message}");
+                }
+            }
         }
+
 
         private bool AlumneExisteix(string nia)
         {

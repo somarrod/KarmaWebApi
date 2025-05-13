@@ -156,7 +156,7 @@ namespace KarmaWebAPI.Controllers
             _context.ProfessorDeGrup.Remove(professorDeGrup);
             await _context.SaveChangesAsync();
 
-            return Ok($"ProfessorDeGrup amb Id {idProfessorDeGrup} esborrat");
+            return Ok($"Professor de grup amb Id {idProfessorDeGrup} esborrat");
         }
 
         private bool ProfessorDeGrupExisteix(int id)
