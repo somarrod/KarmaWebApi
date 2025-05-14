@@ -6,8 +6,8 @@ using KarmaWebAPI.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using KarmaWebAPI.Serveis.Interfaces;
-using KarmaWebAPI.Serveis;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+//using KarmaWebAPI.Serveis;
+//using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace KarmaWebAPI.Controllers
 {
