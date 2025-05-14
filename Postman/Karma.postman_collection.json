@@ -27,13 +27,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/alumne/123456787",
+							"raw": "{{url}}api/alumne/1234567892",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
 								"alumne",
-								"123456787"
+								"1234567892"
 							]
 						}
 					},
@@ -76,7 +76,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"nia\": \"1234567891\",\r\n  \"nom\": \"Reina\",\r\n  \"cognoms\": \"Peiró\",\r\n  \"email\": \"rpeiro@alumne.com\"\r\n}",
+							"raw": "{\r\n  \"nia\": \"1234567892\",\r\n  \"nom\": \"Reina\",\r\n  \"cognoms\": \"Peiró\",\r\n  \"email\": \"rpeiro2@alumne.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -130,13 +130,13 @@
 					"response": []
 				},
 				{
-					"name": "editar PTE",
+					"name": "editar",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "{\r\n  \"nia\": \"1234567892\",\r\n  \"nom\": \"Ana Maria\",\r\n  \"cognoms\": \"Bertó Llopis\",\r\n  \"email\": \"aberto@alumne.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -190,7 +190,7 @@
 					"response": []
 				},
 				{
-					"name": "eliminar - Pte act AspNetUsrs",
+					"name": "eliminar",
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -204,7 +204,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/alumne/eliminar?nia=123456786",
+							"raw": "{{url}}api/alumne/eliminar?nia=1234567892",
 							"host": [
 								"{{url}}api"
 							],
@@ -215,7 +215,7 @@
 							"query": [
 								{
 									"key": "nia",
-									"value": "123456786"
+									"value": "1234567892"
 								}
 							]
 						}
@@ -245,13 +245,57 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/alumne/123456787",
+							"raw": "{{url}}api/alumneengrup/1",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
-								"alumne",
-								"123456787"
+								"alumneengrup",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar-id-per-alumne-i-grup",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/alumneengrup/buscar-id-per-alumne-i-grup?nia=1234567890&idAnyEscolar=2526&idGrup=1ESOC",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"alumneengrup",
+								"buscar-id-per-alumne-i-grup"
+							],
+							"query": [
+								{
+									"key": "nia",
+									"value": "1234567890"
+								},
+								{
+									"key": "idAnyEscolar",
+									"value": "2526"
+								},
+								{
+									"key": "idGrup",
+									"value": "1ESOC"
+								}
 							]
 						}
 					},
@@ -294,7 +338,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"nia\": \"1234567890\",\r\n  \"idAnyEscolar\": 2526,\r\n  \"idGrup\": \"1ESOC\"\r\n}",
+							"raw": "{\r\n  \"nia\": \"1234567891\",\r\n  \"idAnyEscolar\": 2526,\r\n  \"idGrup\": \"1ESOC\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -666,7 +710,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/categoria/activar?idCategoria=1",
+							"raw": "{{url}}api/categoria/activar?idCategoria=2",
 							"host": [
 								"{{url}}api"
 							],
@@ -677,7 +721,7 @@
 							"query": [
 								{
 									"key": "idCategoria",
-									"value": "1"
+									"value": "2"
 								}
 							]
 						}
@@ -885,7 +929,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\"idConfiguracioKarma\": 5,\r\n\"idAnyEscolar\": 2526,\r\n\"karmaMinim\": -100,\r\n\"karmaMaxim\": -11,\r\n\"colorNivell\": \"NEGRE\",\r\n\"nivellPrivilegis\": 0\r\n}",
+							"raw": "{\r\n\"idConfiguracioKarma\": 4,\r\n\"idAnyEscolar\": 2526,\r\n\"karmaMinim\": -10,\r\n\"karmaMaxim\": -6,\r\n\"colorNivell\": \"ROIG\",\r\n\"nivellPrivilegis\": 0\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1521,7 +1565,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"nivell\": 3,\r\n  \"descripcio\": \"privilegi de grup\",\r\n  \"esIndividualGrup\": \"G\",\r\n  \"idAnyEscolar\": 2526\r\n}",
+							"raw": "{\r\n  \"nivell\": 1,\r\n  \"descripcio\": \"arribar 5 minuts tard\",\r\n  \"esIndividualGrup\": \"G\",\r\n  \"idAnyEscolar\": 2526\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1548,7 +1592,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idPrivilegi\": 2,\r\n  \"nivell\": 3,\r\n  \"descripcio\": \"Privilegi de grup\",\r\n  \"esIndividualGrup\": \"G\",\r\n  \"idAnyEscolar\": 2526\r\n}",
+							"raw": "{\r\n  \"idPrivilegi\": 2,\r\n  \"nivell\": 1,\r\n  \"descripcio\": \"Arribar 5 minuts tard\",\r\n  \"esIndividualGrup\": \"I\",\r\n  \"idAnyEscolar\": 2526\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1595,6 +1639,194 @@
 								{
 									"key": "idPrivilegi",
 									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PrivilegiAssignat",
+			"item": [
+				{
+					"name": "Instancia",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/privilegiassignat/7",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"privilegiassignat",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "llista",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/privilegiassignat/llista",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"privilegiassignat",
+								"llista"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "llista-per-anyescolar",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/privilegi/llista-per-anyescolar?idAnyEscolar=2526",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"privilegi",
+								"llista-per-anyescolar"
+							],
+							"query": [
+								{
+									"key": "idAnyEscolar",
+									"value": "2526"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idAnyEscolar\": 2526,\r\n  \"idGrup\": \"1ESOC\",\r\n  \"nia\": \"1234567890\",\r\n  \"idPrivilegi\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/privilegiassignat/crear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"privilegiassignat",
+								"crear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MARCARREALITZAT",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idPrivilegiAssignat\": 7,\r\n  \"dataExecucio\": \"2025-05-11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/privilegiassignat/marcar-realitzat",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"privilegiassignat",
+								"marcar-realitzat"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/privilegiassignat/eliminar?idprivilegiassignat=3",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"privilegiassignat",
+								"eliminar"
+							],
+							"query": [
+								{
+									"key": "idprivilegiassignat",
+									"value": "3"
 								}
 							]
 						}
@@ -1673,7 +1905,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idProfessor\": \"1000\",\r\n  \"nom\": \"Sofia\",\r\n  \"cognoms\": \"Martí\",\r\n  \"email\": \"smarti@professor.com\"\r\n}",
+							"raw": "{\r\n  \"idProfessor\": \"1001\",\r\n  \"nom\": \"Sofia\",\r\n  \"cognoms\": \"Martí\",\r\n  \"email\": \"smarti@professor.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1688,6 +1920,33 @@
 							"path": [
 								"professor",
 								"crear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idProfessor\": \"1000\",\r\n  \"nom\": \"Sofia2\",\r\n  \"cognoms\": \"Martí\",\r\n  \"email\": \"smarti2@professor.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/professor/editar",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"professor",
+								"editar"
 							]
 						}
 					},
@@ -1760,7 +2019,7 @@
 					"response": []
 				},
 				{
-					"name": "eliminar - Pte act AspNetUsrs",
+					"name": "eliminar",
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -1774,18 +2033,18 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/alumne/eliminar?nia=123456786",
+							"raw": "{{url}}api/professor/eliminar?idProfessor=1001",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
-								"alumne",
+								"professor",
 								"eliminar"
 							],
 							"query": [
 								{
-									"key": "nia",
-									"value": "123456786"
+									"key": "idProfessor",
+									"value": "1001"
 								}
 							]
 						}
@@ -1989,7 +2248,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idAlumneEnGrup\": 1,\r\n  \"idPeriode\": 1,\r\n  \"idCategoria\": null,\r\n  \"punts\": 1,\r\n  \"motiu\": \"La única persona que ha arribat a l'hora a classe\"\r\n}",
+							"raw": "{\r\n  \"idAlumneEnGrup\": 2,\r\n  \"idPeriode\": 1,\r\n  \"idCategoria\": null,\r\n  \"punts\": 1,\r\n  \"motiu\": \"La única persona que ha arribat a l'hora a classe\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2024,7 +2283,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/puntuacio/TELIMINAR?idpuntuacio=17",
+							"raw": "{{url}}api/puntuacio/TELIMINAR?idpuntuacio=19",
 							"host": [
 								"{{url}}api"
 							],
@@ -2035,7 +2294,7 @@
 							"query": [
 								{
 									"key": "idpuntuacio",
-									"value": "17"
+									"value": "19"
 								}
 							]
 						}
@@ -2065,13 +2324,27 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/puntuacio/3",
+							"raw": "{{url}}api/vprivilegiperiode/instancia-per-camps?idAlumneEnGrup=1&idPeriode=1&idPrivilegi=2",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
-								"puntuacio",
-								"3"
+								"vprivilegiperiode",
+								"instancia-per-camps"
+							],
+							"query": [
+								{
+									"key": "idAlumneEnGrup",
+									"value": "1"
+								},
+								{
+									"key": "idPeriode",
+									"value": "1"
+								},
+								{
+									"key": "idPrivilegi",
+									"value": "2"
+								}
 							]
 						}
 					},
@@ -2106,197 +2379,284 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "llista-condicionada",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/vprivilegiperiode/llista-condicionada?idPrivilegi=2&idPeriode=&NIA&IdAnyEscolar=2526&idGrup=1ESOC",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"vprivilegiperiode",
+								"llista-condicionada"
+							],
+							"query": [
+								{
+									"key": "idPrivilegi",
+									"value": "2"
+								},
+								{
+									"key": "idPeriode",
+									"value": ""
+								},
+								{
+									"key": "NIA",
+									"value": null
+								},
+								{
+									"key": "IdAnyEscolar",
+									"value": "2526"
+								},
+								{
+									"key": "idGrup",
+									"value": "1ESOC"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
-			"name": "Register AG_Admin",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"P@ssw0rd\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "_Auth",
+			"item": [
+				{
+					"name": "Llista",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/account/agents",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"account",
+								"agents"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{url}}api/account/registeradmin",
-					"host": [
-						"{{url}}api"
-					],
-					"path": [
-						"account",
-						"registeradmin"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Login AG_Admin",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"email\": \"admin2@example.com\",\r\n  \"password\": \"P@ssw0rd\",\r\n  \"rememberMe\": true\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Register AG_Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"P@ssw0rd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/account/registeradmin",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"account",
+								"registeradmin"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{url}}api/account/login",
-					"host": [
-						"{{url}}api"
-					],
-					"path": [
-						"account",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Login AG_Alumne",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"email\": \"smarti7@example.com\",\r\n  \"password\": \"Password1!\",\r\n  \"rememberMe\": true\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Login AG_Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"admin2@example.com\",\r\n  \"password\": \"P@ssw0rd\",\r\n  \"rememberMe\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/account/login",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"account",
+								"login"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{url}}api/account/login",
-					"host": [
-						"{{url}}api"
-					],
-					"path": [
-						"account",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Login AG_Professor",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"email\": \"smarti@professor.com\",\r\n  \"password\": \"Sm@1000\",\r\n  \"rememberMe\": true\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Login AG_Alumne",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"smarti7@example.com\",\r\n  \"password\": \"Password1!\",\r\n  \"rememberMe\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/account/login",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"account",
+								"login"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{url}}api/account/login",
-					"host": [
-						"{{url}}api"
-					],
-					"path": [
-						"account",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "canviapassword",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"passwordActual\": \"P@ssw0rd2\",\r\n  \"nouPassword\": \"P@ssw0rd\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Login AG_Professor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"smarti@professor.com\",\r\n  \"password\": \"Sm@1000\",\r\n  \"rememberMe\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/account/login",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"account",
+								"login"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{url}}api/account/canviapassword",
-					"host": [
-						"{{url}}api"
-					],
-					"path": [
-						"account",
-						"canviapassword"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "resetpassword",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"email\": \"smarti@professor.com\",\r\n  \"nouPassword\": \"Sm@1000\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "canviapassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"passwordActual\": \"P@ssw0rd2\",\r\n  \"nouPassword\": \"P@ssw0rd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/account/canviapassword",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"account",
+								"canviapassword"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{url}}api/account/resetpassword",
-					"host": [
-						"{{url}}api"
-					],
-					"path": [
-						"account",
-						"resetpassword"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Logout",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "resetpassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"smarti@professor.com\",\r\n  \"nouPassword\": \"Sm@1000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/account/resetpassword",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"account",
+								"resetpassword"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{url}}api/account/logout",
-					"host": [
-						"{{url}}api"
-					],
-					"path": [
-						"account",
-						"logout"
-					]
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/account/logout",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"account",
+								"logout"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		}
 	],
 	"auth": {
