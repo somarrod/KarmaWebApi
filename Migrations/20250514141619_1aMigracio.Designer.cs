@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KarmaWebAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250511201726_actualitzaPrivilegiAssignat")]
-    partial class actualitzaPrivilegiAssignat
+    [Migration("20250514141619_1aMigracio")]
+    partial class _1aMigracio
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,7 +36,8 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<string>("Cognoms")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -45,7 +46,8 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<string>("Nom")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("NIA");
 
@@ -320,7 +322,8 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<string>("Descripcio")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("EsIndividualGrup")
                         .IsRequired()
@@ -350,8 +353,8 @@ namespace KarmaWebAPI.Migrations
                     b.Property<DateOnly>("DataAssignacio")
                         .HasColumnType("date");
 
-                    b.Property<DateTime?>("DataExecucio")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly?>("DataExecucio")
+                        .HasColumnType("date");
 
                     b.Property<string>("Descripcio")
                         .IsRequired()

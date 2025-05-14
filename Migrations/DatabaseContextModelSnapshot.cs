@@ -33,7 +33,8 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<string>("Cognoms")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -42,7 +43,8 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<string>("Nom")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("NIA");
 
@@ -317,7 +319,8 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<string>("Descripcio")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("EsIndividualGrup")
                         .IsRequired()
