@@ -11,7 +11,7 @@ namespace KarmaWebAPI.DTOs
         public int IdAlumneEnGrup { get; set; }
 
         [Required]
-        public int PuntuacioTotal { get; set; } = 0; //Puntuacio total de l'alumne en el grup i any escolar
+        public int PuntuacioAAfegir { get; set; } = 0; //Puntuacio total de l'alumne en el grup i any escolar
 
     }
 

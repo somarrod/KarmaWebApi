@@ -1,6 +1,7 @@
 ﻿using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
+using KarmaWebAPI.Serveis;
 using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,15 +16,13 @@ namespace KarmaWebAPI.Controllers
     {
         private readonly DatabaseContext _context;
         private readonly IAnyEscolarService _anyEscolarService;
-        //private readonly IPrivilegiService _privilegiService;
+        private readonly IAlumneEnGrupService _alumneEnGrupService;
 
-        public AnyEscolarController(DatabaseContext context, IAnyEscolarService anyEscolarService, IPrivilegiService privilegiService)
+        public AnyEscolarController(DatabaseContext context, IAnyEscolarService anyEscolarService, IPrivilegiService privilegiService, IAlumneEnGrupService alumneEnGrupService)
         {
             _context = context;
             _anyEscolarService = anyEscolarService;
-            //_privilegiService = privilegiService;
-
-
+            _alumneEnGrupService = alumneEnGrupService;
         }
 
         #region Consultes
@@ -144,7 +143,7 @@ namespace KarmaWebAPI.Controllers
                 _context.AnyEscolar.Remove(anyEscolar);
                 await _context.SaveChangesAsync();
 
-                return Ok(idAnyEscolar);
+                return Ok($"L'any escolar {idAnyEscolar} ha estat esborrat.");
             }
             catch (Exception e)
             {
@@ -181,6 +180,23 @@ namespace KarmaWebAPI.Controllers
                     return StatusCode(500, $"Internal server error: {ex.Message}");
 
                 }
+            }
+        }
+
+
+        
+        [HttpPut("actualitza-karma")]
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
+        public async Task<IActionResult> ActualitzaKarma(int idAnyEscolar)
+        {
+            try
+            {
+                var result = await _anyEscolarService.ActualitzaKarmaAsync(idAnyEscolar);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
         #endregion Transaccions

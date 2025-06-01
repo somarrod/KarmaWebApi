@@ -167,7 +167,7 @@ namespace KarmaWebAPI.Controllers
                 return BadRequest(result.Errors);
             }
 
-            return Ok($"Password canviat correctament. Nou Password = {model.NouPassword}");
+            return Ok($"Password canviat correctament");
         }
 
 

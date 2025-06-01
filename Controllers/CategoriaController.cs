@@ -181,10 +181,12 @@ namespace KarmaWebAPI.Controllers
                 return NotFound();
             }
 
+            var desc = categoria.Descripcio;
+
             _context.Categoria.Remove(categoria);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok($"La categoria '{desc}' ha estat esborrada.");
         }
 
         private bool CategoriaExiste(int id)

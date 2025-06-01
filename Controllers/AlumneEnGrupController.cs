@@ -17,12 +17,14 @@ namespace KarmaWebAPI.Controllers
     public class AlumneEnGrupController : ControllerBase
     {
         private readonly DatabaseContext _context;
-        private readonly IAlumneEnGrupService _alumneEnGrupService; 
+        private readonly IAlumneEnGrupService _alumneEnGrupService;
+        private readonly IGrupService _grupService;
 
-        public AlumneEnGrupController(DatabaseContext context, IAlumneEnGrupService alumneEnGrupService)
+        public AlumneEnGrupController(DatabaseContext context, IAlumneEnGrupService alumneEnGrupService, IGrupService grupService)
         {
             _context = context;
             _alumneEnGrupService = alumneEnGrupService;
+            _grupService = grupService;
         }
 
         // GET: api/AlumneEnGrup/5
@@ -41,7 +43,7 @@ namespace KarmaWebAPI.Controllers
         }
 
         // GET: api/AlumneEnGrup/5
-        [HttpGet("instancia-per-camps")]
+        [HttpGet("instancia-per-alumne-i-grup")]
         [Authorize(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
         public async Task<ActionResult<AlumneEnGrup>> InstanciaPerCamps(String nia, int idAnyEscolar, String idGrup)
         {
@@ -116,7 +118,12 @@ namespace KarmaWebAPI.Controllers
         {
             var anyEscolar = await _context.AnyEscolar.FindAsync(alumneEnGrupDto.IdAnyEscolar);
             var grup = await _context.Grup.FindAsync(alumneEnGrupDto.IdAnyEscolar, alumneEnGrupDto.IdGrup);
+            var alumne = await _context.Alumne.FindAsync(alumneEnGrupDto.NIA);
 
+            if (alumne == null)
+            {
+                return BadRequest("L'alumne introduit no existeix.");
+            }
             if (grup == null) 
             {
                 return BadRequest("El grup introduit no existeix.");
@@ -148,37 +155,38 @@ namespace KarmaWebAPI.Controllers
             _context.AlumneEnGrup.Add(alumneEnGrup);
             await _context.SaveChangesAsync();
 
+            await _alumneEnGrupService.AfegirPuntuacioAsync(alumneEnGrup.IdAlumneEnGrup, 0);
+
+            await _grupService.calculaKarmaBaseAsync(grup.IdAnyEscolar, grup.IdGrup);
+
             return Ok(alumneEnGrup);
         }
 
 
-        // PUT: api/AlumneEnGrup/editar
-        [HttpPut("editar")]
-        public async Task<IActionResult> Editar(AlumneEnGrupEditarDTO alumneEnGrupDto)
+        // Replace the following method in the file:
+
+        [HttpPut("reset-puntuacio-total")]
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
+        public async Task<IActionResult> ResetPuntuacioTotal(int idAlumneEnGrup)
         {
-            var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(alumneEnGrupDto.IdAlumneEnGrup);
-            if (alumneEnGrup == null)
-            {
-                return NotFound($"AlumneEnGrup amb Id {alumneEnGrupDto.IdAlumneEnGrup} no trobat");
-            }
-
-            alumneEnGrup.PuntuacioTotal = alumneEnGrupDto.PuntuacioTotal;
-
-            _context.AlumneEnGrup.Update(alumneEnGrup);
-
             try
             {
-                await _context.SaveChangesAsync();
+                var result = await _alumneEnGrupService.ResetPuntuacioTotalAsync(
+                    idAlumneEnGrup,
+                   0
+                );
+
+                return result.Result ?? Ok(result.Value);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                return StatusCode(500, $"Error intern del servidor: {ex.Message}");
             }
-
-            return Ok(alumneEnGrup);
         }
-
-
 
         [HttpDelete("eliminar")]
         public async Task<IActionResult> Eliminar(int IdAlumneEnGrup)
@@ -200,30 +208,11 @@ namespace KarmaWebAPI.Controllers
             _context.AlumneEnGrup.Remove(alumneEnGrup);
             await _context.SaveChangesAsync();
 
+            await _grupService.calculaKarmaBaseAsync(alumneEnGrupDS.IdAnyEscolar, alumneEnGrupDS.IdGrup);
+
             return Ok($"L'alumne {alumneEnGrupDS.NIA} ha segut esborrat del grup {alumneEnGrupDS.IdGrup} de l'any escolar {alumneEnGrupDS.IdAnyEscolar}");
         }
 
-
-        [Authorize(Roles = "AG_Admin,AG_Professor")]
-        [HttpPut("actualitzakarma")]
-        public async Task<IActionResult> ActualitzaKarma(int idAnyEscolar)
-        {
-            try
-            {
-                var result = await _alumneEnGrupService.ActualitzaKarmaAsync(idAnyEscolar);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-    
-
-        private bool AlumneEnGrupExisteix(int id)
-        {
-            return _context.AlumneEnGrup.Any(e => e.IdAlumneEnGrup == id);
-        }
     }
 }
     

@@ -61,7 +61,17 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin")]
         public async Task<ActionResult<Materia>> CrearMateria(MateriaCrearDTO materiaDto)
         {
-            var materia = new Materia
+
+            // Comprovar si ja existeix una matèria amb el mateix nom (ignorant majúscules/minúscules)
+            var existeix = await _context.Materia
+                        .AnyAsync(m => m.Nom.ToLower() == materiaDto.Nom.ToLower());
+
+            if (existeix)
+            {
+                return Conflict(new { missatge = "Ja existeix una matèria amb aquest nom." });
+            }
+
+                        var materia = new Materia
             {
                 Nom = materiaDto.Nom,
                 Activa = true
@@ -79,6 +89,16 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin")]
         public async Task<IActionResult> EditarMateria(MateriaEditarDTO materiaDto)
         {
+            // Comprovar si ja existeix una matèria amb el mateix nom (ignorant majúscules/minúscules)
+            var existeix = await _context.Materia
+                        .AnyAsync(m => m.Nom.ToLower() == materiaDto.Nom.ToLower() &&
+                                       m.IdMateria != materiaDto.IdMateria);
+
+            if (existeix)
+            {
+                return Conflict(new { missatge = "Ja existeix una matèria amb aquest nom." });
+            }
+
 
             var materia = new Materia
             {
@@ -105,7 +125,7 @@ namespace KarmaWebAPI.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(materiaDto);
         }
 
         // PUT: api/Materia/activar
@@ -144,7 +164,7 @@ namespace KarmaWebAPI.Controllers
         }
 
 
-        // PUT: api/Categoria/desactivar
+        // PUT: api/Materia/desactivar
         [HttpPut("desactivar")]
         [Authorize(Roles = "AG_Admin,AG_Professor")]
         public async Task<IActionResult> DesactivarMateria(int idMateria)
@@ -190,10 +210,12 @@ namespace KarmaWebAPI.Controllers
                 return NotFound();
             }
 
+            var nom = materia.Nom;
+
             _context.Materia.Remove(materia);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok($"La matèria {nom} ha estat esborrada.");
         }
 
         private bool MateriaExiste(int idMateria)

@@ -172,11 +172,13 @@ namespace KarmaWebAPI.Controllers
                 return NotFound("Privilegi " + idPrivilegi + " no trobat");
             }
 
+            var desc = privilegi.Descripcio;
             _context.Privilegi.Remove(privilegi);
             await _context.SaveChangesAsync();
 
-            return Ok(idPrivilegi);
+            return Ok($"El privilegi '{desc}' ha estat esborrat");
         }
+        
         #endregion Serveis
 
         #region Auxiliars

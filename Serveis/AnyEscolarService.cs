@@ -4,6 +4,7 @@ using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KarmaWebAPI.Serveis
 {
@@ -59,6 +60,36 @@ namespace KarmaWebAPI.Serveis
             });
 
             return new OkObjectResult(anyEscolar);
+        }
+
+        public async Task<IActionResult> ActualitzaKarmaAsync(int idAnyEscolar)
+        {
+            try
+            {
+                var configuracioKarmaList = await _context.ConfiguracioKarma
+                    .Where(c => c.IdAnyEscolar == idAnyEscolar)
+                    .ToListAsync();
+
+                if (configuracioKarmaList != null)
+                {
+                    foreach (var configuracioKarma in configuracioKarmaList)
+                    {
+                        var alumnes = await _context.AlumneEnGrup
+                           .Where(a => a.IdAnyEscolar == configuracioKarma.IdAnyEscolar &&
+                                       a.PuntuacioTotal >= configuracioKarma.KarmaMinim &&
+                                       a.PuntuacioTotal <= configuracioKarma.KarmaMaxim)
+                           .ToListAsync();
+
+                        alumnes.ForEach(a => a.Karma = configuracioKarma.ColorNivell);
+                    }
+                }
+                await _context.SaveChangesAsync();
+                return new OkResult(); // Use OkResult explicitly
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error actualitzant el karma", ex);
+            }
         }
 
     }

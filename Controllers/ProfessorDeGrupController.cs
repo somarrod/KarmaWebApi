@@ -23,7 +23,7 @@ namespace KarmaWebAPI.Controllers
         }
 
         // GET: api/professordegrup/{id}
-        [HttpGet("{id}")]
+        [HttpGet("{idProfessorDeGrup}")]
         [Authorize(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
         public async Task<ActionResult<ProfessorDeGrup>> Instancia(int idProfessorDeGrup)
         {

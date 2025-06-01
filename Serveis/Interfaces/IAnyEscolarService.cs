@@ -8,6 +8,8 @@ namespace KarmaWebAPI.Serveis.Interfaces
     {
         public Task<ActionResult<AnyEscolar>> CrearAnyEscolarAsync(AnyEscolarCrearDto anyEscolarDto);
         public Task<ActionResult<AnyEscolar>> TCREARAsync(AnyEscolarCrearDto anyEscolarDto);
+
+        public Task<IActionResult> ActualitzaKarmaAsync(int anyEscolar);
     }
 
 }

@@ -7,9 +7,8 @@ namespace KarmaWebAPI.Serveis.Interfaces
     public interface IAlumneEnGrupService
     {
         public ICollection<VPrivilegiPeriode> GetPrivilegisPeriode(int idAlumneEnGrup);
-        public Task<ActionResult<AlumneEnGrup>> EditPuntuacioAsync(int idAlumneEnGrup, int Punts);
-
-        public Task<IActionResult> ActualitzaKarmaAsync(int anyEscolar);
+        public Task<ActionResult<AlumneEnGrup>> AfegirPuntuacioAsync(int idAlumneEnGrup, int punts);
+        public Task<ActionResult<AlumneEnGrup>> ResetPuntuacioTotalAsync(int idAlumneEnGrup, int puntuacioTotal);
     }
 
 }

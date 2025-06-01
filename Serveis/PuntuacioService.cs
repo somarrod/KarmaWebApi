@@ -59,11 +59,10 @@
             var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(puntuacioDto.IdAlumneEnGrup);
 
             if (alumneEnGrup != null)
-            {
-                int total = alumneEnGrup.PuntuacioTotal + puntuacioDto.Punts;
+            {             
                 int idAlumneEnGrup = puntuacioDto.IdAlumneEnGrup;
                 // Specify the interface explicitly to resolve ambiguity
-                var resultado = await _alumneEnGrupService.EditPuntuacioAsync(idAlumneEnGrup, total);
+                var resultado = await _alumneEnGrupService.AfegirPuntuacioAsync(idAlumneEnGrup, puntuacioDto.Punts);
 
                 await _grupService.calculaKarmaBaseAsync(alumneEnGrup.IdAnyEscolar, alumneEnGrup.IdGrup);
             }
@@ -93,7 +92,7 @@
                 int total = alumneEnGrup.PuntuacioTotal - puntuacio.Punts;
                 int idAlumneEnGrup = puntuacio.IdAlumneEnGrup;
 
-                var resultado = await _alumneEnGrupService.EditPuntuacioAsync(idAlumneEnGrup, total);
+                var resultado = await _alumneEnGrupService.ResetPuntuacioTotalAsync(idAlumneEnGrup, 0);
 
                 await _grupService.calculaKarmaBaseAsync(alumneEnGrup.IdAnyEscolar, alumneEnGrup.IdGrup);
             }

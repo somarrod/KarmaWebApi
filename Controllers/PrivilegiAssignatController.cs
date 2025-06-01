@@ -123,7 +123,6 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Professor,AG_Admin")]
         public async Task<IActionResult>MARCARREALITZAT(PrivilegiAssignatEditarDto privilegiAssignatDTO)
         {
-
             var privilegiAssignat = await _context.PrivilegiAssignat
                                      .Include(p => p.AlumneEnGrup)
                                      //.ThenInclude(aeg => aeg.Grup)
@@ -134,6 +133,17 @@ namespace KarmaWebAPI.Controllers
             {
                 return NotFound();
             }
+
+
+            if (privilegiAssignat.DataExecucio!=null)
+            {
+                return new ConflictObjectResult($"El privilegi assignat seleccionat ja ha estat gaudit per l'alumne");
+            }
+
+            if (privilegiAssignat.DataAssignacio > privilegiAssignatDTO.DataExecucio) {
+                return new ConflictObjectResult($"La data d'execució no pot ser superior a la data d'assignació: {privilegiAssignat.DataAssignacio}");
+            }
+
             if (privilegiAssignat.EsIndividualGrup == "I")
             {
                 privilegiAssignat.DataExecucio = privilegiAssignatDTO.DataExecucio;

@@ -55,60 +55,104 @@ namespace KarmaWebAPI.Controllers
         [HttpGet]
         [Route("llista")]
         [Authorize(Roles ="AG_Professor,AG_Alumne,AG_Admin")]
-        public async Task<ActionResult<IEnumerable<VPrivilegiPeriode>>> Llista()
+        public async Task<ActionResult<IEnumerable<VPrivilegiPeriodeDisplaySet>>> Llista()
         {
-
             var userId = User.Identity.Name;
 
-            var privilegis = new List<VPrivilegiPeriode>();
+            IQueryable<VPrivilegiPeriode> query = _context.VPrivilegiPeriode
+                .Include(p => p.AlumneEnGrup)
+                    .ThenInclude(aeg => aeg.Grup)
+                .Include(p => p.Periode)
+                .Include(p => p.Privilegi);
 
             if (User.IsInRole("AG_Admin"))
             {
-                privilegis = await _context.VPrivilegiPeriode
+                // No filtres, agafes tot
+            }
+            else if (User.IsInRole("AG_Professor"))
+            {
+                query = query.Where(p => p.AlumneEnGrup.Grup.ProfessorsDeGrup
+                    .Any(pg => pg.Professor.IdProfessor == userId));
+            }
+            else if (User.IsInRole("AG_Alumne"))
+            {
+                query = query.Where(p => p.AlumneEnGrup.NIA == userId);
+            }
+
+            var result = await query.Select(p => new VPrivilegiPeriodeDisplaySet
+            {
+                IdAnyEscolar = p.AlumneEnGrup.IdAnyEscolar,
+                IdGrup = p.AlumneEnGrup.IdGrup,
+                DescripcioGrup = p.AlumneEnGrup.Grup.Descripcio,
+
+                IdPeriode = p.Periode.IdPeriode,
+                DataInici = p.Periode.DataInici,
+                DataFi = p.Periode.DataFi,
+
+                NIA = p.AlumneEnGrup.NIA,
+                NomCompletAlumne = p.AlumneEnGrup.Alumne.Nom + " " + p.AlumneEnGrup.Alumne.Cognoms,
+
+                IdPrivilegi = p.Privilegi.IdPrivilegi,
+                DescripcioPrivilegi = p.Privilegi.Descripcio
+            }).ToListAsync();
+
+            return Ok(result);
+        }
+
+        /*   public async Task<ActionResult<IEnumerable<VPrivilegiPeriode>>> Llista()
+           {
+
+               var userId = User.Identity.Name;
+
+               var privilegis = new List<VPrivilegiPeriode>();
+
+               if (User.IsInRole("AG_Admin"))
+               {
+                   privilegis = await _context.VPrivilegiPeriode
+                                       .Include(p => p.AlumneEnGrup)
+                                       .Include(p => p.Periode)
+                                       .Include(p => p.Privilegi)
+                                       .ToListAsync();
+               }
+               else 
+               {
+                   if (User.IsInRole("AG_Professor"))
+                   {
+                       //EXIST( AlumneEnGrup.Grup.ProfessorsDeGrup ) WHERE (AlumneEnGrup.Grup.ProfessorsDeGrup.Professor = Agent.Professor) = true
+                       // Filtrar privilegis basados en el rol de profesor
+                       privilegis = await _context.VPrivilegiPeriode
                                     .Include(p => p.AlumneEnGrup)
                                     .Include(p => p.Periode)
                                     .Include(p => p.Privilegi)
+                                    .Where(p => p.AlumneEnGrup.Grup.ProfessorsDeGrup.Any(pg => pg.Professor.IdProfessor == userId))
                                     .ToListAsync();
-            }
-            else 
-            {
-                if (User.IsInRole("AG_Professor"))
-                {
-                    //EXIST( AlumneEnGrup.Grup.ProfessorsDeGrup ) WHERE (AlumneEnGrup.Grup.ProfessorsDeGrup.Professor = Agent.Professor) = true
-                    // Filtrar privilegis basados en el rol de profesor
-                    privilegis = await _context.VPrivilegiPeriode
-                                 .Include(p => p.AlumneEnGrup)
-                                 .Include(p => p.Periode)
-                                 .Include(p => p.Privilegi)
-                                 .Where(p => p.AlumneEnGrup.Grup.ProfessorsDeGrup.Any(pg => pg.Professor.IdProfessor == userId))
-                                 .ToListAsync();
-                }
-                else 
-                {
-                    if (User.IsInRole("AG_Alumne")) 
-                    {
-                        privilegis = await _context.VPrivilegiPeriode
-                                     .Include(p => p.AlumneEnGrup)
-                                     .Include(p => p.Periode)
-                                     .Include(p => p.Privilegi)
-                                     .Where(p => p.AlumneEnGrup.NIA == userId)
-                                     .ToListAsync();
-                    }
-                }
-            }
+                   }
+                   else 
+                   {
+                       if (User.IsInRole("AG_Alumne")) 
+                       {
+                           privilegis = await _context.VPrivilegiPeriode
+                                        .Include(p => p.AlumneEnGrup)
+                                        .Include(p => p.Periode)
+                                        .Include(p => p.Privilegi)
+                                        .Where(p => p.AlumneEnGrup.NIA == userId)
+                                        .ToListAsync();
+                       }
+                   }
+               }
 
-             // Evitar el ciclo de referencias
-            foreach (var privilegi in privilegis)
-            {
-                privilegi.AlumneEnGrup.PrivilegisPeriode = null;
-                privilegi.Periode.PrivilegisPeriode = null;
-                privilegi.Privilegi.PrivilegisPeriode = null;
-            }
+                // Evitar el ciclo de referencias
+               foreach (var privilegi in privilegis)
+               {
+                   privilegi.AlumneEnGrup.PrivilegisPeriode = null;
+                   privilegi.Periode.PrivilegisPeriode = null;
+                   privilegi.Privilegi.PrivilegisPeriode = null;
+               }
 
-            return Ok(privilegis);
-        }
+               return Ok(privilegis);
+           }*/
 
-       
+
         [HttpGet("llista-condicionada")]
         [Authorize(Roles = "AG_Professor,AG_Alumne,AG_Admin")]
         public async Task<ActionResult<IEnumerable<VPrivilegiPeriodeDisplaySet>>> Llista(int? idPrivilegi, int? idPeriode, string? idGrup, int? idAnyEscolar, string? nia)
