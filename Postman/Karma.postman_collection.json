@@ -76,7 +76,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"nia\": \"1234567892\",\r\n  \"nom\": \"Reina\",\r\n  \"cognoms\": \"Peiró\",\r\n  \"email\": \"rpeiro2@alumne.com\"\r\n}",
+							"raw": "{\r\n  \"nia\": \"2234567892\",\r\n  \"nom\": \"Reina\",\r\n  \"cognoms\": \"Peiro\",\r\n  \"email\": \"reinapeiro2@alumne.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -204,7 +204,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/alumne/eliminar?nia=1234567892",
+							"raw": "{{url}}api/alumne/eliminar?nia=1234567899",
 							"host": [
 								"{{url}}api"
 							],
@@ -215,7 +215,7 @@
 							"query": [
 								{
 									"key": "nia",
-									"value": "1234567892"
+									"value": "1234567899"
 								}
 							]
 						}
@@ -245,20 +245,20 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/alumneengrup/1",
+							"raw": "{{url}}api/alumneengrup/3",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
 								"alumneengrup",
-								"1"
+								"3"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "buscar-id-per-alumne-i-grup",
+					"name": "instancia-per-alumne-i-grup",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -275,13 +275,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/alumneengrup/buscar-id-per-alumne-i-grup?nia=1234567890&idAnyEscolar=2526&idGrup=1ESOC",
+							"raw": "{{url}}api/alumneengrup/instancia-per-alumne-i-grup?nia=1234567890&idAnyEscolar=2425&idGrup=1DAW",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
 								"alumneengrup",
-								"buscar-id-per-alumne-i-grup"
+								"instancia-per-alumne-i-grup"
 							],
 							"query": [
 								{
@@ -290,11 +290,11 @@
 								},
 								{
 									"key": "idAnyEscolar",
-									"value": "2526"
+									"value": "2425"
 								},
 								{
 									"key": "idGrup",
-									"value": "1ESOC"
+									"value": "1DAW"
 								}
 							]
 						}
@@ -338,7 +338,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"nia\": \"1234567891\",\r\n  \"idAnyEscolar\": 2526,\r\n  \"idGrup\": \"1ESOC\"\r\n}",
+							"raw": "{\r\n  \"nia\": \"1234567892\",\r\n  \"idAnyEscolar\": 2425,\r\n  \"idGrup\": \"1DAW\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -359,34 +359,7 @@
 					"response": []
 				},
 				{
-					"name": "editar",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"idAlumneEnGrup\": 1,\r\n  \"puntuacioTotal\": 3\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}api/alumneengrup/editar",
-							"host": [
-								"{{url}}api"
-							],
-							"path": [
-								"alumneengrup",
-								"editar"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "ActualitzaKarma",
+					"name": "ResetPuntuacioTotal",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -400,18 +373,18 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/alumneengrup/actualitzakarma?idanyescolar=2526",
+							"raw": "{{url}}api/alumneengrup/reset-puntuacio-total?idAlumneEnGrup=10",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
 								"alumneengrup",
-								"actualitzakarma"
+								"reset-puntuacio-total"
 							],
 							"query": [
 								{
-									"key": "idanyescolar",
-									"value": "2526"
+									"key": "idAlumneEnGrup",
+									"value": "10"
 								}
 							]
 						}
@@ -433,7 +406,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/alumneengrup/eliminar?idalumneengrup=5",
+							"raw": "{{url}}api/alumneengrup/eliminar?idalumneengrup=9",
 							"host": [
 								"{{url}}api"
 							],
@@ -444,7 +417,7 @@
 							"query": [
 								{
 									"key": "idalumneengrup",
-									"value": "5"
+									"value": "9"
 								}
 							]
 						}
@@ -474,13 +447,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/anyescolar/20242025",
+							"raw": "{{url}}api/anyescolar/2425",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
 								"anyescolar",
-								"20242025"
+								"2425"
 							]
 						}
 					},
@@ -569,6 +542,39 @@
 							"query": [
 								{
 									"key": "idAnyEscolar",
+									"value": "2526"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ActualitzaKarma",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/grup/actualitza-karma?idanyescolar=2526",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"grup",
+								"actualitza-karma"
+							],
+							"query": [
+								{
+									"key": "idanyescolar",
 									"value": "2526"
 								}
 							]
@@ -675,7 +681,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idCategoria\": 1,\r\n  \"descripcio\": \"Categoria 1\"\r\n}",
+							"raw": "{\r\n  \"idCategoria\": 1,\r\n  \"descripcio\": \"Colabora activament en les activitats del centre\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -743,7 +749,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/categoria/desactivar?idCategoria=1",
+							"raw": "{{url}}api/categoria/desactivar?idCategoria=4",
 							"host": [
 								"{{url}}api"
 							],
@@ -754,7 +760,7 @@
 							"query": [
 								{
 									"key": "idCategoria",
-									"value": "1"
+									"value": "4"
 								}
 							]
 						}
@@ -776,7 +782,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/categoria/eliminar?idCategoria=2",
+							"raw": "{{url}}api/categoria/eliminar?idCategoria=3",
 							"host": [
 								"{{url}}api"
 							],
@@ -787,7 +793,7 @@
 							"query": [
 								{
 									"key": "idCategoria",
-									"value": "2"
+									"value": "3"
 								}
 							]
 						}
@@ -896,13 +902,121 @@
 					"response": []
 				},
 				{
-					"name": "crear",
+					"name": "crear taronja",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idAnyEscolar\": 2526,\r\n  \"karmaMinim\": -5,\r\n  \"karmaMaxim\": 0,\r\n  \"colorNivell\": \"TARONJA\",\r\n  \"nivellPrivilegis\": 0\r\n}",
+							"raw": "{\r\n  \"idAnyEscolar\": 2425,\r\n  \"karmaMinim\": -5,\r\n  \"karmaMaxim\": 0,\r\n  \"colorNivell\": \"TARONJA\",\r\n  \"nivellPrivilegis\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/configuraciokarma/crear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"configuraciokarma",
+								"crear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crear verd",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idAnyEscolar\": 2425,\r\n  \"karmaMinim\": 1,\r\n  \"karmaMaxim\": 5,\r\n  \"colorNivell\": \"VERD\",\r\n  \"nivellPrivilegis\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/configuraciokarma/crear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"configuraciokarma",
+								"crear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crear morat",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idAnyEscolar\": 2425,\r\n  \"karmaMinim\": 6,\r\n  \"karmaMaxim\": 100,\r\n  \"colorNivell\": \"MORAT\",\r\n  \"nivellPrivilegis\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/configuraciokarma/crear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"configuraciokarma",
+								"crear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crear roig",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idAnyEscolar\": 2425,\r\n  \"karmaMinim\": -10,\r\n  \"karmaMaxim\": -6,\r\n  \"colorNivell\": \"ROIG\",\r\n  \"nivellPrivilegis\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/configuraciokarma/crear",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"configuraciokarma",
+								"crear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crear negre",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idAnyEscolar\": 2425,\r\n  \"karmaMinim\": -100,\r\n  \"karmaMaxim\": -11,\r\n  \"colorNivell\": \"NEGRE\",\r\n  \"nivellPrivilegis\": 0\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -929,7 +1043,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\"idConfiguracioKarma\": 4,\r\n\"idAnyEscolar\": 2526,\r\n\"karmaMinim\": -10,\r\n\"karmaMaxim\": -6,\r\n\"colorNivell\": \"ROIG\",\r\n\"nivellPrivilegis\": 0\r\n}",
+							"raw": "{\r\n\"idConfiguracioKarma\": 1,\r\n\"idAnyEscolar\": 2425,\r\n\"karmaMinim\": -5,\r\n\"karmaMaxim\": -1,\r\n\"colorNivell\": \"ROIG\",\r\n\"nivellPrivilegis\": 0\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1054,7 +1168,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idAnyEscolar\": 2526,\r\n  \"idProfessorTutor\": null,\r\n  \"idGrup\": \"1ESOC\",\r\n  \"descripcio\": \"1er ESO - C\"\r\n}\r\n",
+							"raw": "{\r\n  \"idAnyEscolar\": 2425,\r\n  \"idProfessorTutor\": null,\r\n  \"idGrup\": \"2DAM\",\r\n  \"descripcio\": \"2on DAM\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1081,7 +1195,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idAnyEscolar\": 2526,\r\n  \"idGrup\": \"1ESOC\",\r\n  \"descripcio\": \"1ER DE LA ESO C\",\r\n  \"idProfessorTutor\": \"1000\"\r\n}",
+							"raw": "{\r\n  \"idAnyEscolar\": 2425,\r\n  \"idGrup\": \"2DAW\",\r\n  \"descripcio\": \"2on de DAW\",\r\n  \"idProfessorTutor\": \"1000\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1116,7 +1230,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/grup/eliminar?idanyescolar=2526&idgrup=1ESOB",
+							"raw": "{{url}}api/grup/eliminar?idanyescolar=2425&idgrup=2DAM",
 							"host": [
 								"{{url}}api"
 							],
@@ -1127,11 +1241,11 @@
 							"query": [
 								{
 									"key": "idanyescolar",
-									"value": "2526"
+									"value": "2425"
 								},
 								{
 									"key": "idgrup",
-									"value": "1ESOB"
+									"value": "2DAM"
 								}
 							]
 						}
@@ -1210,7 +1324,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"nom\": \"Matemàtiques\"\r\n}",
+							"raw": "{\r\n  \"nom\": \"Desenvolupament Web en Entorn Client\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1237,7 +1351,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idCategoria\": 1,\r\n  \"descripcio\": \"Categoria 1\"\r\n}",
+							"raw": "{\r\n    \"idMateria\": 7,\r\n    \"nom\": \"Desenvolupament Web en Entorn Client2\",\r\n    \"activa\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1245,79 +1359,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/categoria/editar",
-							"host": [
-								"{{url}}api"
-							],
-							"path": [
-								"categoria",
-								"editar"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "activar",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}api/categoria/activar?idCategoria=1",
-							"host": [
-								"{{url}}api"
-							],
-							"path": [
-								"categoria",
-								"activar"
-							],
-							"query": [
-								{
-									"key": "idCategoria",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "desactivar",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}api/materia/desactivar?idMateria=1",
+							"raw": "{{url}}api/materia/editar",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
 								"materia",
-								"desactivar"
-							],
-							"query": [
-								{
-									"key": "idMateria",
-									"value": "1"
-								}
+								"editar"
 							]
 						}
 					},
@@ -1338,18 +1386,18 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/categoria/eliminar?idCategoria=2",
+							"raw": "{{url}}api/materia/eliminar?idMateria=6",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
-								"categoria",
+								"materia",
 								"eliminar"
 							],
 							"query": [
 								{
-									"key": "idCategoria",
-									"value": "2"
+									"key": "idMateria",
+									"value": "6"
 								}
 							]
 						}
@@ -1439,7 +1487,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/periode/llista-per-anyescolar?idAnyEscolar=2526",
+							"raw": "{{url}}api/periode/llista-per-anyescolar?idAnyEscolar=2425",
 							"host": [
 								"{{url}}api"
 							],
@@ -1450,7 +1498,7 @@
 							"query": [
 								{
 									"key": "idAnyEscolar",
-									"value": "2526"
+									"value": "2425"
 								}
 							]
 						}
@@ -1565,7 +1613,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"nivell\": 1,\r\n  \"descripcio\": \"arribar 5 minuts tard\",\r\n  \"esIndividualGrup\": \"G\",\r\n  \"idAnyEscolar\": 2526\r\n}",
+							"raw": "{\r\n  \"nivell\": 2,\r\n  \"descripcio\": \"Poder eixir al pati si no ve la professora\",\r\n  \"esIndividualGrup\": \"G\",\r\n  \"idAnyEscolar\": 2425\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1592,7 +1640,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idPrivilegi\": 2,\r\n  \"nivell\": 1,\r\n  \"descripcio\": \"Arribar 5 minuts tard\",\r\n  \"esIndividualGrup\": \"I\",\r\n  \"idAnyEscolar\": 2526\r\n}",
+							"raw": "{\r\n  \"idPrivilegi\": 1,\r\n  \"nivell\": 1,\r\n  \"descripcio\": \"Eixir de classe 5 minuts abans\",\r\n  \"esIndividualGrup\": \"I\",\r\n  \"idAnyEscolar\": 2425\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1668,13 +1716,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/privilegiassignat/7",
+							"raw": "{{url}}api/privilegiassignat/llista",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
 								"privilegiassignat",
-								"7"
+								"llista"
 							]
 						}
 					},
@@ -1711,49 +1759,13 @@
 					"response": []
 				},
 				{
-					"name": "llista-per-anyescolar",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}api/privilegi/llista-per-anyescolar?idAnyEscolar=2526",
-							"host": [
-								"{{url}}api"
-							],
-							"path": [
-								"privilegi",
-								"llista-per-anyescolar"
-							],
-							"query": [
-								{
-									"key": "idAnyEscolar",
-									"value": "2526"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Crear",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idAnyEscolar\": 2526,\r\n  \"idGrup\": \"1ESOC\",\r\n  \"nia\": \"1234567890\",\r\n  \"idPrivilegi\": 1\r\n}",
+							"raw": "{\r\n  \"idAnyEscolar\": 2425,\r\n  \"idGrup\": \"1DAW\",\r\n  \"nia\": \"1234567892\",\r\n  \"idPrivilegi\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1780,7 +1792,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idPrivilegiAssignat\": 7,\r\n  \"dataExecucio\": \"2025-05-11\"\r\n}",
+							"raw": "{\r\n  \"idPrivilegiAssignat\": 3,\r\n  \"dataExecucio\": \"2025-06-01\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1815,7 +1827,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/privilegiassignat/eliminar?idprivilegiassignat=3",
+							"raw": "{{url}}api/privilegiassignat/eliminar?idprivilegiassignat=1",
 							"host": [
 								"{{url}}api"
 							],
@@ -1826,7 +1838,7 @@
 							"query": [
 								{
 									"key": "idprivilegiassignat",
-									"value": "3"
+									"value": "1"
 								}
 							]
 						}
@@ -1905,7 +1917,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idProfessor\": \"1001\",\r\n  \"nom\": \"Sofia\",\r\n  \"cognoms\": \"Martí\",\r\n  \"email\": \"smarti@professor.com\"\r\n}",
+							"raw": "{\r\n  \"idProfessor\": \"1002\",\r\n  \"nom\": \"Reina\",\r\n  \"cognoms\": \"Peiró\",\r\n  \"email\": \"rpeiro2@professor.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1932,7 +1944,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idProfessor\": \"1000\",\r\n  \"nom\": \"Sofia2\",\r\n  \"cognoms\": \"Martí\",\r\n  \"email\": \"smarti2@professor.com\"\r\n}",
+							"raw": "{\r\n  \"idProfessor\": \"1000\",\r\n  \"nom\": \"Sofia\",\r\n  \"cognoms\": \"Martí Rodríguez\",\r\n  \"email\": \"smarti@professor.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2074,13 +2086,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/professordegrup/1",
+							"raw": "{{url}}api/professordegrup/2",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
 								"professordegrup",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -2123,7 +2135,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idProfessor\": \"1000\",\r\n  \"idMateria\": 2,\r\n  \"idAnyEscolar\": 2526,\r\n  \"idGrup\": \"1ESOC\"\r\n}",
+							"raw": "{\r\n  \"idProfessor\": \"1000\",\r\n  \"idMateria\": 4,\r\n  \"idAnyEscolar\": 2425,\r\n  \"idGrup\": \"2DAW\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2248,7 +2260,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idAlumneEnGrup\": 2,\r\n  \"idPeriode\": 1,\r\n  \"idCategoria\": null,\r\n  \"punts\": 1,\r\n  \"motiu\": \"La única persona que ha arribat a l'hora a classe\"\r\n}",
+							"raw": "{\r\n  \"idAlumneEnGrup\": 11,\r\n  \"idPeriode\": 2,\r\n  \"idCategoria\": null,\r\n  \"punts\": 3,\r\n  \"motiu\": \"La única persona que ha arribat a l'hora a classe\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2398,7 +2410,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/vprivilegiperiode/llista-condicionada?idPrivilegi=2&idPeriode=&NIA&IdAnyEscolar=2526&idGrup=1ESOC",
+							"raw": "{{url}}api/vprivilegiperiode/llista-condicionada?idPrivilegi=1&idPeriode=&NIA&IdAnyEscolar=2425&idGrup=1DAW",
 							"host": [
 								"{{url}}api"
 							],
@@ -2409,7 +2421,7 @@
 							"query": [
 								{
 									"key": "idPrivilegi",
-									"value": "2"
+									"value": "1"
 								},
 								{
 									"key": "idPeriode",
@@ -2421,11 +2433,11 @@
 								},
 								{
 									"key": "IdAnyEscolar",
-									"value": "2526"
+									"value": "2425"
 								},
 								{
 									"key": "idGrup",
-									"value": "1ESOC"
+									"value": "1DAW"
 								}
 							]
 						}
@@ -2474,7 +2486,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"P@ssw0rd\"\r\n}",
+							"raw": "{\r\n   \"email\": \"admin@institut.com\",\r\n  \"password\": \"P@ssw0rd\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2501,7 +2513,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"admin2@example.com\",\r\n  \"password\": \"P@ssw0rd\",\r\n  \"rememberMe\": true\r\n}",
+							"raw": "{\r\n  \"email\": \"admin@institut.com\",\r\n  \"password\": \"P@ssw0rd\",\r\n  \"rememberMe\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2528,7 +2540,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"smarti7@example.com\",\r\n  \"password\": \"Password1!\",\r\n  \"rememberMe\": true\r\n}",
+							"raw": "{\r\n  \"email\": \"rpeiro@alumne.com\",\r\n  \"password\": \"Rp1234567892!\",\r\n  \"rememberMe\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2582,7 +2594,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"passwordActual\": \"P@ssw0rd2\",\r\n  \"nouPassword\": \"P@ssw0rd\"\r\n}",
+							"raw": "{\r\n  \"passwordActual\": \"P@ssw0rd!\",\r\n  \"nouPassword\": \"P@ssw0rd\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
