@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  karma_sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: karma_sqlserver_container
+    environment:
+      SA_PASSWORD: "R3g@l1z0"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1434:1433"             # Cambia el puerto del host a 1434
+    volumes:
+      - karma_sql_data:/var/opt/mssql
+      - ./Scripts:/scripts
+
+  karmawebapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: karma_webapi_container
+    ports:
+      - "5000:80"
+    depends_on:
+      - karma_sqlserver
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=karma_sqlserver;Database=KarmaDB;User Id=sa;Password=R3g@l1z0;MultipleActiveResultSets=true;Encrypt=false
+
+  sql-init:
+    image: mcr.microsoft.com/mssql-tools
+    depends_on:
+      - karma_sqlserver
+    entrypoint: >
+      bash -c "sleep 20 && /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P R3g@l1z0 -i /scripts/creacioBBDD.sql"
+    volumes:
+      - ./Scripts:/scripts
+
+volumes:
+  karma_sql_data:
