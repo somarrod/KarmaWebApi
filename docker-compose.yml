@@ -30,7 +30,7 @@ services:
     depends_on:
       - karma_sqlserver
     entrypoint: >
-      bash -c "sleep 20 && /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P R3g@l1z0 -i /scripts/creacioBBDD.sql"
+      bash -c "sleep 40 && /opt/mssql-tools/bin/sqlcmd -S karma_sqlserver -U sa -P R3g@l1z0 -i /scripts/creacioBBDD.sql"
     volumes:
       - ./Scripts:/scripts
 

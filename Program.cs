@@ -6,6 +6,8 @@ using KarmaWebAPI.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
+//builder.WebHost.UseUrls("https://0.0.0.0:443");
+builder.WebHost.UseUrls("http://0.0.0.0:80");
 
 // Añadir política de cors
 builder.Services.AddCors(options =>
@@ -64,7 +66,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseRouting();
 
 //Middleware para que los errores de autentificación no devuelvan un error 405 y ya está
