@@ -200,7 +200,7 @@ namespace KarmaWebAPI.Controllers
         }
 
         // DELETE: api/Materia/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{idMateria}")]
         [Authorize(Roles = "AG_Admin")]
         public async Task<IActionResult> EliminarMateria(int idMateria)
         {

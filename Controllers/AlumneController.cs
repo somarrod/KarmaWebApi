@@ -29,6 +29,7 @@ namespace KarmaWebAPI.Controllers
         }
 
         // GET: api/Alumne/5
+        [Authorize(Roles = "AG_Admin, AG_Professor, AG_Alumne")]
         [HttpGet("{nia}")]
         public async Task<ActionResult<Alumne>> Instancia(string nia)
         {
@@ -43,6 +44,7 @@ namespace KarmaWebAPI.Controllers
         }
 
         // GET: api/Alumne
+        [Authorize(Roles = "AG_Admin, AG_Professor, AG_Alumne")]
         [HttpGet("llista")]
         public async Task<ActionResult<IEnumerable<Alumne>>> Llista()
         {
