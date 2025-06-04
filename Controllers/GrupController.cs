@@ -28,8 +28,9 @@ namespace KarmaWebAPI.Controllers
             return await _context.Grup.ToListAsync();
         }
 
-        // GET: api/Grup/5
-        [HttpGet("{id}")]
+
+        // GET: api/Grup/25/ESO1A
+        [HttpGet("{idAnyEscolar}/{idGrup}")]
         public async Task<ActionResult<Grup>> Instancia(int idAnyEscolar, string idGrup)
         {
             var grup = await _context.Grup.FindAsync(idAnyEscolar, idGrup);
