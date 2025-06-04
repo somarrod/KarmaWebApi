@@ -153,11 +153,18 @@ namespace KarmaWebAPI.Controllers
                 Karma = "CREACIÓ"
             };
             _context.AlumneEnGrup.Add(alumneEnGrup);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
 
-            await _alumneEnGrupService.AfegirPuntuacioAsync(alumneEnGrup.IdAlumneEnGrup, 0);
+                await _alumneEnGrupService.AfegirPuntuacioAsync(alumneEnGrup.IdAlumneEnGrup, 0);
 
-            await _grupService.calculaKarmaBaseAsync(grup.IdAnyEscolar, grup.IdGrup);
+                await _grupService.calculaKarmaBaseAsync(grup.IdAnyEscolar, grup.IdGrup);
+            }
+            catch (Exception e) 
+            {
+                return StatusCode(500, e.InnerException != null ? e.InnerException.Message : e.Message);
+            }
 
             return Ok(alumneEnGrup);
         }
