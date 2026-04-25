@@ -23,19 +23,21 @@ namespace KarmaWebAPI.Controllers
         [HttpGet("llista")]
         public async Task<ActionResult<IEnumerable<Categoria>>> Lista()
         {
-            return await _context.Categoria.ToListAsync();
+            return await _context.Categoria
+                .Include(c => c.TipusCategoria)
+                .ToListAsync();
         }
 
         // GET: api/Categoria/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Categoria>> Instancia(int id)
         {
-            var categoria = await _context.Categoria.FindAsync(id);
+            var categoria = await _context.Categoria
+                   .Include(c => c.TipusCategoria)
+                   .FirstOrDefaultAsync(c => c.IdCategoria == id);
 
-            if (categoria == null)
-            {
-                return NotFound();
-            }
+            if (categoria == null)         
+                return NotFound();            
 
             return categoria;
         }
@@ -45,11 +47,21 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin,AG_Professor")]
         public async Task<ActionResult<Categoria>> Crear(CategoriaCrearDTO categoriaDTO)
         {
+
+            // comprovem que el tipus existeix
+            var tipus = await _context.TipusCategoria
+                .FindAsync(categoriaDTO.IdTipusCategoria);
+
+            if (tipus == null)
+                return BadRequest("El tipus de categoria indicat no existeix");
+
             var categoria = new Categoria
             {
                 Descripcio = categoriaDTO.Descripcio,
-                Activa = true // Asignar valor por defecto
+                IdTipusCategoria = categoriaDTO.IdTipusCategoria,
+                Activa = true
             };
+
 
             _context.Categoria.Add(categoria);
             try
@@ -61,7 +73,7 @@ namespace KarmaWebAPI.Controllers
                 return StatusCode(500, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
             }
 
-            return new OkObjectResult(categoria);
+            return Ok(categoria);
         }
 
 

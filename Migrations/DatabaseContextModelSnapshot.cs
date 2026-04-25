@@ -198,7 +198,12 @@ namespace KarmaWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("IdTipusCategoria")
+                        .HasColumnType("int");
+
                     b.HasKey("IdCategoria");
+
+                    b.HasIndex("IdTipusCategoria");
 
                     b.ToTable("Categoria");
                 });
@@ -486,6 +491,24 @@ namespace KarmaWebAPI.Migrations
                     b.ToTable("Puntuacio");
                 });
 
+            modelBuilder.Entity("KarmaWebAPI.Models.TipusCategoria", b =>
+                {
+                    b.Property<int>("IdTipusCategoria")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTipusCategoria"));
+
+                    b.Property<string>("Descripcio")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("IdTipusCategoria");
+
+                    b.ToTable("TipusCategoria");
+                });
+
             modelBuilder.Entity("KarmaWebAPI.Models.VPrivilegiPeriode", b =>
                 {
                     b.Property<int>("IdAlumneEnGrup")
@@ -669,6 +692,17 @@ namespace KarmaWebAPI.Migrations
                     b.Navigation("AnyEscolar");
 
                     b.Navigation("Grup");
+                });
+
+            modelBuilder.Entity("KarmaWebAPI.Models.Categoria", b =>
+                {
+                    b.HasOne("KarmaWebAPI.Models.TipusCategoria", "TipusCategoria")
+                        .WithMany("Categories")
+                        .HasForeignKey("IdTipusCategoria")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TipusCategoria");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.ConfiguracioKarma", b =>
@@ -923,6 +957,11 @@ namespace KarmaWebAPI.Migrations
                     b.Navigation("GrupsTutoritzats");
 
                     b.Navigation("ProfessorDeGrups");
+                });
+
+            modelBuilder.Entity("KarmaWebAPI.Models.TipusCategoria", b =>
+                {
+                    b.Navigation("Categories");
                 });
 #pragma warning restore 612, 618
         }

@@ -7,8 +7,13 @@ namespace KarmaWebAPI.DTOs
 
     public class CategoriaCrearDTO
     {
+
         [Required]
-        public String Descripcio { get; set; } //nom 
+        public string Descripcio { get; set; }
+
+        [Required]
+        public int IdTipusCategoria { get; set; }
+
 
     }
 

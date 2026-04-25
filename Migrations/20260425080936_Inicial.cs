@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KarmaWebAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class _1aMigracio : Migration
+    public partial class Inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -83,20 +83,6 @@ namespace KarmaWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Categoria",
-                columns: table => new
-                {
-                    IdCategoria = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Descripcio = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Activa = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categoria", x => x.IdCategoria);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Materia",
                 columns: table => new
                 {
@@ -123,6 +109,19 @@ namespace KarmaWebAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Professor", x => x.IdProfessor);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TipusCategoria",
+                columns: table => new
+                {
+                    IdTipusCategoria = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Descripcio = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TipusCategoria", x => x.IdTipusCategoria);
                 });
 
             migrationBuilder.CreateTable(
@@ -324,6 +323,27 @@ namespace KarmaWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Categoria",
+                columns: table => new
+                {
+                    IdCategoria = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Descripcio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Activa = table.Column<bool>(type: "bit", nullable: false),
+                    IdTipusCategoria = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categoria", x => x.IdCategoria);
+                    table.ForeignKey(
+                        name: "FK_Categoria_TipusCategoria_IdTipusCategoria",
+                        column: x => x.IdTipusCategoria,
+                        principalTable: "TipusCategoria",
+                        principalColumn: "IdTipusCategoria",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AlumneEnGrup",
                 columns: table => new
                 {
@@ -511,6 +531,11 @@ namespace KarmaWebAPI.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Categoria_IdTipusCategoria",
+                table: "Categoria",
+                column: "IdTipusCategoria");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ConfiguracioKarma_IdAnyEscolar",
                 table: "ConfiguracioKarma",
                 column: "IdAnyEscolar");
@@ -627,6 +652,9 @@ namespace KarmaWebAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Grup");
+
+            migrationBuilder.DropTable(
+                name: "TipusCategoria");
 
             migrationBuilder.DropTable(
                 name: "AnyEscolar");

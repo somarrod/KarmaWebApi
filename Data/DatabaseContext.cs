@@ -13,6 +13,7 @@ namespace KarmaWebAPI.Data
         public DbSet<AlumneEnGrup> AlumneEnGrup { get; set; } = null!;
         public DbSet<AnyEscolar> AnyEscolar { get; set; } = null!;
         public DbSet<Categoria> Categoria { get; set; } = null!;
+        public DbSet<TipusCategoria> TipusCategoria { get; set; } = null!;
         public DbSet<ConfiguracioKarma> ConfiguracioKarma { get; set; } = null!;
         public DbSet<Grup> Grup { get; set; } = null!;
         public DbSet<Materia> Materia { get; set; } = null!;

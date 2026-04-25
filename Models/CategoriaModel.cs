@@ -14,5 +14,13 @@ namespace KarmaWebAPI.Models
 
         [Required]
         public bool Activa { get; set; } = true; //Activa, per defecte true
+
+
+        // ---------- RELACIÓ ----------
+        [ForeignKey(nameof(TipusCategoria))]
+        public int IdTipusCategoria { get; set; }
+
+        public TipusCategoria TipusCategoria { get; set; }
+
     }
 }
