@@ -9,23 +9,44 @@ namespace KarmaWebAPI.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int IdAnyEscolar { get; set; } //identificar únic
+
+        [Required]
         public DateOnly DataIniciCurs { get; set; }
+
+        [Required]
         public DateOnly DataFiCurs { get; set; }
-        public Boolean Actiu { get; set; }
-        public int DiesPeriode { get; set; } // dies per període
+
+
+        /// <summary>
+        /// Saldo inicial de karma que tindrà cada alumne en iniciar el curs
+        /// </summary>
+        [Required]
+        public double SaldoKarmaInicial { get; set; }
+
+        /// <summary>
+        /// Indica si el saldo de karma es reinicia en cada avaluació
+        /// </summary>
+        [Required]
+        public bool ReiniciaCadaAvaluacio { get; set; }
+
+        /// <summary>
+        /// Indica si l'any escolar està actiu
+        /// </summary>
+        [Required]
+        public bool Actiu { get; set; } = true;
+
+
+
 
         #region Navegacions
-        // Propiedad de navegación para los Privilegis asociados
-        public ICollection<Privilegi> Privilegis { get; set; }
 
-        public ICollection<Periode> Periodes{ get; set; }
+        public ICollection<Privilegi> Privilegis { get; set; } = new List<Privilegi>();
+        public ICollection<Periode> Periodes { get; set; } = new List<Periode>();
+        public ICollection<Grup> Grups { get; set; } = new List<Grup>();
+        public ICollection<AlumneEnGrup> AlumnesEnGrup { get; set; } = new List<AlumneEnGrup>();
+        public ICollection<ConfiguracioKarma> ConfiguracionsKarma { get; set; } = new List<ConfiguracioKarma>();
 
-        public ICollection<Grup> Grups { get; set; }
-
-        public ICollection<AlumneEnGrup> AlumnesEnGrup { get; set; }
-
-        public ICollection<ConfiguracioKarma> ConfiguracionsKarma { get; set; }
-        #endregion Navegacions
+        #endregion
 
     }
 }

@@ -20,48 +20,61 @@ namespace KarmaWebAPI.Serveis
             _periodeService = periodeService;
         }
 
-        public async Task<ActionResult<AnyEscolar>> CrearAnyEscolarAsync(AnyEscolarCrearDto anyEscolarDto)
+        public async Task<AnyEscolar> CrearAnyEscolarAsync(AnyEscolarCrearDto anyEscolarDto)
         {
-            if (anyEscolarDto.DiesPeriode < 7) {
-                return new ConflictObjectResult("Els dies de periode han de ser valors majors o iguals a 7."); // Use ConflictObjectResult
-            }
 
             var anyEscolar = new AnyEscolar
             {
                 IdAnyEscolar = int.Parse((anyEscolarDto.DataIniciCurs.Year -2000).ToString() + (anyEscolarDto.DataFiCurs.Year -2000).ToString()),
                 DataIniciCurs = anyEscolarDto.DataIniciCurs,
                 DataFiCurs = anyEscolarDto.DataFiCurs,
-                Actiu = true,
-                DiesPeriode = anyEscolarDto.DiesPeriode,
-                Privilegis = new List<Privilegi>()
+                SaldoKarmaInicial = anyEscolarDto.SaldoKarmaInicial,
+                ReiniciaCadaAvaluacio = anyEscolarDto.ReiniciaCadaAvaluacio,
+                Actiu = true
             };
 
             _context.AnyEscolar.Add(anyEscolar);
             await _context.SaveChangesAsync();
 
-            return new OkObjectResult(anyEscolar);
+            return anyEscolar;
         }
 
-        public async Task<ActionResult<AnyEscolar>> TCREARAsync(AnyEscolarCrearDto anyEscolarDto)
+        public async Task<AnyEscolar> EditarAnyEscolarAsync(AnyEscolarEditarDto dto)
         {
-            var result = await CrearAnyEscolarAsync(anyEscolarDto);
+            var anyEscolar = await _context.AnyEscolar
+                .FirstOrDefaultAsync(a => a.IdAnyEscolar == dto.IdAnyEscolar);
 
-            if (result.Result is not OkObjectResult okResult)
-            {
-                return result;
-            }
+            if (anyEscolar == null)
+                return null;
 
-            var anyEscolar = okResult.Value as AnyEscolar;
+            anyEscolar.DataIniciCurs = dto.DataIniciCurs;
+            anyEscolar.DataFiCurs = dto.DataFiCurs;
+            anyEscolar.SaldoKarmaInicial = dto.SaldoKarmaInicial;
+            anyEscolar.ReiniciaCadaAvaluacio = dto.ReiniciaCadaAvaluacio;
+            anyEscolar.Actiu = dto.Actiu;
 
-            await _periodeService.TCrearAsync(new PeriodeTCREARDTO
-            {
-                IdAnyEscolar = anyEscolar.IdAnyEscolar,
-                DataInici = anyEscolar.DataIniciCurs,
-            });
+            await _context.SaveChangesAsync();
 
-            return new OkObjectResult(anyEscolar);
+            return anyEscolar; // retorna objecte actualitzat
         }
 
+
+        public async Task<bool> ExistsAsync(int idAnyEscolar)
+        {
+            return await _context.AnyEscolar
+                .AnyAsync(a => a.IdAnyEscolar == idAnyEscolar);
+        }
+
+
+        public async Task<List<AnyEscolar>> GetLlistaAsync()
+        {
+            return await _context.AnyEscolar
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+
+        /*
         public async Task<IActionResult> ActualitzaKarmaAsync(int idAnyEscolar)
         {
             try
@@ -90,7 +103,8 @@ namespace KarmaWebAPI.Serveis
             {
                 throw new Exception("Error actualitzant el karma", ex);
             }
-        }
+        }*/
+
 
     }
 

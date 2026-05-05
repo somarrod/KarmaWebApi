@@ -28,9 +28,9 @@ namespace KarmaWebAPI.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Indica que la vista de base de datos no tiene clave primaria
-            modelBuilder.Entity<VPrivilegiPeriode>()
-                .HasNoKey()
-                .ToView("VPrivilegiPeriode");
+            //modelBuilder.Entity<VPrivilegiPeriode>()
+            //    .HasNoKey()
+            //    .ToView("VPrivilegiPeriode");
 
             // Configuración de la vista VPrivilegiPeriode
             modelBuilder.Entity<VPrivilegiPeriode>()

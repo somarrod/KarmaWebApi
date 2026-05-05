@@ -36,14 +36,14 @@ public class PeriodeService: IPeriodeService
         }
 
         DateOnly dataFi;
-        if (anyEscolar.DataFiCurs > periodeDto.DataInici.AddDays(anyEscolar.DiesPeriode))
-        {
-            dataFi = periodeDto.DataInici.AddDays(anyEscolar.DiesPeriode);
-        }
-        else
-        {
+        //if (anyEscolar.DataFiCurs > periodeDto.DataInici.AddDays(anyEscolar.DiesPeriode))
+        //{
+        //    dataFi = periodeDto.DataInici.AddDays(anyEscolar.DiesPeriode);
+        //}
+        //else
+        //{
             dataFi = anyEscolar.DataFiCurs;
-        }
+        //}
 
         var periode = new Periode
         {

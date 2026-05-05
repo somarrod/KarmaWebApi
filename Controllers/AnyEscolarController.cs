@@ -1,11 +1,12 @@
-﻿using KarmaWebAPI.Data;
+﻿using Humanizer;
+using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis;
 using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+//using Microsoft.EntityFrameworkCore;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -42,14 +43,24 @@ namespace KarmaWebAPI.Controllers
         }
 
         // GET: api/AnyEscolar
+
+        // GET: api/AnyEscolar/llista
         [HttpGet]
         [Route("llista")]
         [Authorize]
         public async Task<ActionResult<IEnumerable<AnyEscolar>>> Llista()
         {
-            var anyEscolar = await _context.AnyEscolar.ToListAsync();
-            return Ok(anyEscolar);
+            try
+            {
+                var anysEscolars = await _anyEscolarService.GetLlistaAsync();
+                return Ok(anysEscolars);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+
         #endregion Consultes
 
 
@@ -63,23 +74,14 @@ namespace KarmaWebAPI.Controllers
         {
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
+
                 try
                 {
-                    var result = await _anyEscolarService.CrearAnyEscolarAsync(anyEscolarDto);
-
-                    if (result.Result is OkObjectResult)
-                    {
-                        await transaction.CommitAsync();
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                    }
-                    return result;
+                    var anyEscolar = await _anyEscolarService.CrearAnyEscolarAsync(anyEscolarDto);
+                    return Ok(anyEscolar);
                 }
                 catch (Exception ex)
                 {
-                    await transaction.RollbackAsync();
                     return StatusCode(500, $"Internal server error: {ex.Message}");
                 }
             }
@@ -87,44 +89,26 @@ namespace KarmaWebAPI.Controllers
 
         #region Comentat - Editar no ha d'estar disponible
         // PUT: api/AnyEscolars/5
-        /*
+        
         [Authorize(Roles = "AG_Admin")]
-        [HttpPut("editar")]
-        public async Task<IActionResult> Editar(AnyEscolarEditarDto anyEscolarDto)
+        [HttpPut]
+        public async Task<ActionResult<AnyEscolar>> Editar([FromBody] AnyEscolarEditarDto dto)
         {
-            if (anyEscolarDto == null) {
-                return BadRequest();
-            }
-
-            var anyEscolar = new AnyEscolar
-            {
-                IdAnyEscolar = anyEscolarDto.IdAnyEscolar,
-                DataIniciCurs = anyEscolarDto.DataIniciCurs,
-                DataFiCurs = anyEscolarDto.DataFiCurs,
-                Actiu = anyEscolarDto.Actiu,
-                DiesPeriode = anyEscolarDto.DiesPeriode
-            };
-
-            _context.Entry(anyEscolar).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AnyEscolarExists(anyEscolarDto.IdAnyEscolar))
-                {
+                var anyEscolar = await _anyEscolarService.EditarAnyEscolarAsync(dto);
+
+                if (anyEscolar == null)
                     return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+
+                return Ok(anyEscolar);
             }
-            return Ok();
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
-        */
+
         #endregion Comentat - Editar no ha d'estar disponible      
 
         // DELETE: api/AnyEscolars/5
@@ -154,38 +138,38 @@ namespace KarmaWebAPI.Controllers
 
         #region Transaccions
         // POST: api/AnyEscolar/TCREAR
-        [HttpPost]
-        [Route("tcrear")]
-        [Authorize(Roles = "AG_Admin")]
-        public async Task<ActionResult<AnyEscolar>> TCREAR(AnyEscolarCrearDto anyEscolarDto)
-        {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    var result = await _anyEscolarService.TCREARAsync(anyEscolarDto);
+        /* [HttpPost]
+         [Route("tcrear")]
+         [Authorize(Roles = "AG_Admin")]
+         public async Task<ActionResult<AnyEscolar>> TCREAR(AnyEscolarCrearDto anyEscolarDto)
+         {
+             using (var transaction = await _context.Database.BeginTransactionAsync())
+             {
+                 try
+                 {
+                     var result = await _anyEscolarService.TCREARAsync(anyEscolarDto);
 
-                    if (result.Result is not OkObjectResult)
-                    {
-                        await transaction.RollbackAsync();
-                        return result;
-                    }
+                     if (result.Result is not OkObjectResult)
+                     {
+                         await transaction.RollbackAsync();
+                         return result;
+                     }
 
-                    await transaction.CommitAsync();
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                     await transaction.CommitAsync();
+                     return result;
+                 }
+                 catch (Exception ex)
+                 {
+                     await transaction.RollbackAsync();
+                     return StatusCode(500, $"Internal server error: {ex.Message}");
 
-                }
-            }
-        }
+                 }
+             }
+         }*/
 
 
-        
-        [HttpPut("actualitza-karma")]
+
+        /*[HttpPut("actualitza-karma")]
         [Authorize(Roles = "AG_Admin,AG_Professor")]
         public async Task<IActionResult> ActualitzaKarma(int idAnyEscolar)
         {
@@ -198,14 +182,18 @@ namespace KarmaWebAPI.Controllers
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-        }
+        }*/
         #endregion Transaccions
 
         #region Auxiliars
-        private bool AnyEscolarExists(int id_AnyEscolar)
+
+        [HttpGet("{idAnyEscolar}/exists")]
+        public async Task<ActionResult<bool>> Exists(int idAnyEscolar)
         {
-            return _context.AnyEscolar.Any(e => e.IdAnyEscolar == id_AnyEscolar);
+            var exists = await _anyEscolarService.ExistsAsync(idAnyEscolar);
+            return Ok(exists);
         }
+
         #endregion Auxiliars
     }
 }
