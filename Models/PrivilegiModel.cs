@@ -30,9 +30,5 @@ namespace KarmaWebAPI.Models
         public AnyEscolar AnyEscolar { get; set; }
 
 
-        [NotMapped]
-        public ICollection<VPrivilegiPeriode> PrivilegisPeriode { get; set; } // Ignorar esta propiedad
-
-
     }
 }

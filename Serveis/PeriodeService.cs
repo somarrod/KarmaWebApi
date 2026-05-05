@@ -19,14 +19,6 @@ public class PeriodeService: IPeriodeService
         return _context.Periode.ToList();
     }
 
-    public ICollection<VPrivilegiPeriode> GetPrivilegisPeriode(int idPeriode)
-    {
-        return _context.VPrivilegiPeriode
-                        .Where(v => idPeriode == v.IdPeriode)
-                        .ToList();
-    }
-
-
     public async Task<Periode> TCrearAsync(PeriodeTCREARDTO periodeDto)
     {
         var anyEscolar = await _context.AnyEscolar.FindAsync(periodeDto.IdAnyEscolar);

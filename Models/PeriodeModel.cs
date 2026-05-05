@@ -23,8 +23,6 @@ namespace KarmaWebAPI.Models
 
         public ICollection<Puntuacio> Puntuacions { get; set; }
 
-        [NotMapped]
-        public ICollection<VPrivilegiPeriode> PrivilegisPeriode { get; set; } // Ignorar esta propiedad
 
     }
 }

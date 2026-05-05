@@ -22,8 +22,7 @@ namespace KarmaWebAPI.Data
         public DbSet<Privilegi> Privilegi { get; set; } = null!;
         public DbSet<ProfessorDeGrup> ProfessorDeGrup { get; set; } = null!;
         public DbSet<Professor> Professor { get; set; } = null!;
-        public DbSet<Puntuacio> Puntuacio { get; set; } = null!;
-        public DbSet<VPrivilegiPeriode> VPrivilegiPeriode { get; set; } = null!;
+        public DbSet<Puntuacio> Puntuacio { get; set; } = null!;    
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,32 +32,32 @@ namespace KarmaWebAPI.Data
             //    .ToView("VPrivilegiPeriode");
 
             // Configuración de la vista VPrivilegiPeriode
-            modelBuilder.Entity<VPrivilegiPeriode>()
-            .Property(v => v.IdPeriode)
-            .HasColumnName("IdPeriode");
+            //modelBuilder.Entity<VPrivilegiPeriode>()
+            //.Property(v => v.IdPeriode)
+            //.HasColumnName("IdPeriode");
 
-            modelBuilder.Entity<VPrivilegiPeriode>()
-            .Property(v => v.IdAlumneEnGrup)
-            .HasColumnName("IdAlumneEnGrup");
+            //modelBuilder.Entity<VPrivilegiPeriode>()
+            //.Property(v => v.IdAlumneEnGrup)
+            //.HasColumnName("IdAlumneEnGrup");
 
-            modelBuilder.Entity<VPrivilegiPeriode>()
-            .Property(v => v.IdPrivilegi)
-            .HasColumnName("IdPrivilegi");
+            //modelBuilder.Entity<VPrivilegiPeriode>()
+            //.Property(v => v.IdPrivilegi)
+            //.HasColumnName("IdPrivilegi");
 
-            modelBuilder.Entity<VPrivilegiPeriode>()
-            .HasOne(v => v.AlumneEnGrup)
-            .WithMany()
-            .HasForeignKey(v => v.IdAlumneEnGrup);
+            //modelBuilder.Entity<VPrivilegiPeriode>()
+            //.HasOne(v => v.AlumneEnGrup)
+            //.WithMany()
+            //.HasForeignKey(v => v.IdAlumneEnGrup);
 
-            modelBuilder.Entity<VPrivilegiPeriode>()
-            .HasOne(v => v.Periode)
-            .WithMany()
-            .HasForeignKey(v => v.IdPeriode);
+            //modelBuilder.Entity<VPrivilegiPeriode>()
+            //.HasOne(v => v.Periode)
+            //.WithMany()
+            //.HasForeignKey(v => v.IdPeriode);
 
-            modelBuilder.Entity<VPrivilegiPeriode>()
-            .HasOne(v => v.Privilegi)
-            .WithMany()
-            .HasForeignKey(v => v.IdPrivilegi);
+            //modelBuilder.Entity<VPrivilegiPeriode>()
+            //.HasOne(v => v.Privilegi)
+            //.WithMany()
+            //.HasForeignKey(v => v.IdPrivilegi);
 
             // Configuración de la entidad Grup
             modelBuilder.Entity<Grup>()
@@ -114,13 +113,6 @@ namespace KarmaWebAPI.Data
                 .HasOne(p => p.AnyEscolar)
                 .WithMany(a => a.Periodes)
                 .HasForeignKey(p => p.IdAnyEscolar);
-
-            modelBuilder.Entity<Periode>()
-                .Ignore(p => p.PrivilegisPeriode);
-
-            // Configuración de la entidad Privilegi
-            modelBuilder.Entity<Privilegi>()
-                .Ignore(p => p.PrivilegisPeriode);
 
             modelBuilder.Entity<Privilegi>()
                 .HasOne(p => p.AnyEscolar)

@@ -37,9 +37,6 @@ namespace KarmaWebAPI.Models
         public AnyEscolar AnyEscolar { get; set; } //identificar únic del grup
         public ICollection<Puntuacio> Puntuacions{ get; set; } //Puntuacions de l'alumne assignades
 
-        [NotMapped]
-        public ICollection<VPrivilegiPeriode> PrivilegisPeriode { get; set; } //Puntuacions de l'alumne assignades
-
         #endregion Navegacion
     }
 }

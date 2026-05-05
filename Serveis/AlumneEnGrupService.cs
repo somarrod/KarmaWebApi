@@ -21,13 +21,6 @@ namespace KarmaWebAPI.Serveis
             _grup = grup;
         }
 
-        public ICollection<VPrivilegiPeriode> GetPrivilegisPeriode(int idAlumneEnGrup)
-        {
-            return _context.VPrivilegiPeriode
-                            .Where(v => idAlumneEnGrup == v.IdAlumneEnGrup)
-                            .ToList();
-        }
-
         public async Task<ActionResult<AlumneEnGrup>> AfegirPuntuacioAsync(int idAlumneEnGrup, int punts)
         {
             var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(idAlumneEnGrup);

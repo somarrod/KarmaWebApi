@@ -49,12 +49,6 @@ namespace KarmaWebAPI.Serveis
             return new OkObjectResult(privilegi.IdPrivilegi); // Return the created object
         }
 
-        public ICollection<VPrivilegiPeriode> GetPrivilegisPeriode(int idPrivilegi)
-        {
-            return _context.VPrivilegiPeriode
-                            .Where(v => idPrivilegi == v.IdPrivilegi)
-                            .ToList();
-        }
     }
 
 }
