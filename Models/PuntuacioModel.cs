@@ -22,9 +22,9 @@ namespace KarmaWebAPI.Models
         [StringLength(50)]
         public String? UsuariCreacio { get; set; } 
 
-        [ForeignKey("Periode")]
+        [ForeignKey("Avaluacio")]
         [Required]
-        public int IdPeriode { get; set; }
+        public int IdAvaluacio { get; set; }
 
         [ForeignKey("Categoria")]
         public int? IdCategoria { get; set; } //identificar únic
@@ -33,7 +33,7 @@ namespace KarmaWebAPI.Models
         public int IdAlumneEnGrup { get; set; } //identificar únic
 
         //Navegacions
-        public Periode Periode { get; set; } = null!;
+        public Avaluacio Avaluacio { get; set; } = null!;
 
         public Categoria Categoria { get; set; }
 

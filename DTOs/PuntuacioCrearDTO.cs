@@ -10,9 +10,9 @@ namespace KarmaWebAPI.DTOs
         [ForeignKey("AlumneEnGrup")]
         public int IdAlumneEnGrup { get; set; } //identificar únic
 
-        [ForeignKey("Periode")]
+        [ForeignKey("Avaluacio")]
         [Required]
-        public int IdPeriode { get; set; }
+        public int IdAvaluacio { get; set; }
 
         [ForeignKey("Categoria")]
         public int? IdCategoria { get; set; } //identificar únic

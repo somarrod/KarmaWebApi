@@ -12,15 +12,15 @@ namespace KarmaWebAPI.Serveis
     public class AnyEscolarService : IAnyEscolarService
     {
         private readonly DatabaseContext _context;
-        private readonly IPeriodeService _periodeService;
+        private readonly IAvaluacioService _avaluacioService;
 
-        public AnyEscolarService(DatabaseContext context, IPeriodeService periodeService)
+        public AnyEscolarService(DatabaseContext context, IAvaluacioService avaluacioService)
         {
             _context = context;
-            _periodeService = periodeService;
+            _avaluacioService = avaluacioService;
         }
 
-        public async Task<AnyEscolar> CrearAnyEscolarAsync(AnyEscolarCrearDto anyEscolarDto)
+        public async Task<AnyEscolar> CrearAnyEscolarAsync(AnyEscolarCrearDTO anyEscolarDto)
         {
 
             var anyEscolar = new AnyEscolar
@@ -33,15 +33,15 @@ namespace KarmaWebAPI.Serveis
                 Actiu = true
             };
 
-            _context.AnyEscolar.Add(anyEscolar);
+            _context.AnyEscolars.Add(anyEscolar);
             await _context.SaveChangesAsync();
 
             return anyEscolar;
         }
 
-        public async Task<AnyEscolar> EditarAnyEscolarAsync(AnyEscolarEditarDto dto)
+        public async Task<AnyEscolar> EditarAnyEscolarAsync(AnyEscolarEditarDTO dto)
         {
-            var anyEscolar = await _context.AnyEscolar
+            var anyEscolar = await _context.AnyEscolars
                 .FirstOrDefaultAsync(a => a.IdAnyEscolar == dto.IdAnyEscolar);
 
             if (anyEscolar == null)
@@ -61,14 +61,14 @@ namespace KarmaWebAPI.Serveis
 
         public async Task<bool> ExistsAsync(int idAnyEscolar)
         {
-            return await _context.AnyEscolar
+            return await _context.AnyEscolars
                 .AnyAsync(a => a.IdAnyEscolar == idAnyEscolar);
         }
 
 
         public async Task<List<AnyEscolar>> GetLlistaAsync()
         {
-            return await _context.AnyEscolar
+            return await _context.AnyEscolars
                 .AsNoTracking()
                 .ToListAsync();
         }

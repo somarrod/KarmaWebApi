@@ -41,7 +41,7 @@ namespace KarmaWebAPI.Models
         #region Navegacions
 
         public ICollection<Privilegi> Privilegis { get; set; } = new List<Privilegi>();
-        public ICollection<Periode> Periodes { get; set; } = new List<Periode>();
+        public ICollection<Avaluacio> Avaluacios { get; set; } = new List<Avaluacio>();
         public ICollection<Grup> Grups { get; set; } = new List<Grup>();
         public ICollection<AlumneEnGrup> AlumnesEnGrup { get; set; } = new List<AlumneEnGrup>();
         public ICollection<ConfiguracioKarma> ConfiguracionsKarma { get; set; } = new List<ConfiguracioKarma>();

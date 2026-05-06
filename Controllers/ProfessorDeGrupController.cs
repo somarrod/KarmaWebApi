@@ -115,7 +115,7 @@ namespace KarmaWebAPI.Controllers
             }
 
             // Verificar que IdAnyEscolar exista
-            var anyEscolarExisteix = await _context.AnyEscolar.AnyAsync(a => a.IdAnyEscolar == professorDeGrupDto.IdAnyEscolar);
+            var anyEscolarExisteix = await _context.AnyEscolars.AnyAsync(a => a.IdAnyEscolar == professorDeGrupDto.IdAnyEscolar);
             if (!anyEscolarExisteix)
             {
                 return BadRequest($"L'any escolar amb Id {professorDeGrupDto.IdAnyEscolar} no existeix.");

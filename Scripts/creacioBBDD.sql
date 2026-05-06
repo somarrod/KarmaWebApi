@@ -61,7 +61,7 @@ END
 -- AnyEscolar
 IF OBJECT_ID('dbo.AnyEscolar', 'U') IS NULL
 BEGIN
-	CREATE TABLE dbo.AnyEscolar(IdAnyEscolar INT NOT NULL, DataIniciCurs DATE NOT NULL, DataFiCurs DATE NOT NULL, Actiu BIT NOT NULL, DiesPeriode INT NOT NULL);
+	CREATE TABLE dbo.AnyEscolar(IdAnyEscolar INT NOT NULL, DataIniciCurs DATE NOT NULL, DataFiCurs DATE NOT NULL, Actiu BIT NOT NULL, DiesAvaluacio INT NOT NULL);
 END
 
 IF OBJECT_ID('dbo.Alumne', 'U') IS NULL
@@ -88,9 +88,9 @@ IF OBJECT_ID('dbo.Materia', 'U') IS NULL
 BEGIN
 	CREATE TABLE Materia(IdMateria INT IDENTITY, Nom NVARCHAR(150) NOT NULL, Activa BIT NOT NULL);
 END
-IF OBJECT_ID('dbo.Periode', 'U') IS NULL
+IF OBJECT_ID('dbo.Avaluacio', 'U') IS NULL
 BEGIN
-	CREATE TABLE Periode(IdPeriode INT IDENTITY, IdAnyEscolar INT NOT NULL, DataInici DATE NOT NULL, DataFi DATE NOT NULL);
+	CREATE TABLE Avaluacio(IdAvaluacio INT IDENTITY, IdAnyEscolar INT NOT NULL, DataInici DATE NOT NULL, DataFi DATE NOT NULL);
 END
 IF OBJECT_ID('dbo.Privilegi', 'U') IS NULL
 BEGIN
@@ -110,7 +110,7 @@ BEGIN
 END
 IF OBJECT_ID('dbo.Puntuacio', 'U') IS NULL
 BEGIN
-	CREATE TABLE Puntuacio(IdPuntuacio INT IDENTITY, IdPeriode INT NOT NULL, IdAlumneEnGrup INT NOT NULL, IdCategoria INT NULL, DataEntrada DATE NOT NULL, Punts INT NOT NULL, Motiu NVARCHAR(255) NOT NULL, IdProfessorCreacio NVARCHAR(50) NOT NULL);
+	CREATE TABLE Puntuacio(IdPuntuacio INT IDENTITY, IdAvaluacio INT NOT NULL, IdAlumneEnGrup INT NOT NULL, IdCategoria INT NULL, DataEntrada DATE NOT NULL, Punts INT NOT NULL, Motiu NVARCHAR(255) NOT NULL, IdProfessorCreacio NVARCHAR(50) NOT NULL);
 END
 
 -- Crear primaries
@@ -179,9 +179,9 @@ BEGIN
 	ALTER TABLE dbo.Materia ADD CONSTRAINT PK_Materia PRIMARY KEY (IdMateria);
 END
 GO
-IF NOT EXISTS (SELECT * FROM sys.key_constraints WHERE name = 'PK_Periode')
+IF NOT EXISTS (SELECT * FROM sys.key_constraints WHERE name = 'PK_Avaluacio')
 BEGIN
-	ALTER TABLE dbo.Periode ADD CONSTRAINT PK_Periode PRIMARY KEY (IdPeriode);
+	ALTER TABLE dbo.Avaluacio ADD CONSTRAINT PK_Avaluacio PRIMARY KEY (IdAvaluacio);
 END
 GO
 IF NOT EXISTS (SELECT * FROM sys.key_constraints WHERE name = 'PK_Privilegi')
@@ -261,9 +261,9 @@ BEGIN
 	ALTER TABLE dbo.Grup ADD CONSTRAINT FK_Grup_Professor_IdProfessorTutor FOREIGN KEY(IdProfessorTutor) REFERENCES dbo.Professor;
 END
 GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_Periode_AnyEscolar_IdAnyEscolar')
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_Avaluacio_AnyEscolar_IdAnyEscolar')
 BEGIN
-	ALTER TABLE dbo.Periode ADD CONSTRAINT FK_Periode_AnyEscolar_IdAnyEscolar FOREIGN KEY(IdAnyEscolar) REFERENCES dbo.AnyEscolar;
+	ALTER TABLE dbo.Avaluacio ADD CONSTRAINT FK_Avaluacio_AnyEscolar_IdAnyEscolar FOREIGN KEY(IdAnyEscolar) REFERENCES dbo.AnyEscolar;
 END
 GO
 IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_Privilegi_AnyEscolar_IdAnyEscolar')
@@ -311,9 +311,9 @@ BEGIN
 	ALTER TABLE dbo.Puntuacio ADD CONSTRAINT FK_Puntuacio_Categoria_IdCategoria FOREIGN KEY(IdCategoria) REFERENCES dbo.Categoria;
 END
 GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_Puntuacio_Periode_IdPeriode')
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_Puntuacio_Avaluacio_IdAvaluacio')
 BEGIN
-	ALTER TABLE dbo.Puntuacio ADD CONSTRAINT FK_Puntuacio_Periode_IdPeriode FOREIGN KEY(IdPeriode) REFERENCES dbo.Periode;
+	ALTER TABLE dbo.Puntuacio ADD CONSTRAINT FK_Puntuacio_Avaluacio_IdAvaluacio FOREIGN KEY(IdAvaluacio) REFERENCES dbo.Avaluacio;
 END
 GO
 
@@ -344,9 +344,9 @@ BEGIN
 END
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Periode_IdAnyEscolar')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Avaluacio_IdAnyEscolar')
 BEGIN
-	CREATE INDEX IX_Periode_IdAnyEscolar ON Periode(IdAnyEscolar) WITH PAD_INDEX;
+	CREATE INDEX IX_Avaluacio_IdAnyEscolar ON Avaluacio(IdAnyEscolar) WITH PAD_INDEX;
 END
 GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Privilegi_IdAnyEscolar')
@@ -389,9 +389,9 @@ BEGIN
 	CREATE INDEX IX_Puntuacio_IdCategoria ON Puntuacio(IdCategoria) WITH PAD_INDEX;
 END
 GO
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Puntuacio_IdPeriode')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Puntuacio_IdAvaluacio')
 BEGIN
-	CREATE INDEX IX_Puntuacio_IdPeriode ON Puntuacio(IdPeriode) WITH PAD_INDEX;
+	CREATE INDEX IX_Puntuacio_IdAvaluacio ON Puntuacio(IdAvaluacio) WITH PAD_INDEX;
 END
 GO
 

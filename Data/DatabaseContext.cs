@@ -11,13 +11,13 @@ namespace KarmaWebAPI.Data
         // Definición de DbSets para cada entidad
         public DbSet<Alumne> Alumne { get; set; } = null!;
         public DbSet<AlumneEnGrup> AlumneEnGrup { get; set; } = null!;
-        public DbSet<AnyEscolar> AnyEscolar { get; set; } = null!;
+        public DbSet<AnyEscolar> AnyEscolars { get; set; } = null!;
         public DbSet<Categoria> Categoria { get; set; } = null!;
         public DbSet<TipusCategoria> TipusCategoria { get; set; } = null!;
         public DbSet<ConfiguracioKarma> ConfiguracioKarma { get; set; } = null!;
         public DbSet<Grup> Grup { get; set; } = null!;
         public DbSet<Materia> Materia { get; set; } = null!;
-        public DbSet<Periode> Periode { get; set; } = null!;
+        public DbSet<Avaluacio> Avaluacions { get; set; } = null!;
         public DbSet<PrivilegiAssignat> PrivilegiAssignat { get; set; } = null!;
         public DbSet<Privilegi> Privilegi { get; set; } = null!;
         public DbSet<ProfessorDeGrup> ProfessorDeGrup { get; set; } = null!;
@@ -27,34 +27,34 @@ namespace KarmaWebAPI.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Indica que la vista de base de datos no tiene clave primaria
-            //modelBuilder.Entity<VPrivilegiPeriode>()
+            //modelBuilder.Entity<VPrivilegiAvaluacio>()
             //    .HasNoKey()
-            //    .ToView("VPrivilegiPeriode");
+            //    .ToView("VPrivilegiAvaluacio");
 
-            // Configuración de la vista VPrivilegiPeriode
-            //modelBuilder.Entity<VPrivilegiPeriode>()
-            //.Property(v => v.IdPeriode)
-            //.HasColumnName("IdPeriode");
+            // Configuración de la vista VPrivilegiAvaluacio
+            //modelBuilder.Entity<VPrivilegiAvaluacio>()
+            //.Property(v => v.IdAvaluacio)
+            //.HasColumnName("IdAvaluacio");
 
-            //modelBuilder.Entity<VPrivilegiPeriode>()
+            //modelBuilder.Entity<VPrivilegiAvaluacio>()
             //.Property(v => v.IdAlumneEnGrup)
             //.HasColumnName("IdAlumneEnGrup");
 
-            //modelBuilder.Entity<VPrivilegiPeriode>()
+            //modelBuilder.Entity<VPrivilegiAvaluacio>()
             //.Property(v => v.IdPrivilegi)
             //.HasColumnName("IdPrivilegi");
 
-            //modelBuilder.Entity<VPrivilegiPeriode>()
+            //modelBuilder.Entity<VPrivilegiAvaluacio>()
             //.HasOne(v => v.AlumneEnGrup)
             //.WithMany()
             //.HasForeignKey(v => v.IdAlumneEnGrup);
 
-            //modelBuilder.Entity<VPrivilegiPeriode>()
-            //.HasOne(v => v.Periode)
+            //modelBuilder.Entity<VPrivilegiAvaluacio>()
+            //.HasOne(v => v.Avaluacio)
             //.WithMany()
-            //.HasForeignKey(v => v.IdPeriode);
+            //.HasForeignKey(v => v.IdAvaluacio);
 
-            //modelBuilder.Entity<VPrivilegiPeriode>()
+            //modelBuilder.Entity<VPrivilegiAvaluacio>()
             //.HasOne(v => v.Privilegi)
             //.WithMany()
             //.HasForeignKey(v => v.IdPrivilegi);
@@ -108,10 +108,10 @@ namespace KarmaWebAPI.Data
                 .WithMany(a => a.ConfiguracionsKarma)
                 .HasForeignKey(g => g.IdAnyEscolar);
 
-            // Configuración de la entidad Periode
-            modelBuilder.Entity<Periode>()
+            // Configuración de la entidad Avaluacio
+            modelBuilder.Entity<Avaluacio>()
                 .HasOne(p => p.AnyEscolar)
-                .WithMany(a => a.Periodes)
+                .WithMany(a => a.Avaluacios)
                 .HasForeignKey(p => p.IdAnyEscolar);
 
             modelBuilder.Entity<Privilegi>()
@@ -146,10 +146,10 @@ namespace KarmaWebAPI.Data
                 .WithMany(p => p.Puntuacions)
                 .HasForeignKey(p => p.IdAlumneEnGrup);
 
-            modelBuilder.Entity<Puntuacio>()
-                .HasOne(p => p.Periode)
-                .WithMany(p => p.Puntuacions)
-                .HasForeignKey(p => p.IdPeriode);
+            //modelBuilder.Entity<Puntuacio>()
+            //    .HasOne(p => p.Avaluacio)
+            //    .WithMany(p => p.Puntuacions)
+            //    .HasForeignKey(p => p.IdAvaluacio);
 
             // Llamada al método base
             base.OnModelCreating(modelBuilder);

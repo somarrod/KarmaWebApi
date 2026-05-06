@@ -34,7 +34,7 @@ namespace KarmaWebAPI.Migrations
                     DataIniciCurs = table.Column<DateOnly>(type: "date", nullable: false),
                     DataFiCurs = table.Column<DateOnly>(type: "date", nullable: false),
                     Actiu = table.Column<bool>(type: "bit", nullable: false),
-                    DiesPeriode = table.Column<int>(type: "int", nullable: false)
+                    DiesAvaluacio = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -148,10 +148,10 @@ namespace KarmaWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Periode",
+                name: "Avaluacio",
                 columns: table => new
                 {
-                    IdPeriode = table.Column<int>(type: "int", nullable: false)
+                    IdAvaluacio = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DataInici = table.Column<DateOnly>(type: "date", nullable: false),
                     DataFi = table.Column<DateOnly>(type: "date", nullable: false),
@@ -159,9 +159,9 @@ namespace KarmaWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Periode", x => x.IdPeriode);
+                    table.PrimaryKey("PK_Avaluacio", x => x.IdAvaluacio);
                     table.ForeignKey(
-                        name: "FK_Periode_AnyEscolar_IdAnyEscolar",
+                        name: "FK_Avaluacio_AnyEscolar_IdAnyEscolar",
                         column: x => x.IdAnyEscolar,
                         principalTable: "AnyEscolar",
                         principalColumn: "IdAnyEscolar",
@@ -455,7 +455,7 @@ namespace KarmaWebAPI.Migrations
                     Punts = table.Column<int>(type: "int", nullable: false),
                     Motiu = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     UsuariCreacio = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    IdPeriode = table.Column<int>(type: "int", nullable: false),
+                    IdAvaluacio = table.Column<int>(type: "int", nullable: false),
                     IdCategoria = table.Column<int>(type: "int", nullable: true),
                     IdAlumneEnGrup = table.Column<int>(type: "int", nullable: false)
                 },
@@ -474,10 +474,10 @@ namespace KarmaWebAPI.Migrations
                         principalTable: "Categoria",
                         principalColumn: "IdCategoria");
                     table.ForeignKey(
-                        name: "FK_Puntuacio_Periode_IdPeriode",
-                        column: x => x.IdPeriode,
-                        principalTable: "Periode",
-                        principalColumn: "IdPeriode",
+                        name: "FK_Puntuacio_Avaluacio_IdAvaluacio",
+                        column: x => x.IdAvaluacio,
+                        principalTable: "Avaluacio",
+                        principalColumn: "IdAvaluacio",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -546,8 +546,8 @@ namespace KarmaWebAPI.Migrations
                 column: "IdProfessorTutor");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Periode_IdAnyEscolar",
-                table: "Periode",
+                name: "IX_Avaluacio_IdAnyEscolar",
+                table: "Avaluacio",
                 column: "IdAnyEscolar");
 
             migrationBuilder.CreateIndex(
@@ -591,9 +591,9 @@ namespace KarmaWebAPI.Migrations
                 column: "IdCategoria");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Puntuacio_IdPeriode",
+                name: "IX_Puntuacio_IdAvaluacio",
                 table: "Puntuacio",
-                column: "IdPeriode");
+                column: "IdAvaluacio");
         }
 
         /// <inheritdoc />
@@ -645,7 +645,7 @@ namespace KarmaWebAPI.Migrations
                 name: "Categoria");
 
             migrationBuilder.DropTable(
-                name: "Periode");
+                name: "Avaluacio");
 
             migrationBuilder.DropTable(
                 name: "Alumne");

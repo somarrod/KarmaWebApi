@@ -54,7 +54,7 @@ namespace KarmaWebAPI.Controllers
             }
 
             // Comprovar que el any escolar, grup, NIA i privilegi existeixen
-            var anyEscolarExisteix = await _context.AnyEscolar.AnyAsync(a => a.IdAnyEscolar == privilegiAssignatDto.IdAnyEscolar);
+            var anyEscolarExisteix = await _context.AnyEscolars.AnyAsync(a => a.IdAnyEscolar == privilegiAssignatDto.IdAnyEscolar);
             var grupExisteix = await _context.Grup.AnyAsync(g => g.IdGrup == privilegiAssignatDto.IdGrup);
             var alumneExisteix = await _context.Alumne.AnyAsync(a => a.NIA == privilegiAssignatDto.NIA);
             var privilegi = await _context.Privilegi.FirstOrDefaultAsync(p => p.IdPrivilegi == privilegiAssignatDto.IdPrivilegi);

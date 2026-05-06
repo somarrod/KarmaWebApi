@@ -6,8 +6,8 @@ namespace KarmaWebAPI.Serveis.Interfaces
 {
     public interface IAnyEscolarService
     {
-        public Task<AnyEscolar> CrearAnyEscolarAsync(AnyEscolarCrearDto anyEscolarDto);
-        public Task<AnyEscolar> EditarAnyEscolarAsync(AnyEscolarEditarDto anyEscolarDto);
+        public Task<AnyEscolar> CrearAnyEscolarAsync(AnyEscolarCrearDTO anyEscolarDto);
+        public Task<AnyEscolar> EditarAnyEscolarAsync(AnyEscolarEditarDTO anyEscolarDto);
 
         Task<bool> ExistsAsync(int idAnyEscolar);
         

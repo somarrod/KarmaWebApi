@@ -32,7 +32,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize]
         public async Task<ActionResult<AnyEscolar>> Instancia(int idAnyEscolar)
         {
-            var anyEscolar = await _context.AnyEscolar.FindAsync(idAnyEscolar);
+            var anyEscolar = await _context.AnyEscolars.FindAsync(idAnyEscolar);
 
             if (anyEscolar == null)
             {
@@ -70,7 +70,7 @@ namespace KarmaWebAPI.Controllers
         [Route("crear")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [Authorize(Roles = "AG_Admin")]
-        public async Task<ActionResult<AnyEscolar>> Crear(AnyEscolarCrearDto anyEscolarDto)
+        public async Task<ActionResult<AnyEscolar>> Crear(AnyEscolarCrearDTO anyEscolarDto)
         {
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
@@ -92,7 +92,7 @@ namespace KarmaWebAPI.Controllers
         
         [Authorize(Roles = "AG_Admin")]
         [HttpPut]
-        public async Task<ActionResult<AnyEscolar>> Editar([FromBody] AnyEscolarEditarDto dto)
+        public async Task<ActionResult<AnyEscolar>> Editar([FromBody] AnyEscolarEditarDTO dto)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin")]
         public async Task<IActionResult> Eliminar(int idAnyEscolar)
         {
-            var anyEscolar = await _context.AnyEscolar.FindAsync(idAnyEscolar);
+            var anyEscolar = await _context.AnyEscolars.FindAsync(idAnyEscolar);
             if (anyEscolar == null)
             {
                 return NotFound($"L'any escolar {idAnyEscolar} no s'ha trobat");
@@ -124,7 +124,7 @@ namespace KarmaWebAPI.Controllers
 
             try
             {
-                _context.AnyEscolar.Remove(anyEscolar);
+                _context.AnyEscolars.Remove(anyEscolar);
                 await _context.SaveChangesAsync();
 
                 return Ok($"L'any escolar {idAnyEscolar} ha estat esborrat.");

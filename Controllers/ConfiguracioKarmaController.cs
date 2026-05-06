@@ -54,7 +54,7 @@ namespace KarmaWebAPI.Controllers
             ConfiguracioKarma.AnyEscolar.ConfiguracionsKarma = null;
             ConfiguracioKarma.AnyEscolar.Privilegis = null;
             ConfiguracioKarma.AnyEscolar.Grups = null;
-            ConfiguracioKarma.AnyEscolar.Periodes = null;
+            ConfiguracioKarma.AnyEscolar.Avaluacios = null;
 
             return Ok(ConfiguracioKarma);
         }
@@ -92,7 +92,7 @@ namespace KarmaWebAPI.Controllers
                 conf.AnyEscolar.ConfiguracionsKarma = null;
                 conf.AnyEscolar.Privilegis = null;
                 conf.AnyEscolar.Grups = null;
-                conf.AnyEscolar.Periodes = null;
+                conf.AnyEscolar.Avaluacios = null;
             }
 
             return Ok(ConfiguracioKarmaList);
@@ -104,7 +104,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin,AG_Professor")]
         public async Task<ActionResult<IEnumerable<ConfiguracioKarma>>> LlistaPerAnyEscolar(int idAnyEscolar)
         {
-            var anyEscolar = await _context.AnyEscolar.FindAsync(idAnyEscolar);
+            var anyEscolar = await _context.AnyEscolars.FindAsync(idAnyEscolar);
             if (anyEscolar == null)
             {
                 return NotFound($"Any escolar {idAnyEscolar} no trobat");
@@ -121,7 +121,7 @@ namespace KarmaWebAPI.Controllers
                 ConfiguracioKarma.AnyEscolar.ConfiguracionsKarma = null;
                 ConfiguracioKarma.AnyEscolar.Privilegis = null;
                 ConfiguracioKarma.AnyEscolar.Grups = null;
-                ConfiguracioKarma.AnyEscolar.Periodes = null;
+                ConfiguracioKarma.AnyEscolar.Avaluacios = null;
             }
 
             return Ok(ConfiguracioKarmaList);
@@ -138,7 +138,7 @@ namespace KarmaWebAPI.Controllers
                 return BadRequest("Falten els arguments d'entrada");
             }
 
-            var anyEscolar = await _context.AnyEscolar.FindAsync(configuracioKarmaDTO.IdAnyEscolar);
+            var anyEscolar = await _context.AnyEscolars.FindAsync(configuracioKarmaDTO.IdAnyEscolar);
             if (anyEscolar == null)
             {
                 return NotFound($"Any escolar {configuracioKarmaDTO.IdAnyEscolar} no trobat");
@@ -176,7 +176,7 @@ namespace KarmaWebAPI.Controllers
                 return BadRequest("ConfiguracioKarmaDTO no pot ser null");
             }
 
-            var anyEscolar = await _context.AnyEscolar.FindAsync(configuracioKarmaDTO.IdAnyEscolar);
+            var anyEscolar = await _context.AnyEscolars.FindAsync(configuracioKarmaDTO.IdAnyEscolar);
             if (anyEscolar == null)
             {
                 return NotFound($"Any escolar {configuracioKarmaDTO.IdAnyEscolar} no trobat");

@@ -31,7 +31,7 @@
                 Motiu = puntuacioDto.Motiu,
                 Punts = puntuacioDto.Punts,
                 IdCategoria = puntuacioDto.IdCategoria,
-                IdPeriode = puntuacioDto.IdPeriode,
+                IdAvaluacio = puntuacioDto.IdAvaluacio,
                 IdAlumneEnGrup = puntuacioDto.IdAlumneEnGrup,
                 DataEntrada = DateOnly.FromDateTime(DateTime.Now),
                 UsuariCreacio = usuariCreacio

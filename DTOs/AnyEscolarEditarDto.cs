@@ -4,7 +4,7 @@
 namespace KarmaWebAPI.DTOs
 {
 
-    public class AnyEscolarEditarDto
+    public class AnyEscolarEditarDTO
     {
         public int IdAnyEscolar { get; set; } //identificar únic. Es solicita al crear
         public DateOnly DataIniciCurs { get; set; }

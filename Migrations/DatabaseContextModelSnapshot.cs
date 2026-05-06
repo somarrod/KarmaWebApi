@@ -103,7 +103,7 @@ namespace KarmaWebAPI.Migrations
                     b.Property<DateOnly>("DataIniciCurs")
                         .HasColumnType("date");
 
-                    b.Property<int>("DiesPeriode")
+                    b.Property<int>("DiesAvaluacio")
                         .HasColumnType("int");
 
                     b.HasKey("IdAnyEscolar");
@@ -290,13 +290,13 @@ namespace KarmaWebAPI.Migrations
                     b.ToTable("Materia");
                 });
 
-            modelBuilder.Entity("KarmaWebAPI.Models.Periode", b =>
+            modelBuilder.Entity("KarmaWebAPI.Models.Avaluacio", b =>
                 {
-                    b.Property<int>("IdPeriode")
+                    b.Property<int>("IdAvaluacio")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPeriode"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAvaluacio"));
 
                     b.Property<DateOnly>("DataFi")
                         .HasColumnType("date");
@@ -307,11 +307,11 @@ namespace KarmaWebAPI.Migrations
                     b.Property<int>("IdAnyEscolar")
                         .HasColumnType("int");
 
-                    b.HasKey("IdPeriode");
+                    b.HasKey("IdAvaluacio");
 
                     b.HasIndex("IdAnyEscolar");
 
-                    b.ToTable("Periode");
+                    b.ToTable("Avaluacio");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.Privilegi", b =>
@@ -465,7 +465,7 @@ namespace KarmaWebAPI.Migrations
                     b.Property<int?>("IdCategoria")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdPeriode")
+                    b.Property<int>("IdAvaluacio")
                         .HasColumnType("int");
 
                     b.Property<string>("Motiu")
@@ -486,7 +486,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasIndex("IdCategoria");
 
-                    b.HasIndex("IdPeriode");
+                    b.HasIndex("IdAvaluacio");
 
                     b.ToTable("Puntuacio");
                 });
@@ -509,15 +509,15 @@ namespace KarmaWebAPI.Migrations
                     b.ToTable("TipusCategoria");
                 });
 
-            modelBuilder.Entity("KarmaWebAPI.Models.VPrivilegiPeriode", b =>
+            modelBuilder.Entity("KarmaWebAPI.Models.VPrivilegiAvaluacio", b =>
                 {
                     b.Property<int>("IdAlumneEnGrup")
                         .HasColumnType("int")
                         .HasColumnName("IdAlumneEnGrup");
 
-                    b.Property<int>("IdPeriode")
+                    b.Property<int>("IdAvaluacio")
                         .HasColumnType("int")
-                        .HasColumnName("IdPeriode");
+                        .HasColumnName("IdAvaluacio");
 
                     b.Property<int>("IdPrivilegi")
                         .HasColumnType("int")
@@ -525,13 +525,13 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasIndex("IdAlumneEnGrup");
 
-                    b.HasIndex("IdPeriode");
+                    b.HasIndex("IdAvaluacio");
 
                     b.HasIndex("IdPrivilegi");
 
                     b.ToTable((string)null);
 
-                    b.ToView("VPrivilegiPeriode", (string)null);
+                    b.ToView("VPrivilegiAvaluacio", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -733,10 +733,10 @@ namespace KarmaWebAPI.Migrations
                     b.Navigation("ProfessorTutor");
                 });
 
-            modelBuilder.Entity("KarmaWebAPI.Models.Periode", b =>
+            modelBuilder.Entity("KarmaWebAPI.Models.Avaluacio", b =>
                 {
                     b.HasOne("KarmaWebAPI.Models.AnyEscolar", "AnyEscolar")
-                        .WithMany("Periodes")
+                        .WithMany("Avaluacios")
                         .HasForeignKey("IdAnyEscolar")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -821,9 +821,9 @@ namespace KarmaWebAPI.Migrations
                         .WithMany()
                         .HasForeignKey("IdCategoria");
 
-                    b.HasOne("KarmaWebAPI.Models.Periode", "Periode")
+                    b.HasOne("KarmaWebAPI.Models.Avaluacio", "Avaluacio")
                         .WithMany("Puntuacions")
-                        .HasForeignKey("IdPeriode")
+                        .HasForeignKey("IdAvaluacio")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -831,10 +831,10 @@ namespace KarmaWebAPI.Migrations
 
                     b.Navigation("Categoria");
 
-                    b.Navigation("Periode");
+                    b.Navigation("Avaluacio");
                 });
 
-            modelBuilder.Entity("KarmaWebAPI.Models.VPrivilegiPeriode", b =>
+            modelBuilder.Entity("KarmaWebAPI.Models.VPrivilegiAvaluacio", b =>
                 {
                     b.HasOne("KarmaWebAPI.Models.AlumneEnGrup", "AlumneEnGrup")
                         .WithMany()
@@ -842,9 +842,9 @@ namespace KarmaWebAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("KarmaWebAPI.Models.Periode", "Periode")
+                    b.HasOne("KarmaWebAPI.Models.Avaluacio", "Avaluacio")
                         .WithMany()
-                        .HasForeignKey("IdPeriode")
+                        .HasForeignKey("IdAvaluacio")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -856,7 +856,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.Navigation("AlumneEnGrup");
 
-                    b.Navigation("Periode");
+                    b.Navigation("Avaluacio");
 
                     b.Navigation("Privilegi");
                 });
@@ -930,7 +930,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.Navigation("Grups");
 
-                    b.Navigation("Periodes");
+                    b.Navigation("Avaluacios");
 
                     b.Navigation("Privilegis");
                 });
@@ -947,7 +947,7 @@ namespace KarmaWebAPI.Migrations
                     b.Navigation("ProfessorsDelGrup");
                 });
 
-            modelBuilder.Entity("KarmaWebAPI.Models.Periode", b =>
+            modelBuilder.Entity("KarmaWebAPI.Models.Avaluacio", b =>
                 {
                     b.Navigation("Puntuacions");
                 });

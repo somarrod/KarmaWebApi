@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace KarmaWebAPI.DTOs.DisplaySets
 {
 
-    public class VPrivilegiPeriodeDisplaySet
+    public class VPrivilegiAvaluacioDisplaySet
     {
         public int IdAnyEscolar { get; set; } //identificar únic del grup
 
@@ -16,7 +16,7 @@ namespace KarmaWebAPI.DTOs.DisplaySets
 
 
         [StringLength(50)]
-        public int IdPeriode { get; set; } 
+        public int IdAvaluacio { get; set; } 
         public DateOnly DataInici{ get; set; } //identificar únic de tamany màxim 50 que assigna gva
         public DateOnly DataFi { get; set; } //identificar únic de tamany màxim 50 que assigna gva
 

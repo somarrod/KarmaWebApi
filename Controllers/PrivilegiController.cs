@@ -68,7 +68,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<Privilegi>>> LlistaPerAnyEscolar(int idAnyEscolar)
         {
-            var anyEscolar = await _context.AnyEscolar.FindAsync(idAnyEscolar);
+            var anyEscolar = await _context.AnyEscolars.FindAsync(idAnyEscolar);
             if (anyEscolar == null)
             {
                 return NotFound("Any escolar " + idAnyEscolar + " no trobat");
@@ -126,7 +126,7 @@ namespace KarmaWebAPI.Controllers
         [HttpPut("editar")]
         public async Task<IActionResult> Editar(PrivilegiEditarDto privilegiDto)
         {
-            var anyEscolar = await _context.AnyEscolar.FindAsync(privilegiDto.IdAnyEscolar);
+            var anyEscolar = await _context.AnyEscolars.FindAsync(privilegiDto.IdAnyEscolar);
             if (anyEscolar == null)
             {
                 return NotFound("Any escolar " + privilegiDto.IdAnyEscolar + " no trobat");

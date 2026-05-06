@@ -496,7 +496,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"dataIniciCurs\": \"2025-09-01\",\r\n  \"dataFiCurs\": \"2026-08-31\",\r\n  \"diesPeriode\": 15\r\n}",
+							"raw": "{\r\n  \"dataIniciCurs\": \"2025-09-01\",\r\n  \"dataFiCurs\": \"2026-08-31\",\r\n  \"diesAvaluacio\": 15\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1407,7 +1407,7 @@
 			]
 		},
 		{
-			"name": "Periode",
+			"name": "Avaluacio",
 			"item": [
 				{
 					"name": "Instancia",
@@ -1427,12 +1427,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/periode/2",
+							"raw": "{{url}}api/avaluacio/2",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
-								"periode",
+								"avaluacio",
 								"2"
 							]
 						}
@@ -1457,12 +1457,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/periode/llista",
+							"raw": "{{url}}api/avaluacio/llista",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
-								"periode",
+								"avaluacio",
 								"llista"
 							]
 						}
@@ -1487,12 +1487,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/periode/llista-per-anyescolar?idAnyEscolar=2425",
+							"raw": "{{url}}api/avaluacio/llista-per-anyescolar?idAnyEscolar=2425",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
-								"periode",
+								"avaluacio",
 								"llista-per-anyescolar"
 							],
 							"query": [
@@ -2260,7 +2260,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idAlumneEnGrup\": 11,\r\n  \"idPeriode\": 2,\r\n  \"idCategoria\": null,\r\n  \"punts\": 3,\r\n  \"motiu\": \"La única persona que ha arribat a l'hora a classe\"\r\n}",
+							"raw": "{\r\n  \"idAlumneEnGrup\": 11,\r\n  \"idAvaluacio\": 2,\r\n  \"idCategoria\": null,\r\n  \"punts\": 3,\r\n  \"motiu\": \"La única persona que ha arribat a l'hora a classe\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2316,7 +2316,7 @@
 			]
 		},
 		{
-			"name": "VPrivilegiPeriode",
+			"name": "VPrivilegiAvaluacio",
 			"item": [
 				{
 					"name": "Instancia",
@@ -2336,12 +2336,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/vprivilegiperiode/instancia-per-camps?idAlumneEnGrup=1&idPeriode=1&idPrivilegi=2",
+							"raw": "{{url}}api/vprivilegiavaluacio/instancia-per-camps?idAlumneEnGrup=1&idAvaluacio=1&idPrivilegi=2",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
-								"vprivilegiperiode",
+								"vprivilegiavaluacio",
 								"instancia-per-camps"
 							],
 							"query": [
@@ -2350,7 +2350,7 @@
 									"value": "1"
 								},
 								{
-									"key": "idPeriode",
+									"key": "idAvaluacio",
 									"value": "1"
 								},
 								{
@@ -2380,12 +2380,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/vprivilegiperiode/llista",
+							"raw": "{{url}}api/vprivilegiavaluacio/llista",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
-								"vprivilegiperiode",
+								"vprivilegiavaluacio",
 								"llista"
 							]
 						}
@@ -2410,12 +2410,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}api/vprivilegiperiode/llista-condicionada?idPrivilegi=1&idPeriode=&NIA&IdAnyEscolar=2425&idGrup=1DAW",
+							"raw": "{{url}}api/vprivilegiavaluacio/llista-condicionada?idPrivilegi=1&idAvaluacio=&NIA&IdAnyEscolar=2425&idGrup=1DAW",
 							"host": [
 								"{{url}}api"
 							],
 							"path": [
-								"vprivilegiperiode",
+								"vprivilegiavaluacio",
 								"llista-condicionada"
 							],
 							"query": [
@@ -2424,7 +2424,7 @@
 									"value": "1"
 								},
 								{
-									"key": "idPeriode",
+									"key": "idAvaluacio",
 									"value": ""
 								},
 								{

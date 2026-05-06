@@ -20,7 +20,7 @@ namespace KarmaWebAPI.Serveis
 
         public async Task<ActionResult<Privilegi>> CrearPrivilegiAsync(PrivilegiCrearDto privilegiDto) // Change return type to IActionResult
         {
-            var anyEscolar = await _context.AnyEscolar.FindAsync(privilegiDto.IdAnyEscolar);
+            var anyEscolar = await _context.AnyEscolars.FindAsync(privilegiDto.IdAnyEscolar);
             if (anyEscolar == null)
             {
                 return new NotFoundObjectResult("Any escolar " + privilegiDto.IdAnyEscolar + " no trobat"); // Use NotFoundObjectResult

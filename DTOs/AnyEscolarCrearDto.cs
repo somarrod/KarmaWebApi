@@ -3,7 +3,7 @@
 namespace KarmaWebAPI.DTOs
 {
 
-    public class AnyEscolarCrearDto
+    public class AnyEscolarCrearDTO
     {
         public DateOnly DataIniciCurs { get; set; }
         public DateOnly DataFiCurs { get; set; }
