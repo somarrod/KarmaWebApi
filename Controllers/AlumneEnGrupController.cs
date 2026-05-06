@@ -118,7 +118,7 @@ namespace KarmaWebAPI.Controllers
         {
             var anyEscolar = await _context.AnyEscolars.FindAsync(alumneEnGrupDto.IdAnyEscolar);
             var grup = await _context.Grup.FindAsync(alumneEnGrupDto.IdAnyEscolar, alumneEnGrupDto.IdGrup);
-            var alumne = await _context.Alumne.FindAsync(alumneEnGrupDto.NIA);
+            var alumne = await _context.Alumnes.FindAsync(alumneEnGrupDto.NIA);
 
             if (alumne == null)
             {

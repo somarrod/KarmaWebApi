@@ -1,31 +1,25 @@
-﻿
-using KarmaWebAPI.Data;
-using KarmaWebAPI.DTOs;
+﻿using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs.Avaluacio;
 using KarmaWebAPI.Models;
-using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-public class AvaluacioService: IAvaluacioService
+public class AvaluacioService : IAvaluacioService
 {
     private readonly DatabaseContext _context;
+    private readonly IKarmaAlumneService _karmaAlumneService;
 
-    public AvaluacioService(DatabaseContext context)
+    public AvaluacioService(
+        DatabaseContext context,
+        IKarmaAlumneService karmaAlumneService)
     {
         _context = context;
+        _karmaAlumneService = karmaAlumneService;
     }
 
-    public List<Avaluacio> GetAvaluacions()
-    {
-        return _context.Avaluacions.ToList();
-    }
+    // =====================================================
+    // CONSULTES
+    // =====================================================
 
-    
-    //CONSULTES -----------------------------------------------------------------------------------
-
-    // -------------------------------------------------
-    // Llista general
-    // -------------------------------------------------
     public async Task<List<Avaluacio>> GetLlistaAsync(bool isAdmin)
     {
         if (isAdmin)
@@ -42,9 +36,6 @@ public class AvaluacioService: IAvaluacioService
             .ToListAsync();
     }
 
-    // -------------------------------------------------
-    // Llista per AnyEscolar
-    // -------------------------------------------------
     public async Task<List<Avaluacio>> GetLlistaPerAnyEscolarAsync(
         int idAnyEscolar,
         bool isAdmin)
@@ -66,10 +57,7 @@ public class AvaluacioService: IAvaluacioService
             .ToListAsync();
     }
 
-    // -------------------------------------------------
-    // Get per Id
-    // -------------------------------------------------
-    public async Task<Avaluacio?> GetByIdAsync(int idAvaluacio)
+    public async Task<Avaluacio?> GetByIdAsync(long idAvaluacio)
     {
         return await _context.Avaluacions
             .Include(a => a.AnyEscolar)
@@ -77,29 +65,23 @@ public class AvaluacioService: IAvaluacioService
             .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio);
     }
 
-
-    //TRANSACCIONS -----------------------------------------------------------------------------------
-    // ------------------------
+    // =====================================================
     // TCREAR
-    // ------------------------
+    // =====================================================
+
     public async Task<Avaluacio> TCrearAsync(AvaluacioTCrearDTO dto)
     {
         using var tx = await _context.Database.BeginTransactionAsync();
 
-        // 1. Comprovar solapaments
+        // 🔎 comprovar solapaments
         bool solapa = await _context.Avaluacions.AnyAsync(a =>
             a.IdAnyEscolar == dto.IdAnyEscolar &&
             dto.DataInicial <= a.DataFinal &&
             dto.DataFinal >= a.DataInicial);
 
         if (solapa)
-            throw new InvalidOperationException("S'ha produït un solapament entre avaluacions");
+            throw new InvalidOperationException("Hi ha solapament d'avaluacions");
 
-        //2. Comprova la nota
-        if (dto.NotaMinimaKarma >= dto.NotaMaximaKarma) 
-            throw new InvalidOperationException("La nota mínima ha de ser menor que la nota màxima");
-
-        // 3. Crear avaluació
         var avaluacio = new Avaluacio
         {
             Nom = dto.Nom,
@@ -113,17 +95,17 @@ public class AvaluacioService: IAvaluacioService
         _context.Avaluacions.Add(avaluacio);
         await _context.SaveChangesAsync();
 
-        // 4. Crear KarmaAlumne inicial per a cada alumne (TCREAR segons XMI)
-        // → ací vindrà la crida a KarmaAlumne.TCREAR (ho deixem preparat)
-        // PENDENT SOFIA
+        // ❗ NO inicialitzem Karma ací
+        // La inicialització real es fa en TINICIAR_AVALUACIO
 
         await tx.CommitAsync();
         return avaluacio;
     }
 
-    // ------------------------
+    // =====================================================
     // TEDITAR
-    // ------------------------
+    // =====================================================
+
     public async Task<Avaluacio?> TEditarAsync(AvaluacioTEditarDTO dto)
     {
         using var tx = await _context.Database.BeginTransactionAsync();
@@ -141,11 +123,7 @@ public class AvaluacioService: IAvaluacioService
             dto.DataFinal >= a.DataInicial);
 
         if (solapa)
-            throw new InvalidOperationException("S'ha produït un solapament entre avaluacions");
-
-        //2. Comprova la nota
-        if (dto.NotaMinimaKarma >= dto.NotaMaximaKarma)
-            throw new InvalidOperationException("La nota mínima ha de ser menor que la nota màxima");
+            throw new InvalidOperationException("Hi ha solapament d'avaluacions");
 
         avaluacio.Nom = dto.Nom;
         avaluacio.DataInicial = dto.DataInicial;
@@ -159,12 +137,14 @@ public class AvaluacioService: IAvaluacioService
         return avaluacio;
     }
 
-    // ------------------------
+    // =====================================================
     // TINICIAR_AVALUACIO
-    // ------------------------
+    // =====================================================
 
-    public async Task<Avaluacio?> TIniciarAsync(int idAvaluacio)
+    public async Task<Avaluacio?> TIniciarAsync(long idAvaluacio)
     {
+        using var tx = await _context.Database.BeginTransactionAsync();
+
         var avaluacio = await _context.Avaluacions
             .Include(a => a.AnyEscolar)
             .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio);
@@ -172,21 +152,47 @@ public class AvaluacioService: IAvaluacioService
         if (avaluacio == null)
             return null;
 
-        // 🔹 ACÍ va tota la lògica real:
-        // - Reiniciar karma
-        // - O copiar de l'avaluació anterior
-        // (KarmaAlumne, etc.)
+        var anyEscolar = avaluacio.AnyEscolar;
 
-        await _context.SaveChangesAsync();
+        var avaluacioAnterior = await _context.Avaluacions
+            .Where(a =>
+                a.IdAnyEscolar == avaluacio.IdAnyEscolar &&
+                a.DataFinal < avaluacio.DataInicial)
+            .OrderByDescending(a => a.DataFinal)
+            .FirstOrDefaultAsync();
 
-        return avaluacio; // objecte resultant
+        if (avaluacioAnterior == null)
+        {
+            // primera avaluació del curs
+            await _karmaAlumneService.CrearPerAvaluacioAsync(
+                avaluacio.IdAvaluacio,
+                anyEscolar.SaldoKarmaInicial);
+        }
+        else
+        {
+            if (anyEscolar.ReiniciaCadaAvaluacio)
+            {
+                await _karmaAlumneService.CrearPerAvaluacioAsync(
+                    avaluacio.IdAvaluacio,
+                    anyEscolar.SaldoKarmaInicial);
+            }
+            else
+            {
+                await _karmaAlumneService.CopiarPerAvaluacioAsync(
+                    avaluacio.IdAvaluacio,
+                    avaluacioAnterior.IdAvaluacio);
+            }
+        }
+
+        await tx.CommitAsync();
+        return avaluacio;
     }
 
-
-    // ------------------------
+    // =====================================================
     // TFINALITZAR_AVALUACIO
-    // ------------------------
-    public async Task<Avaluacio?> TFinalitzarAsync(int idAvaluacio)
+    // =====================================================
+
+    public async Task<Avaluacio?> TFinalitzarAsync(long idAvaluacio)
     {
         var avaluacio = await _context.Avaluacions
             .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio);
@@ -194,17 +200,16 @@ public class AvaluacioService: IAvaluacioService
         if (avaluacio == null)
             return null;
 
-        // 🔹 Lògica:
-        // - Calcul de notes finals
-        // - KarmaAlumne.CalcularNota()
+        await _karmaAlumneService.CalcularNotaFinalAsync(idAvaluacio);
 
-        await _context.SaveChangesAsync();
-
-        return avaluacio; // objecte resultant
+        return avaluacio;
     }
 
+    // =====================================================
+    // ESBORRAR
+    // =====================================================
 
-    public async Task<bool> EsborrarAsync(int idAvaluacio)
+    public async Task<bool> EsborrarAsync(long idAvaluacio)
     {
         var avaluacio = await _context.Avaluacions
             .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio);
@@ -214,12 +219,6 @@ public class AvaluacioService: IAvaluacioService
 
         _context.Avaluacions.Remove(avaluacio);
         await _context.SaveChangesAsync();
-
         return true;
     }
-
 }
-
-
-
-

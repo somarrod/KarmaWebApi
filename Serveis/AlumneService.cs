@@ -31,7 +31,7 @@ namespace KarmaWebAPI.Serveis
                 Email = alumneDto.Email
             };
 
-            _context.Alumne.Add(alumne);
+            _context.Alumnes.Add(alumne);
             await _context.SaveChangesAsync();
 
             return new OkObjectResult(alumne);
@@ -39,7 +39,7 @@ namespace KarmaWebAPI.Serveis
 
         public async Task<ActionResult<Alumne>> ActivarAlumneAsync(String nia)
         {
-            var alumne = await _context.Alumne.FindAsync(nia);
+            var alumne = await _context.Alumnes.FindAsync(nia);
 
             if (alumne == null)
             {
@@ -58,7 +58,7 @@ namespace KarmaWebAPI.Serveis
 
         public async Task<ActionResult<Alumne>> DesactivarAlumneAsync(String nia)
         {
-            var alumne = await _context.Alumne.FindAsync(nia);
+            var alumne = await _context.Alumnes.FindAsync(nia);
 
             if (alumne == null)
             {

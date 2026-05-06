@@ -5,13 +5,13 @@ public interface IAvaluacioService
 {
     Task<List<Avaluacio>> GetLlistaAsync(bool isAdmin);
     Task<List<Avaluacio>> GetLlistaPerAnyEscolarAsync(int idAnyEscolar, bool isAdmin);
-    Task<Avaluacio?> GetByIdAsync(int idAvaluacio);
+    Task<Avaluacio?> GetByIdAsync(long idAvaluacio);
 
     Task<Avaluacio> TCrearAsync(AvaluacioTCrearDTO dto);
     Task<Avaluacio?> TEditarAsync(AvaluacioTEditarDTO dto);
 
-    Task<Avaluacio?> TIniciarAsync(int idAvaluacio);
-    Task<Avaluacio?> TFinalitzarAsync(int idAvaluacio);
+    Task<Avaluacio?> TIniciarAsync(long idAvaluacio);
+    Task<Avaluacio?> TFinalitzarAsync(long idAvaluacio);
 
-    Task<bool> EsborrarAsync(int idAvaluacio);
+    Task<bool> EsborrarAsync(long idAvaluacio);
 }

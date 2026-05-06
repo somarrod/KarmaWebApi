@@ -9,7 +9,7 @@ namespace KarmaWebAPI.Data
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
 
         // Definición de DbSets para cada entidad
-        public DbSet<Alumne> Alumne { get; set; } = null!;
+        public DbSet<Alumne> Alumnes { get; set; } = null!;
         public DbSet<AlumneEnGrup> AlumneEnGrup { get; set; } = null!;
         public DbSet<AnyEscolar> AnyEscolars { get; set; } = null!;
         public DbSet<Categoria> Categoria { get; set; } = null!;
@@ -22,7 +22,9 @@ namespace KarmaWebAPI.Data
         public DbSet<Privilegi> Privilegi { get; set; } = null!;
         public DbSet<ProfessorDeGrup> ProfessorDeGrup { get; set; } = null!;
         public DbSet<Professor> Professor { get; set; } = null!;
-        public DbSet<Puntuacio> Puntuacio { get; set; } = null!;    
+        public DbSet<Puntuacio> Puntuacio { get; set; } = null!;
+
+        public DbSet<KarmaAlumne> KarmaAlumnes { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

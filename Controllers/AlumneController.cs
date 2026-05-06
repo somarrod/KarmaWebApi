@@ -33,7 +33,7 @@ namespace KarmaWebAPI.Controllers
         [HttpGet("{nia}")]
         public async Task<ActionResult<Alumne>> Instancia(string nia)
         {
-            var alumne = await _context.Alumne.FindAsync(nia);
+            var alumne = await _context.Alumnes.FindAsync(nia);
 
             if (alumne == null)
             {
@@ -48,7 +48,7 @@ namespace KarmaWebAPI.Controllers
         [HttpGet("llista")]
         public async Task<ActionResult<IEnumerable<Alumne>>> Llista()
         {
-            return await _context.Alumne.ToListAsync();
+            return await _context.Alumnes.ToListAsync();
         }
 
         // POST: api/Alumne/crear
@@ -99,14 +99,14 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin, AG_Professor")]
         public async Task<IActionResult> EditarAlumne([FromBody] AlumneDTO alumneDto)
         {
-            var alumne = await _context.Alumne.FindAsync(alumneDto.NIA);
+            var alumne = await _context.Alumnes.FindAsync(alumneDto.NIA);
             if (alumne == null)
             {
                 return NotFound();
             }
 
             // Comprovar si l'email ja existeix en altres alumnes
-            var emailExists =   await _context.Alumne.AnyAsync(a => a.Email == alumneDto.Email && a.NIA != alumneDto.NIA);
+            var emailExists =   await _context.Alumnes.AnyAsync(a => a.Email == alumneDto.Email && a.NIA != alumneDto.NIA);
 
             if (emailExists)
             {
@@ -123,7 +123,7 @@ namespace KarmaWebAPI.Controllers
                     alumne.Cognoms = alumneDto.Cognoms;
                     alumne.Email = alumneDto.Email;
 
-                    _context.Alumne.Update(alumne);
+                    _context.Alumnes.Update(alumne);
                     await _context.SaveChangesAsync();
 
                     // Actualitzar l'email en AspNetUsers
@@ -168,7 +168,7 @@ namespace KarmaWebAPI.Controllers
             {
                 try
                 {
-                    var alumne = await _context.Alumne.FindAsync(nia);
+                    var alumne = await _context.Alumnes.FindAsync(nia);
                     if (alumne == null)
                     {
                         return NotFound();
@@ -215,7 +215,7 @@ namespace KarmaWebAPI.Controllers
             {
                 try
                 {
-                    var alumne = await _context.Alumne.FindAsync(nia);
+                    var alumne = await _context.Alumnes.FindAsync(nia);
                     if (alumne == null)
                     {
                         return NotFound();
@@ -258,7 +258,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin, AG_Professor")]
         public async Task<IActionResult> Eliminar(String nia)
         {
-            var alumne = await _context.Alumne.FindAsync(nia);
+            var alumne = await _context.Alumnes.FindAsync(nia);
             if (alumne == null)
             {
                 return NotFound();
@@ -277,7 +277,7 @@ namespace KarmaWebAPI.Controllers
                 try
                 {
                     // Eliminar l'alumne
-                    _context.Alumne.Remove(alumne);
+                    _context.Alumnes.Remove(alumne);
                     await _context.SaveChangesAsync();
 
                     // Eliminar l'usuari en AspNetUsers
@@ -313,7 +313,7 @@ namespace KarmaWebAPI.Controllers
 
         private bool AlumneExisteix(string nia)
         {
-            return _context.Alumne.Any(e => e.NIA == nia);
+            return _context.Alumnes.Any(e => e.NIA == nia);
         }
     }
 }
