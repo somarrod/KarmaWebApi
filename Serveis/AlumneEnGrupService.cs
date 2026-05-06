@@ -35,17 +35,17 @@ namespace KarmaWebAPI.Serveis
             }
             alumneEnGrup.PuntuacioTotal = alumneEnGrup.PuntuacioTotal + punts;
 
-            var confList = await _context.ConfiguracioKarma
+            var confList = await _context.ConfiguracionsKarma
                             .Where(c => c.IdAnyEscolar == alumneEnGrup.IdAnyEscolar &&
-                                        punts >= c.KarmaMinim &&
-                                        punts <= c.KarmaMaxim)
+                                        punts >= c.NumPuntsMinim &&
+                                        punts <= c.NumPuntsMaxim)
                             .ToListAsync();
 
             if (confList != null && confList.Count() > 0)
             {
                 foreach (var configuracioKarma in confList) //Sólo debe haber 1
                 {
-                    alumneEnGrup.Karma = configuracioKarma.ColorNivell;
+                    alumneEnGrup.Karma = configuracioKarma.ColorKarma;
                 }
             }
 
@@ -66,17 +66,17 @@ namespace KarmaWebAPI.Serveis
 
             alumneEnGrup.PuntuacioTotal = puntuacioTotal;
 
-            var confList = await _context.ConfiguracioKarma
+            var confList = await _context.ConfiguracionsKarma
                             .Where(c => c.IdAnyEscolar == alumneEnGrup.IdAnyEscolar &&
-                                        puntuacioTotal >= c.KarmaMinim &&
-                                        puntuacioTotal <= c.KarmaMaxim)
+                                        puntuacioTotal >= c.NumPuntsMinim &&
+                                        puntuacioTotal <= c.NumPuntsMaxim)
                             .ToListAsync();
 
             if (confList != null && confList.Count() > 0)
             {
                 foreach (var configuracioKarma in confList) //Sólo debe haber 1
                 {
-                    alumneEnGrup.Karma = configuracioKarma.ColorNivell;
+                    alumneEnGrup.Karma = configuracioKarma.ColorKarma;
                 }
             }
 

@@ -42,14 +42,14 @@ namespace KarmaWebAPI.Serveis
 
 
                     // Obtenir el color del nivell de karma basat en la puntuació mínima i l'any escolar
-                    var karmaConfig = await _context.ConfiguracioKarma
+                    var karmaConfig = await _context.ConfiguracionsKarma
                                             .Where(k => k.IdAnyEscolar == idAnyEscolar)
-                                            .FirstOrDefaultAsync(k => k.KarmaMinim <= puntuacioMinimaGrup && k.KarmaMaxim >= puntuacioMinimaGrup);
+                                            .FirstOrDefaultAsync(k => k.NumPuntsMinim <= puntuacioMinimaGrup && k.NumPuntsMaxim >= puntuacioMinimaGrup);
 
 
                     if (karmaConfig != null && grup != null)
                     {
-                        Karma = karmaConfig.ColorNivell;
+                        Karma = karmaConfig.ColorKarma;
                     }
             }
             grup.KarmaBase = Karma;

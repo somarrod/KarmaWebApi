@@ -4,12 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 public class KarmaAlumneService : IKarmaAlumneService
 {
-    private readonly DatabaseContext _context;
 
-    public KarmaAlumneService(DatabaseContext context)
+    private readonly DatabaseContext _context;
+    private readonly IConfiguracioKarmaService _configuracioKarmaService;
+
+    public KarmaAlumneService(
+        DatabaseContext context,
+        IConfiguracioKarmaService configuracioKarmaService)
     {
         _context = context;
+        _configuracioKarmaService = configuracioKarmaService;
     }
+
 
     // =====================================================
     // A) OPERACIONS PER AVALUACIÓ
@@ -31,14 +37,25 @@ public class KarmaAlumneService : IKarmaAlumneService
             if (existeix)
                 continue;
 
+            Avaluacio? avaluacio = await _context.Avaluacions
+                .Include(a => a.AnyEscolar)
+                .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio);
+
+            if (avaluacio == null)
+                throw new InvalidOperationException("Avaluació no trobada");
+
+            var karma = await ObtenerKarmaPerPuntsAsync(
+                avaluacio.IdAnyEscolar,
+                puntsInicials);
+
             _context.KarmaAlumnes.Add(new KarmaAlumne
             {
                 NIA = alumne.NIA,
                 IdAvaluacio = idAvaluacio,
                 NumPuntsInicials = puntsInicials,
                 NumPuntsActuals = puntsInicials,
-                KarmaInicial = "",
-                KarmaActual = ""
+                KarmaInicial = karma,
+                KarmaActual = karma
             });
         }
 
@@ -88,6 +105,11 @@ public class KarmaAlumneService : IKarmaAlumneService
         foreach (var karma in karmes)
         {
             var avaluacio = karma.Avaluacio;
+
+
+            karma.KarmaActual = await ObtenerKarmaPerPuntsAsync(
+                karma.Avaluacio.IdAnyEscolar,
+                karma.NumPuntsActuals);
 
             if (karma.NumPuntsActuals <= avaluacio.NotaMinimaKarma)
             {
@@ -197,17 +219,60 @@ public class KarmaAlumneService : IKarmaAlumneService
                 }
             }
 
+
+            var karma = await ObtenerKarmaPerPuntsAsync(
+                avaluacio.IdAnyEscolar,
+                puntsInicials);
+
             _context.KarmaAlumnes.Add(new KarmaAlumne
             {
                 NIA = nia,
                 IdAvaluacio = avaluacio.IdAvaluacio,
                 NumPuntsInicials = puntsInicials,
                 NumPuntsActuals = puntsInicials,
-                KarmaInicial = "",
-                KarmaActual = ""
+                KarmaInicial = karma,
+                KarmaActual = karma
             });
+            ;
         }
 
         await _context.SaveChangesAsync();
+    }
+
+
+    public async Task RecalcularKarmaAsync(long idKarmaAlumne)
+    {
+        var karmaAlumne = await _context.KarmaAlumnes
+            .Include(k => k.Avaluacio)
+            .FirstOrDefaultAsync(k => k.IdKarmaAlumne == idKarmaAlumne);
+
+        if (karmaAlumne == null)
+            return;
+
+        var karma = await ObtenerKarmaPerPuntsAsync(
+            karmaAlumne.Avaluacio.IdAnyEscolar,
+            karmaAlumne.NumPuntsActuals);
+
+        karmaAlumne.KarmaActual = karma;
+
+        await _context.SaveChangesAsync();
+    }
+
+    //MÈTODE PRIVAT PER A OBTENIR EL KARMA EN FUNCIó DELS PUNTS
+    private async Task<string> ObtenerKarmaPerPuntsAsync(
+    int idAnyEscolar,
+    double punts)
+    {
+        var configuracions = await _context.ConfiguracionsKarma
+            .Where(c => c.IdAnyEscolar == idAnyEscolar)
+            .OrderBy(c => c.NumPuntsMinim)
+            .ToListAsync();
+
+        var configuracio = configuracions
+            .FirstOrDefault(c =>
+                punts >= c.NumPuntsMinim &&
+                punts < c.NumPuntsMaxim);
+
+        return configuracio?.ColorKarma ?? string.Empty;
     }
 }

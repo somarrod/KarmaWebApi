@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using KarmaWebAPI.Models;
+﻿using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
-using KarmaWebAPI.Data;
-using KarmaWebAPI.Serveis.Interfaces;
+//using KarmaWebAPI.DTOs.ConfiguracioKarma;
+using KarmaWebAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
-public class ConfiguracioKarmaService: IConfiguracioKarmaService
+public class ConfiguracioKarmaService : IConfiguracioKarmaService
 {
     private readonly DatabaseContext _context;
 
@@ -14,76 +13,140 @@ public class ConfiguracioKarmaService: IConfiguracioKarmaService
         _context = context;
     }
 
-    public bool ValidateKarmaRange(int idConfiguracioKarma, int karmaMinim, int karmaMaxim)
+    // -------------------------------------------------
+    // GET per AnyEscolar
+    // -------------------------------------------------
+    public async Task<List<ConfiguracioKarma>> GetPerAnyEscolarAsync(int idAnyEscolar)
     {
-        var existingConfigurations = _context.ConfiguracioKarma.ToList();
-
-        foreach (var config in existingConfigurations)
-        {
-            if (config.IdConfiguracioKarma != idConfiguracioKarma && 
-               ((karmaMinim >= config.KarmaMinim && karmaMinim <= config.KarmaMaxim) ||
-               (karmaMaxim >= config.KarmaMinim && karmaMaxim <= config.KarmaMaxim) ||
-               (karmaMinim <= config.KarmaMinim && karmaMaxim >= config.KarmaMaxim)))
-            {
-                return false; // Solapament trobat
-            }
-        }
-
-        return true; // No hi ha solapaments
+        return await _context.ConfiguracionsKarma
+            .Where(c => c.IdAnyEscolar == idAnyEscolar)
+            .OrderBy(c => c.NumPuntsMinim)
+            .AsNoTracking()
+            .ToListAsync();
     }
 
-
-    public async Task CrearConfiguracioKarmaAsync(ConfiguracioKarmaCrearDTO dto)
+    // -------------------------------------------------
+    // CREAR
+    // -------------------------------------------------
+    public async Task<ConfiguracioKarma> CrearAsync(ConfiguracioKarmaCrearDTO dto)
     {
-        if (!ValidateKarmaRange(0, dto.KarmaMinim, dto.KarmaMaxim))
-        {
-            throw new InvalidOperationException("El rang de karma solapa amb una configuració existent.");
-        }
+        if (dto.NumPuntsMinim >= dto.NumPuntsMaxim)
+            throw new InvalidOperationException("Rang de punts incorrecte");
 
-        var newConfig = new ConfiguracioKarma
+        await ComprovarNoSolapamentAsync(
+            dto.IdAnyEscolar,
+            dto.NumPuntsMinim,
+            dto.NumPuntsMaxim);
+
+        var configuracio = new ConfiguracioKarma
         {
-            IdAnyEscolar = dto.IdAnyEscolar,
-            KarmaMinim = dto.KarmaMinim,
-            KarmaMaxim = dto.KarmaMaxim,
-            ColorNivell = dto.ColorNivell,
-            NivellPrivilegis = dto.NivellPrivilegis
+            NumPuntsMinim = dto.NumPuntsMinim,
+            NumPuntsMaxim = dto.NumPuntsMaxim,
+            ColorKarma = dto.ColorKarma,
+            NivellPrivilegis = dto.NivellPrivilegis,
+            IdAnyEscolar = dto.IdAnyEscolar
         };
 
-        _context.ConfiguracioKarma.Add(newConfig);
+        _context.ConfiguracionsKarma.Add(configuracio);
         await _context.SaveChangesAsync();
 
-        _context.AlumneEnGrup
-            .Where(a => a.IdAnyEscolar == dto.IdAnyEscolar &&
-                        a.PuntuacioTotal >= dto.KarmaMinim &&
-                        a.PuntuacioTotal <= dto.KarmaMaxim)
-            .ToList()
-            .ForEach(a => a.Karma = dto.ColorNivell);
-        await _context.SaveChangesAsync();
+        return configuracio;
     }
 
-
-    public async Task EditarConfiguracioKarmaAsync(ConfiguracioKarmaEditarDTO dto)
+    // -------------------------------------------------
+    // EDITAR
+    // -------------------------------------------------
+    public async Task<ConfiguracioKarma?> EditarAsync(ConfiguracioKarmaEditarDTO dto)
     {
-        if (!ValidateKarmaRange(dto.IdConfiguracioKarma, dto.KarmaMinim, dto.KarmaMaxim))
-        {
-            throw new InvalidOperationException("El rang de karma solapa amb una configuració existent.");
-        }
+        var configuracio = await _context.ConfiguracionsKarma
+            .FirstOrDefaultAsync(c => c.IdConfiguracioKarma == dto.IdConfiguracioKarma);
 
-        var existingConfig = await _context.ConfiguracioKarma.FindAsync(dto.IdConfiguracioKarma);
-        if (existingConfig == null)
-        {
-            throw new InvalidOperationException("La configuració de karma no existeix.");
-        }
+        if (configuracio == null)
+            return null;
 
-        existingConfig.IdAnyEscolar = dto.IdAnyEscolar;
-        existingConfig.KarmaMinim = dto.KarmaMinim;
-        existingConfig.KarmaMaxim = dto.KarmaMaxim;
-        existingConfig.ColorNivell = dto.ColorNivell;
-        existingConfig.NivellPrivilegis = dto.NivellPrivilegis;
+        if (dto.NumPuntsMinim >= dto.NumPuntsMaxim)
+            throw new InvalidOperationException("Rang de punts incorrecte");
 
-        _context.ConfiguracioKarma.Update(existingConfig);
+        await ComprovarNoSolapamentAsync(
+            configuracio.IdAnyEscolar,
+            dto.NumPuntsMinim,
+            dto.NumPuntsMaxim,
+            configuracio.IdConfiguracioKarma);
+
+        configuracio.NumPuntsMinim = dto.NumPuntsMinim;
+        configuracio.NumPuntsMaxim = dto.NumPuntsMaxim;
+        configuracio.ColorKarma = dto.ColorKarma;
+        configuracio.NivellPrivilegis = dto.NivellPrivilegis;
+
         await _context.SaveChangesAsync();
+        return configuracio;
     }
 
+    // -------------------------------------------------
+    // ESBORRAR
+    // -------------------------------------------------
+    public async Task<bool> EsborrarAsync(long idConfiguracioKarma)
+    {
+        var configuracio = await _context.ConfiguracionsKarma
+            .FirstOrDefaultAsync(c => c.IdConfiguracioKarma == idConfiguracioKarma);
 
+        if (configuracio == null)
+            return false;
+
+        _context.ConfiguracionsKarma.Remove(configuracio);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    // -------------------------------------------------
+    // VALIDACIÓ FORTA (NO buits)
+    // -------------------------------------------------
+    public async Task ValidarConfiguracioCompletaAsync(int idAnyEscolar)
+    {
+        var configs = await _context.ConfiguracionsKarma
+            .Where(c => c.IdAnyEscolar == idAnyEscolar)
+            .OrderBy(c => c.NumPuntsMinim)
+            .ToListAsync();
+
+        if (!configs.Any())
+            throw new InvalidOperationException(
+                "No hi ha cap configuració de karma definida.");
+
+        for (int i = 1; i < configs.Count; i++)
+        {
+            var anterior = configs[i - 1];
+            var actual = configs[i];
+
+            // rangs han de ser contigus: [a,b) [b,c)
+            if (actual.NumPuntsMinim != anterior.NumPuntsMaxim)
+            {
+                throw new InvalidOperationException(
+                    $"Hi ha un buit entre {anterior.NumPuntsMaxim} i {actual.NumPuntsMinim}. " +
+                    "Els rangs de karma han de ser contigus.");
+            }
+        }
+    }
+
+    // -------------------------------------------------
+    // PRIVATE: comprovació de solapaments [min,max)
+    // -------------------------------------------------
+    private async Task ComprovarNoSolapamentAsync(
+        int idAnyEscolar,
+        double min,
+        double max,
+        long? idConfiguracioActual = null)
+    {
+        bool solapa = await _context.ConfiguracionsKarma
+            .Where(c =>
+                c.IdAnyEscolar == idAnyEscolar &&
+                (idConfiguracioActual == null ||
+                 c.IdConfiguracioKarma != idConfiguracioActual))
+            .AnyAsync(c =>
+                min < c.NumPuntsMaxim &&
+                max > c.NumPuntsMinim);
+
+        if (solapa)
+            throw new InvalidOperationException(
+                "Els rangs de karma no poden solapar-se.");
+    }
 }

@@ -1,13 +1,15 @@
-﻿using System.Threading.Tasks;
-using KarmaWebAPI.DTOs;
+﻿using KarmaWebAPI.DTOs;
+//using KarmaWebAPI.DTOs.ConfiguracioKarmaDTO;
+using KarmaWebAPI.Models;
 
-
-namespace KarmaWebAPI.Serveis.Interfaces
+public interface IConfiguracioKarmaService
 {
-    public interface IConfiguracioKarmaService
-    {
-        bool ValidateKarmaRange(int idConfiguracioKarma, int karmaMinim, int karmaMaxim);
-        Task CrearConfiguracioKarmaAsync(ConfiguracioKarmaCrearDTO dto);
-        Task EditarConfiguracioKarmaAsync(ConfiguracioKarmaEditarDTO dto);
-    }
+    Task<List<ConfiguracioKarma>> GetPerAnyEscolarAsync(int idAnyEscolar);
+
+    Task<ConfiguracioKarma> CrearAsync(ConfiguracioKarmaCrearDTO dto);
+    Task<ConfiguracioKarma?> EditarAsync(ConfiguracioKarmaEditarDTO dto);
+    Task<bool> EsborrarAsync(long idConfiguracioKarma);
+
+    // validació forta (NO buits)
+    Task ValidarConfiguracioCompletaAsync(int idAnyEscolar);
 }

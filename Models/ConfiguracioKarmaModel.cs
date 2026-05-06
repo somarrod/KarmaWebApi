@@ -7,26 +7,25 @@ namespace KarmaWebAPI.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdConfiguracioKarma { get; set; } //identificador únic
+        public long IdConfiguracioKarma { get; set; }
 
         [Required]
-        [ForeignKey("AnyEscolar")]
-        public int IdAnyEscolar { get; set; } //identificador de l'any escolar
-        
-        [Required]
-        public int KarmaMinim { get; set; } //Karma mínim per a l'usuari
-        
-        [Required]
-        public int KarmaMaxim { get; set; } //Karma màxim per a l'usuari   
+        public double NumPuntsMinim { get; set; }
 
         [Required]
-        public String ColorNivell { get; set; }
+        public double NumPuntsMaxim { get; set; }
 
-        public int NivellPrivilegis { get; set; } //Nivell de privilegis per a l'usuari
+        [Required]
+        public string ColorKarma { get; set; } = string.Empty;
 
-        #region Navegacions
-        // Propiedad de navegación para referenciar a AnyEscolar
+        [Required]
+        public int NivellPrivilegis { get; set; }
+
+        // Relació amb AnyEscolar
+        [Required]
+        [ForeignKey(nameof(AnyEscolar))]
+        public int IdAnyEscolar { get; set; }
+
         public AnyEscolar AnyEscolar { get; set; } = null!;
-        #endregion Navegacions
     }
 }
