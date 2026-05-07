@@ -21,8 +21,7 @@ namespace KarmaWebAPI.Models
         [StringLength(255)]
         public string Email { get; set; } //correu electrònic del professor
 
-        public ICollection<ProfessorDeGrup> ProfessorDeGrups { get; set; } //relació amb professor grups
-
-        public ICollection<Grup> GrupsTutoritzats{ get; set; } //relació amb professor grups
+        [Required]
+        public bool PertanyAEquipDirectiu { get; set; }
     }
 }

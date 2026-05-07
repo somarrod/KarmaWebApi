@@ -17,13 +17,11 @@ namespace KarmaWebAPI.Controllers
     {
         private readonly DatabaseContext _context;
         private readonly IAnyEscolarService _anyEscolarService;
-        private readonly IAlumneEnGrupService _alumneEnGrupService;
 
-        public AnyEscolarController(DatabaseContext context, IAnyEscolarService anyEscolarService, IPrivilegiService privilegiService, IAlumneEnGrupService alumneEnGrupService)
+        public AnyEscolarController(DatabaseContext context, IAnyEscolarService anyEscolarService, IPrivilegiService privilegiService)
         {
             _context = context;
             _anyEscolarService = anyEscolarService;
-            _alumneEnGrupService = alumneEnGrupService;
         }
 
         #region Consultes

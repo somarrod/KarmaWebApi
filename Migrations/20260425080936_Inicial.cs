@@ -377,10 +377,10 @@ namespace KarmaWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProfessorDeGrup",
+                name: "ProfessorDeClasse",
                 columns: table => new
                 {
-                    IdProfessorDeGrup = table.Column<int>(type: "int", nullable: false)
+                    IdProfessorDeClasse = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdProfessor = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     IdMateria = table.Column<int>(type: "int", nullable: false),
@@ -389,26 +389,26 @@ namespace KarmaWebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProfessorDeGrup", x => x.IdProfessorDeGrup);
+                    table.PrimaryKey("PK_ProfessorDeClasse", x => x.IdProfessorDeClasse);
                     table.ForeignKey(
-                        name: "FK_ProfessorDeGrup_AnyEscolar_IdAnyEscolar",
+                        name: "FK_ProfessorDeClasse_AnyEscolar_IdAnyEscolar",
                         column: x => x.IdAnyEscolar,
                         principalTable: "AnyEscolar",
                         principalColumn: "IdAnyEscolar",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProfessorDeGrup_Grup_IdAnyEscolar_IdGrup",
+                        name: "FK_ProfessorDeClasse_Grup_IdAnyEscolar_IdGrup",
                         columns: x => new { x.IdAnyEscolar, x.IdGrup },
                         principalTable: "Grup",
                         principalColumns: new[] { "IdAnyEscolar", "IdGrup" });
                     table.ForeignKey(
-                        name: "FK_ProfessorDeGrup_Materia_IdMateria",
+                        name: "FK_ProfessorDeClasse_Materia_IdMateria",
                         column: x => x.IdMateria,
                         principalTable: "Materia",
                         principalColumn: "IdMateria",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProfessorDeGrup_Professor_IdProfessor",
+                        name: "FK_ProfessorDeClasse_Professor_IdProfessor",
                         column: x => x.IdProfessor,
                         principalTable: "Professor",
                         principalColumn: "IdProfessor");
@@ -566,18 +566,18 @@ namespace KarmaWebAPI.Migrations
                 column: "IdPrivilegi");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProfessorDeGrup_IdAnyEscolar_IdGrup",
-                table: "ProfessorDeGrup",
+                name: "IX_ProfessorDeClasse_IdAnyEscolar_IdGrup",
+                table: "ProfessorDeClasse",
                 columns: new[] { "IdAnyEscolar", "IdGrup" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProfessorDeGrup_IdMateria",
-                table: "ProfessorDeGrup",
+                name: "IX_ProfessorDeClasse_IdMateria",
+                table: "ProfessorDeClasse",
                 column: "IdMateria");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProfessorDeGrup_IdProfessor",
-                table: "ProfessorDeGrup",
+                name: "IX_ProfessorDeClasse_IdProfessor",
+                table: "ProfessorDeClasse",
                 column: "IdProfessor");
 
             migrationBuilder.CreateIndex(
@@ -621,7 +621,7 @@ namespace KarmaWebAPI.Migrations
                 name: "PrivilegiAssignat");
 
             migrationBuilder.DropTable(
-                name: "ProfessorDeGrup");
+                name: "ProfessorDeClasse");
 
             migrationBuilder.DropTable(
                 name: "Puntuacio");

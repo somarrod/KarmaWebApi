@@ -55,62 +55,61 @@ namespace KarmaWebAPI.Controllers
 
             // Comprovar que el any escolar, grup, NIA i privilegi existeixen
             var anyEscolarExisteix = await _context.AnyEscolars.AnyAsync(a => a.IdAnyEscolar == privilegiAssignatDto.IdAnyEscolar);
-            var grupExisteix = await _context.Grup.AnyAsync(g => g.IdGrup == privilegiAssignatDto.IdGrup);
+            var classeExisteix = await _context.Classes.AnyAsync(g => g.IdClasse == privilegiAssignatDto.IdClasse);
             var alumneExisteix = await _context.Alumnes.AnyAsync(a => a.NIA == privilegiAssignatDto.NIA);
             var privilegi = await _context.Privilegi.FirstOrDefaultAsync(p => p.IdPrivilegi == privilegiAssignatDto.IdPrivilegi);
 
-            if (!anyEscolarExisteix || !grupExisteix || !alumneExisteix || privilegi==null)
+            if (!anyEscolarExisteix || !classeExisteix || !alumneExisteix || privilegi==null)
             {
                 return NotFound("Alguna de les entitats proporcionades no existeix.");
             }
 
             // Comprovar que existeix un alumneEnGrup per al grup, any escolar i alumne
-            var alumneEnGrup = await _context.AlumneEnGrup.FirstOrDefaultAsync(ag => ag.IdGrup == privilegiAssignatDto.IdGrup &&
-                                                                               ag.IdAnyEscolar == privilegiAssignatDto.IdAnyEscolar &&
-                                                                               ag.NIA == privilegiAssignatDto.NIA);
+            var alumne = await _context.Alumnes.FirstOrDefaultAsync(ag => ag.IdClasse == privilegiAssignatDto.IdClasse &&                                                                    
+                                                                          ag.NIA == privilegiAssignatDto.NIA);
 
-            if (alumneEnGrup==null)
+            if (alumne==null)
             {
                 return NotFound("No existeix cap alumne amb el nia proporcionat en el grup i any escolar indicats.");
             }
 
-            if (privilegi.EsIndividualGrup == "I")
-            {
-                var privilegiAssignat = new PrivilegiAssignat
-                {
-                    IdPrivilegi = privilegiAssignatDto.IdPrivilegi,
-                    IdAlumneEnGrup = alumneEnGrup.IdAlumneEnGrup,
-                    Nivell = privilegi.Nivell,
-                    Descripcio = privilegi.Descripcio,
-                    EsIndividualGrup = privilegi.EsIndividualGrup,
-                    DataAssignacio = DateOnly.FromDateTime(DateTime.Now)
-                };
+            //if (privilegi.EsIndividualGrup == "I")
+            //{
+            //    var privilegiAssignat = new PrivilegiAssignat
+            //    {
+            //        IdPrivilegi = privilegiAssignatDto.IdPrivilegi,
+            //        IdAlumneEnGrup = alumne.IdAlumneEnGrup,
+            //        Nivell = privilegi.Nivell,
+            //        Descripcio = privilegi.Descripcio,
+            //        EsIndividualGrup = privilegi.EsIndividualGrup,
+            //        DataAssignacio = DateOnly.FromDateTime(DateTime.Now)
+            //    };
 
-                // Afegir i guardar l'entitat
-                _context.PrivilegiAssignat.Add(privilegiAssignat);
-            }
-            else { 
+            //    // Afegir i guardar l'entitat
+            //    _context.PrivilegiAssignat.Add(privilegiAssignat);
+            //}
+            //else { 
 
-                var alumnesDelGrup = await _context.AlumneEnGrup.Where(ag => ag.IdGrup == privilegiAssignatDto.IdGrup &&
-                                                                       ag.IdAnyEscolar == privilegiAssignatDto.IdAnyEscolar)
-                                                                .ToListAsync();
-                foreach (var alumnedelgrup in alumnesDelGrup)
-                {
-                    // Mapear DTO a entitat
-                    var privilegiAssignat = new PrivilegiAssignat
-                    {
-                        IdPrivilegi = privilegiAssignatDto.IdPrivilegi,
-                        IdAlumneEnGrup = alumnedelgrup.IdAlumneEnGrup,
-                        Nivell = privilegi.Nivell,
-                        Descripcio = privilegi.Descripcio,
-                        EsIndividualGrup = privilegi.EsIndividualGrup,
-                        DataAssignacio = DateOnly.FromDateTime(DateTime.Now)
-                    };
+            //    var alumnesDelGrup = await _context.AlumneEnGrup.Where(ag => ag.IdGrup == privilegiAssignatDto.IdGrup &&
+            //                                                           ag.IdAnyEscolar == privilegiAssignatDto.IdAnyEscolar)
+            //                                                    .ToListAsync();
+            //    foreach (var alumnedelgrup in alumnesDelGrup)
+            //    {
+            //        // Mapear DTO a entitat
+            //        var privilegiAssignat = new PrivilegiAssignat
+            //        {
+            //            IdPrivilegi = privilegiAssignatDto.IdPrivilegi,
+            //            IdAlumneEnGrup = alumnedelgrup.IdAlumneEnGrup,
+            //            Nivell = privilegi.Nivell,
+            //            Descripcio = privilegi.Descripcio,
+            //            EsIndividualGrup = privilegi.EsIndividualGrup,
+            //            DataAssignacio = DateOnly.FromDateTime(DateTime.Now)
+            //        };
 
-                    // Afegir i guardar l'entitat
-                    _context.PrivilegiAssignat.Add(privilegiAssignat);
-                }
-            }
+            //        // Afegir i guardar l'entitat
+            //        _context.PrivilegiAssignat.Add(privilegiAssignat);
+            //    }
+            //}
 
             await _context.SaveChangesAsync();
 
@@ -124,7 +123,7 @@ namespace KarmaWebAPI.Controllers
         public async Task<IActionResult>MARCARREALITZAT(PrivilegiAssignatEditarDto privilegiAssignatDTO)
         {
             var privilegiAssignat = await _context.PrivilegiAssignat
-                                     .Include(p => p.AlumneEnGrup)
+                                     .Include(p => p.NIA)
                                      //.ThenInclude(aeg => aeg.Grup)
                                      .FirstOrDefaultAsync(p => p.IdPrivilegiAssignat == privilegiAssignatDTO.IdPrivilegiAssignat);
 
@@ -156,19 +155,19 @@ namespace KarmaWebAPI.Controllers
                 //          AlumneEnGrup.Grup.AlumnesEnGrup.PrivilegisAssignats.DataCreacio = DataCreacio) DO
                 //          AlumneEnGrup.Grup.AlumnesEnGrup.PrivilegisAssignats.edit_instance(AlumneEnGrup.Grup.AlumnesEnGrup.PrivilegisAssignats, pDataExecucio)
 
-                var privilegisDeGrup = _context.PrivilegiAssignat
-                    .Where(p => p.IdPrivilegi == privilegiAssignat.IdPrivilegi &&
-                                p.DataAssignacio == privilegiAssignat.DataAssignacio &&
-                                p.AlumneEnGrup.IdGrup == privilegiAssignat.AlumneEnGrup.IdGrup &&
-                                p.AlumneEnGrup.IdAnyEscolar == privilegiAssignat.AlumneEnGrup.IdAnyEscolar)
-                    .ToList();
+                //var privilegisDeGrup = _context.PrivilegiAssignat
+                //    .Where(p => p.IdPrivilegi == privilegiAssignat.IdPrivilegi &&
+                //                p.DataAssignacio == privilegiAssignat.DataAssignacio &&
+                //                p.AlumneEnGrup.IdGrup == privilegiAssignat.AlumneEnGrup.IdGrup &&
+                //                p.AlumneEnGrup.IdAnyEscolar == privilegiAssignat.AlumneEnGrup.IdAnyEscolar)
+                //    .ToList();
 
 
-                privilegisDeGrup.ForEach(p =>
-                {
-                    p.DataExecucio = privilegiAssignatDTO.DataExecucio;
-                    _context.Entry(p).State = EntityState.Modified;
-                });
+                //privilegisDeGrup.ForEach(p =>
+                //{
+                //    p.DataExecucio = privilegiAssignatDTO.DataExecucio;
+                //    _context.Entry(p).State = EntityState.Modified;
+                //});
             }
             try
             {

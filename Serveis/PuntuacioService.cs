@@ -14,13 +14,11 @@
     public class PuntuacioService : IPuntuacioService
     {
         private readonly DatabaseContext _context;
-        private readonly IAlumneEnGrupService _alumneEnGrupService;
         private readonly IGrupService _grupService;
 
-        public PuntuacioService(DatabaseContext context, IAlumneEnGrupService alumneEnGrupService, IGrupService grupService)
+        public PuntuacioService(DatabaseContext context,  IGrupService grupService)
         {
             _context = context;
-            _alumneEnGrupService = alumneEnGrupService;
             _grupService = grupService;
         }
 
@@ -46,70 +44,70 @@
         public async Task<ActionResult<Puntuacio>> TCREARAsync(PuntuacioCrearDTO puntuacioDto, String? usuariCreacio)
         {
 
-            var puntuacio = await CrearPuntuacioAsync(puntuacioDto, usuariCreacio);
+            //    var puntuacio = await CrearPuntuacioAsync(puntuacioDto, usuariCreacio);
 
-            if (puntuacio == null)
+            //    if (puntuacio == null)
+            //    {
+            return new ObjectResult("No s'ha pogut crear la puntuació")
             {
-                return new ObjectResult("No s'ha pogut crear la puntuació")
-                {
-                    StatusCode = 500
-                };
-            }
+                StatusCode = 500
+            };
+            //    }
 
-            var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(puntuacioDto.IdAlumneEnGrup);
+            //    var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(puntuacioDto.IdAlumneEnGrup);
 
-            if (alumneEnGrup != null)
-            {             
-                int idAlumneEnGrup = puntuacioDto.IdAlumneEnGrup;
-                // Specify the interface explicitly to resolve ambiguity
-                var resultado = await _alumneEnGrupService.AfegirPuntuacioAsync(idAlumneEnGrup, puntuacioDto.Punts);
+            //    if (alumneEnGrup != null)
+            //    {             
+            //        int idAlumneEnGrup = puntuacioDto.IdAlumneEnGrup;
+            //        // Specify the interface explicitly to resolve ambiguity
+            //        var resultado = null; // await _alumneEnGrupService.AfegirPuntuacioAsync(idAlumneEnGrup, puntuacioDto.Punts);
 
-                await _grupService.calculaKarmaBaseAsync(alumneEnGrup.IdAnyEscolar, alumneEnGrup.IdGrup);
-            }
-            await _context.SaveChangesAsync();
+            //        await _grupService.calculaKarmaBaseAsync(alumneEnGrup.IdAnyEscolar, alumneEnGrup.IdGrup);
+            //    }
+            //    await _context.SaveChangesAsync();
 
-            return puntuacio;
+            //    return puntuacio;
         }
     
 
         public async Task<ActionResult<String>> TELIMINARAsync(int idPuntuacio)
         {
-            try { 
-            var puntuacio = await _context.Puntuacio.FindAsync(idPuntuacio);
+            //try { 
+            //var puntuacio = await _context.Puntuacio.FindAsync(idPuntuacio);
 
-            if (puntuacio == null)
-            {
-                return new ObjectResult($"No existeix la puntuació amb id {idPuntuacio}")
-                {
-                    StatusCode = 500
-                };
-            }
+            //if (puntuacio == null)
+            //{
+            //    return new ObjectResult($"No existeix la puntuació amb id {idPuntuacio}")
+            //    {
+            //        StatusCode = 500
+            //    };
+            //}
 
-            var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(puntuacio.IdAlumneEnGrup);
+            ////var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(puntuacio.IdAlumneEnGrup);
 
-            if (alumneEnGrup != null)
-            {
-                int total = alumneEnGrup.PuntuacioTotal - puntuacio.Punts;
-                int idAlumneEnGrup = puntuacio.IdAlumneEnGrup;
+            ////if (alumneEnGrup != null)
+            ////{
+            ////    int total = alumneEnGrup.PuntuacioTotal - puntuacio.Punts;
+            ////    int idAlumneEnGrup = puntuacio.IdAlumneEnGrup;
 
-                var resultado = await _alumneEnGrupService.ResetPuntuacioTotalAsync(idAlumneEnGrup, 0);
+            //    //var resultado = await _alumneEnGrupService.ResetPuntuacioTotalAsync(idAlumneEnGrup, 0);
 
-                await _grupService.calculaKarmaBaseAsync(alumneEnGrup.IdAnyEscolar, alumneEnGrup.IdGrup);
-            }
+            // //   await _grupService.calculaKarmaBaseAsync(alumneEnGrup.IdAnyEscolar, alumneEnGrup.IdGrup);
+            //}
 
-            _context.Puntuacio.Remove(puntuacio);
+            //_context.Puntuacio.Remove(puntuacio);
 
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
 
             return new OkObjectResult($"La puntuació amb Id {idPuntuacio} ha estat esborrada");
-            }
-            catch (Exception ex)
-            {
-                return new ObjectResult($"Error: {ex.Message}")
-                {
-                    StatusCode = 500
-                };
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    return new ObjectResult($"Error: {ex.Message}")
+            //    {
+            //        StatusCode = 500
+            //    };
+            //}
         }
     }
 

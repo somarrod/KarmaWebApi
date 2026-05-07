@@ -265,11 +265,11 @@ namespace KarmaWebAPI.Controllers
             }
 
             // Comprovar si l'alumne està en una relació en AlumneEnGrup
-            var alumneEnGrupExists = await _context.AlumneEnGrup.AnyAsync(aeg => aeg.NIA== nia);
-            if (alumneEnGrupExists)
-            {
-                return BadRequest("No es pot esborrar l'alumne perquè està en un grup. El pot inactivar.");
-            }
+            //var alumneEnGrupExists = await _context.AlumneEnGrup.AnyAsync(aeg => aeg.NIA== nia);
+            //if (alumneEnGrupExists)
+            //{
+            //    return BadRequest("No es pot esborrar l'alumne perquè està en un grup. El pot inactivar.");
+            //}
 
             // Iniciar la transacció
             using (var transaction = await _context.Database.BeginTransactionAsync())

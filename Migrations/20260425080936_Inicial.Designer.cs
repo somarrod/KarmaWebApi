@@ -416,13 +416,13 @@ namespace KarmaWebAPI.Migrations
                     b.ToTable("Professor");
                 });
 
-            modelBuilder.Entity("KarmaWebAPI.Models.ProfessorDeGrup", b =>
+            modelBuilder.Entity("KarmaWebAPI.Models.ProfessorDeClasse", b =>
                 {
-                    b.Property<int>("IdProfessorDeGrup")
+                    b.Property<int>("IdProfessorDeClasse")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProfessorDeGrup"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProfessorDeClasse"));
 
                     b.Property<int>("IdAnyEscolar")
                         .HasColumnType("int");
@@ -440,7 +440,7 @@ namespace KarmaWebAPI.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("IdProfessorDeGrup");
+                    b.HasKey("IdProfessorDeClasse");
 
                     b.HasIndex("IdMateria");
 
@@ -448,7 +448,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasIndex("IdAnyEscolar", "IdGrup");
 
-                    b.ToTable("ProfessorDeGrup");
+                    b.ToTable("ProfessorDeClasse");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.Puntuacio", b =>
@@ -777,7 +777,7 @@ namespace KarmaWebAPI.Migrations
                     b.Navigation("Privilegi");
                 });
 
-            modelBuilder.Entity("KarmaWebAPI.Models.ProfessorDeGrup", b =>
+            modelBuilder.Entity("KarmaWebAPI.Models.ProfessorDeClasse", b =>
                 {
                     b.HasOne("KarmaWebAPI.Models.AnyEscolar", "AnyEscolar")
                         .WithMany()
@@ -792,7 +792,7 @@ namespace KarmaWebAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("KarmaWebAPI.Models.Professor", "Professor")
-                        .WithMany("ProfessorDeGrups")
+                        .WithMany("ProfessorDeClasses")
                         .HasForeignKey("IdProfessor")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -959,7 +959,7 @@ namespace KarmaWebAPI.Migrations
                 {
                     b.Navigation("GrupsTutoritzats");
 
-                    b.Navigation("ProfessorDeGrups");
+                    b.Navigation("ProfessorDeClasses");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.TipusCategoria", b =>

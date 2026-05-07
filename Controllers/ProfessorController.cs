@@ -264,7 +264,7 @@ namespace KarmaWebAPI.Controllers
             }
 
             // Comprovar si el professor està en una relació en ProfessorEnGrup
-            var professorEnGrupExists = await _context.ProfessorDeGrup.AnyAsync(peg => peg.IdProfessor == idProfessor);
+            var professorEnGrupExists = await _context.ProfessorsDeClasse.AnyAsync(peg => peg.IdProfessor == idProfessor);
             if (professorEnGrupExists)
             {
                 return BadRequest("No es pot esborrar el professor perquè està en una relació en ProfessorEnGrup. S'ha de desactivar.");

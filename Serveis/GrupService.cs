@@ -32,26 +32,26 @@ namespace KarmaWebAPI.Serveis
 
             string Karma = "CAP KARMA";
             // Comprovació prèvia: existeix algun alumne en grup?
-            var existeixAlgun = await _context.AlumneEnGrup.AnyAsync();
-            if (existeixAlgun)
-            {
-                // Obtenir la puntuació mínima dels alumnes en el grup específic
-                   var puntuacioMinimaGrup = await _context.AlumneEnGrup
-                                              .Where(a => a.IdGrup == idGrup && a.IdAnyEscolar == idAnyEscolar)
-                                              .MinAsync(a => a.PuntuacioTotal);
+            //var existeixAlgun = await _context.AlumneEnGrup.AnyAsync();
+            //if (existeixAlgun)
+            //{
+            //    // Obtenir la puntuació mínima dels alumnes en el grup específic
+            //       var puntuacioMinimaGrup = await _context.AlumneEnGrup
+            //                                  .Where(a => a.IdGrup == idGrup && a.IdAnyEscolar == idAnyEscolar)
+            //                                  .MinAsync(a => a.PuntuacioTotal);
 
 
-                    // Obtenir el color del nivell de karma basat en la puntuació mínima i l'any escolar
-                    var karmaConfig = await _context.ConfiguracionsKarma
-                                            .Where(k => k.IdAnyEscolar == idAnyEscolar)
-                                            .FirstOrDefaultAsync(k => k.NumPuntsMinim <= puntuacioMinimaGrup && k.NumPuntsMaxim >= puntuacioMinimaGrup);
+            //        // Obtenir el color del nivell de karma basat en la puntuació mínima i l'any escolar
+            //        var karmaConfig = await _context.ConfiguracionsKarma
+            //                                .Where(k => k.IdAnyEscolar == idAnyEscolar)
+            //                                .FirstOrDefaultAsync(k => k.NumPuntsMinim <= puntuacioMinimaGrup && k.NumPuntsMaxim >= puntuacioMinimaGrup);
 
 
-                    if (karmaConfig != null && grup != null)
-                    {
-                        Karma = karmaConfig.ColorKarma;
-                    }
-            }
+            //        if (karmaConfig != null && grup != null)
+            //        {
+            //            Karma = karmaConfig.ColorKarma;
+            //        }
+            //}
             grup.KarmaBase = Karma;
             _context.Grup.Update(grup);
             await _context.SaveChangesAsync();

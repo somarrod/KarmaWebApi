@@ -104,9 +104,9 @@ IF OBJECT_ID('dbo.Professor', 'U') IS NULL
 BEGIN
 	CREATE TABLE Professor(IdProfessor NVARCHAR(50) NOT NULL, Nom NVARCHAR(200) NOT NULL, Cognoms NVARCHAR(200) NOT NULL, Actiu BIT NOT NULL, email NVARCHAR(255) NOT NULL);
 END
-IF OBJECT_ID('dbo.ProfessorDeGrup', 'U') IS NULL
+IF OBJECT_ID('dbo.ProfessorDeClasse', 'U') IS NULL
 BEGIN
-	CREATE TABLE ProfessorDeGrup(IdProfessorDeGrup INT IDENTITY, IdAnyEscolar INT NOT NULL, IdGrup NVARCHAR(50) NOT NULL, IdProfessor NVARCHAR(50) NOT NULL, IdMateria INT NOT NULL);
+	CREATE TABLE ProfessorDeClasse(IdProfessorDeClasse INT IDENTITY, IdAnyEscolar INT NOT NULL, IdGrup NVARCHAR(50) NOT NULL, IdProfessor NVARCHAR(50) NOT NULL, IdMateria INT NOT NULL);
 END
 IF OBJECT_ID('dbo.Puntuacio', 'U') IS NULL
 BEGIN
@@ -199,9 +199,9 @@ BEGIN
 	ALTER TABLE dbo.Professor ADD CONSTRAINT PK_Professor PRIMARY KEY (IdProfessor);
 END
 GO
-IF NOT EXISTS (SELECT * FROM sys.key_constraints WHERE name = 'PK_ProfessorDeGrup')
+IF NOT EXISTS (SELECT * FROM sys.key_constraints WHERE name = 'PK_ProfessorDeClasse')
 BEGIN
-	ALTER TABLE dbo.ProfessorDeGrup ADD CONSTRAINT PK_ProfessorDeGrup PRIMARY KEY (IdProfessorDeGrup);
+	ALTER TABLE dbo.ProfessorDeClasse ADD CONSTRAINT PK_ProfessorDeClasse PRIMARY KEY (IdProfessorDeClasse);
 END
 GO
 IF NOT EXISTS (SELECT * FROM sys.key_constraints WHERE name = 'PK_Puntuacio')
@@ -281,24 +281,24 @@ BEGIN
 	ALTER TABLE dbo.PrivilegiAssignat ADD CONSTRAINT FK_PrivilegiAssignat_Privilegi_IdPrivilegi FOREIGN KEY(IdPrivilegi) REFERENCES dbo.Privilegi;
 END
 GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_ProfessorDeGrup_AnyEscolar_IdAnyEscolar')
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_ProfessorDeClasse_AnyEscolar_IdAnyEscolar')
 BEGIN
-	ALTER TABLE dbo.ProfessorDeGrup ADD CONSTRAINT FK_ProfessorDeGrup_AnyEscolar_IdAnyEscolar FOREIGN KEY(IdAnyEscolar) REFERENCES dbo.AnyEscolar;
+	ALTER TABLE dbo.ProfessorDeClasse ADD CONSTRAINT FK_ProfessorDeClasse_AnyEscolar_IdAnyEscolar FOREIGN KEY(IdAnyEscolar) REFERENCES dbo.AnyEscolar;
 END
 GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_ProfessorDeGrup_Grup_IdAnyEscolar_IdGrup')
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_ProfessorDeClasse_Grup_IdAnyEscolar_IdGrup')
 BEGIN
-	ALTER TABLE dbo.ProfessorDeGrup ADD CONSTRAINT FK_ProfessorDeGrup_Grup_IdAnyEscolar_IdGrup FOREIGN KEY(IdAnyEscolar, IdGrup) REFERENCES dbo.Grup;
+	ALTER TABLE dbo.ProfessorDeClasse ADD CONSTRAINT FK_ProfessorDeClasse_Grup_IdAnyEscolar_IdGrup FOREIGN KEY(IdAnyEscolar, IdGrup) REFERENCES dbo.Grup;
 END
 GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_ProfessorDeGrup_Materia_IdMateria')
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_ProfessorDeClasse_Materia_IdMateria')
 BEGIN
-	ALTER TABLE dbo.ProfessorDeGrup ADD CONSTRAINT FK_ProfessorDeGrup_Materia_IdMateria FOREIGN KEY(IdMateria) REFERENCES dbo.Materia;
+	ALTER TABLE dbo.ProfessorDeClasse ADD CONSTRAINT FK_ProfessorDeClasse_Materia_IdMateria FOREIGN KEY(IdMateria) REFERENCES dbo.Materia;
 END
 GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_ProfessorDeGrup_Professor_IdProfessor')
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_ProfessorDeClasse_Professor_IdProfessor')
 BEGIN
-	ALTER TABLE dbo.ProfessorDeGrup ADD CONSTRAINT FK_ProfessorDeGrup_Professor_IdProfessor FOREIGN KEY(IdProfessor) REFERENCES dbo.Professor;
+	ALTER TABLE dbo.ProfessorDeClasse ADD CONSTRAINT FK_ProfessorDeClasse_Professor_IdProfessor FOREIGN KEY(IdProfessor) REFERENCES dbo.Professor;
 END
 GO
 IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_Puntuacio_AlumneEnGrup_IdAlumneEnGrup')
@@ -364,19 +364,19 @@ BEGIN
 	CREATE INDEX IX_PrivilegiAssignat_IdPrivilegi ON PrivilegiAssignat(IdPrivilegi) WITH PAD_INDEX;
 END
 GO
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_ProfessorDeGrup_IdAnyEscolar_IdGrup')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_ProfessorDeClasse_IdAnyEscolar_IdGrup')
 BEGIN
-	CREATE INDEX IX_ProfessorDeGrup_IdAnyEscolar_IdGrup ON ProfessorDeGrup(IdAnyEscolar, IdGrup) WITH PAD_INDEX;
+	CREATE INDEX IX_ProfessorDeClasse_IdAnyEscolar_IdGrup ON ProfessorDeClasse(IdAnyEscolar, IdGrup) WITH PAD_INDEX;
 END
 GO
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_ProfessorDeGrup_IdMateria')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_ProfessorDeClasse_IdMateria')
 BEGIN
-	CREATE INDEX IX_ProfessorDeGrup_IdMateria ON ProfessorDeGrup(IdMateria) WITH PAD_INDEX;
+	CREATE INDEX IX_ProfessorDeClasse_IdMateria ON ProfessorDeClasse(IdMateria) WITH PAD_INDEX;
 END
 GO
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_ProfessorDeGrup_IdProfessor')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_ProfessorDeClasse_IdProfessor')
 BEGIN
-	CREATE INDEX IX_ProfessorDeGrup_IdProfessor ON ProfessorDeGrup(IdProfessor) WITH PAD_INDEX;
+	CREATE INDEX IX_ProfessorDeClasse_IdProfessor ON ProfessorDeClasse(IdProfessor) WITH PAD_INDEX;
 END
 GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Puntuacio_IdAlumneEnGrup')

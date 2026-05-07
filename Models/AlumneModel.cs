@@ -8,7 +8,7 @@ namespace KarmaWebAPI.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [StringLength(10)]
-        public String NIA { get; set; } //identificador únic de tamany màxim 10 que assigna gva
+        public string NIA { get; set; } //identificador únic de tamany màxim 10 que assigna gva
         
         [Required]
         [StringLength(200)]
@@ -25,7 +25,11 @@ namespace KarmaWebAPI.Models
         [StringLength(255)]
         public String Email { get; set; } //correu electrònic 
 
-        public ICollection<AlumneEnGrup> AlumneEnGrups { get; set; } //relació amb alumne grups
-        //public object AlumnesEnGrup { get; internal set; }
+
+        [Required]
+        [ForeignKey(nameof(Classe))]
+        public string IdClasse { get; set; }
+        public Classe Classe { get; set; } = null!;
+
     }
 }

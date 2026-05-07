@@ -22,6 +22,10 @@ namespace KarmaWebAPI.DTOs
         [Required]
         [StringLength(255)]
         public string Email { get; set; } //correu electrònic 
+
+        [Required]
+        public bool PertanyAEquipDirectiu { get; set; }
+
     }
 
 }

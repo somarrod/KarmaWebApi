@@ -14,8 +14,8 @@ namespace KarmaWebAPI.Models
         [ForeignKey("Privilegi")]
         public int IdPrivilegi { get; set; } //identificar únic del privilegi assignat
 
-        [ForeignKey("AlumneEnGrup")]
-        public int IdAlumneEnGrup { get; set; } //identificar únic del privilegi assignat
+        [ForeignKey("Alumne")]
+        public string NIA { get; set; } //identificar únic del privilegi assignat
 
         [Required]
         public int Nivell { get; set; }
@@ -35,7 +35,6 @@ namespace KarmaWebAPI.Models
         #region Navegacions
 
         public Privilegi Privilegi { get; set; } //Privilegi
-        public AlumneEnGrup AlumneEnGrup { get; set; } //Alumne en grup
 
         #endregion Navegacions
     }

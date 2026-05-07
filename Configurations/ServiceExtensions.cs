@@ -48,15 +48,16 @@ namespace KarmaWebAPI.Configurations
         }
         public static void ConfigureServices(this IServiceCollection services)
         {
-            var builder = services.AddScoped<IAnyEscolarService, AnyEscolarService>()                                 
+            var builder = services.AddScoped<AccountService>()
                                   .AddScoped<IAlumneService, AlumneService>()
-                                  .AddScoped<IAlumneEnGrupService, AlumneEnGrupService>()
-                                  .AddScoped<IGrupService, GrupService>()
+                                  .AddScoped<IAnyEscolarService, AnyEscolarService>()
                                   .AddScoped<IAvaluacioService, AvaluacioService>()
+                                  .AddScoped<IConfiguracioKarmaService, ConfiguracioKarmaService>()
+                                  .AddScoped<IGrupService, GrupService>()
+                                  .AddScoped<IKarmaAlumneService, KarmaAlumneService>()
                                   .AddScoped<IPrivilegiService, PrivilegiService>()
-                                  .AddScoped<AccountService>()
+                                  .AddScoped<IProfessorDeClasseService, ProfessorDeClasseService>()                             
                                   .AddScoped<IProfessorService, ProfessorService>()
-                                  .AddScoped<ConfiguracioKarmaService>()
                                   .AddScoped<IPuntuacioService, PuntuacioService>();
             ;
             // Otros servicios

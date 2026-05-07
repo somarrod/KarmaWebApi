@@ -11,7 +11,7 @@ namespace KarmaWebAPI.DTOs
 
         [Required]
         [StringLength(50)]
-        public String IdGrup { get; set; }
+        public string IdClasse { get; set; }
 
         [Required]
         [StringLength(10)]
