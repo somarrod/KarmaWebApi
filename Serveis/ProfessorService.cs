@@ -3,16 +3,18 @@ using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 public class ProfessorService: IProfessorService
 {
     private readonly DatabaseContext _context;
-
-    public ProfessorService(DatabaseContext context)
+    private readonly UserManager<ApiUser> _userManager;
+    public ProfessorService(DatabaseContext context, UserManager<ApiUser> userManager)
     {
         _context = context;
+        _userManager = userManager;
     }
 
     public List<Professor> GetProfessors()
@@ -73,6 +75,36 @@ public class ProfessorService: IProfessorService
 
         return new OkResult();
     }
+
+
+    public async Task PertanyEquipDirectiuAsync(string idProfessor, bool pertanyAEquipDirectiu)
+    {
+        var professor = await _context.Professor
+            .FirstOrDefaultAsync(p => p.IdProfessor == idProfessor);
+
+        if (professor == null)
+            throw new InvalidOperationException("Professor no trobat");
+
+        professor.PertanyAEquipDirectiu = pertanyAEquipDirectiu;
+
+        var user = await _userManager.FindByNameAsync(idProfessor);
+        if (user == null)
+            throw new InvalidOperationException("Usuari identity no trobat");
+
+        if (pertanyAEquipDirectiu)
+        {
+            if (!await _userManager.IsInRoleAsync(user, "AG_EquipDirectiu"))
+                await _userManager.AddToRoleAsync(user, "AG_EquipDirectiu");
+        }
+        else
+        {
+            if (await _userManager.IsInRoleAsync(user, "AG_EquipDirectiu"))
+                await _userManager.RemoveFromRoleAsync(user, "AG_EquipDirectiu");
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
 
     public bool ProfessorExisteix(string idProfessor)
     {
