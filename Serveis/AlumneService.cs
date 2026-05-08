@@ -7,73 +7,191 @@ using KarmaWebAPI.Serveis.Interfaces;
 //using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace KarmaWebAPI.Serveis
 {
 
     public class AlumneService : IAlumneService
     {
-        private readonly DatabaseContext _context;
 
-       public AlumneService(DatabaseContext context)
+        private readonly DatabaseContext _context;
+        private readonly AccountService _accountService;
+        private readonly IKarmaAlumneService _karmaAlumneService;
+
+        public AlumneService(
+            DatabaseContext context,
+            AccountService accountService,
+            IKarmaAlumneService karmaAlumneService)
         {
             _context = context;
+            _accountService = accountService;
+            _karmaAlumneService = karmaAlumneService;
         }
 
-        public async Task<ActionResult<Alumne>> CrearAlumneAsync(AlumneDTO alumneDto)
+
+        // ==================================================
+        // CREAR ALUMNE (+ usuari Identity)
+        // ==================================================
+        public async Task<Alumne> CrearAsync(AlumneDTO dto)
         {
+            using var tx = await _context.Database.BeginTransactionAsync();
+
             var alumne = new Alumne
             {
-                NIA = alumneDto.NIA,
-                Nom = alumneDto.Nom,
-                Cognoms = alumneDto.Cognoms,
+                NIA = dto.NIA,
+                Nom = dto.Nom,
+                Cognoms = dto.Cognoms,
+                Email = dto.Email,
                 Actiu = true,
-                Email = alumneDto.Email
+                IdClasse = dto.IdClasse,
+                IdGrup = dto.IdGrup
             };
 
             _context.Alumnes.Add(alumne);
             await _context.SaveChangesAsync();
 
-            return new OkObjectResult(alumne);
+            // Crear usuari AG_Alumne
+            var password = FuncionsAuxiliars.ConstruirPasswordAlumne(dto);
+            var identityResult = await _accountService.CreateUserAsync(
+                dto.NIA, dto.Email, "AG_Alumne", password);
+
+            if (!identityResult.Succeeded)
+            {
+                await tx.RollbackAsync();
+                throw new InvalidOperationException(
+                    identityResult.Errors.First().Description);
+            }
+
+            // Crear Karma només si té classe assignada
+            if (alumne.IdClasse.HasValue)
+            {
+                var idAnyEscolar = await _context.Classes
+                    .Where(c => c.IdClasse == alumne.IdClasse)
+                    .Select(c => c.IdAnyEscolar)
+                    .FirstAsync();
+
+                await _karmaAlumneService
+                    .CrearPerAlumneDesdeAvaluacioEnCursAsync(
+                        alumne.NIA, idAnyEscolar);
+            }
+
+            await tx.CommitAsync();
+            return alumne;
         }
 
-        public async Task<ActionResult<Alumne>> ActivarAlumneAsync(String nia)
+        // ==================================================
+        // EDITAR
+        // ==================================================
+        public async Task<Alumne> EditarAsync(AlumneDTO dto)
         {
-            var alumne = await _context.Alumnes.FindAsync(nia);
+            var alumne = await _context.Alumnes
+                .FirstOrDefaultAsync(a => a.NIA == dto.NIA);
 
             if (alumne == null)
-            {
-                return new NotFoundResult();
-            }
+                throw new InvalidOperationException("Alumne no trobat");
+
+            // Comprovar email duplicat
+            var emailDuplicat = await _context.Alumnes.AnyAsync(a =>
+                a.Email == dto.Email && a.NIA != dto.NIA);
+
+            if (emailDuplicat)
+                throw new InvalidOperationException("L'email ja està en ús per un altre alumne");
+
+            alumne.Nom = dto.Nom;
+            alumne.Cognoms = dto.Cognoms;
+            alumne.Email = dto.Email;
+
+            await _context.SaveChangesAsync();
+            return alumne; // ✅ objecte modificat
+        }
+
+
+
+        // ==================================================
+        // ACTIVAR / DESACTIVAR
+        // ==================================================
+        public async Task<Alumne> ActivarAsync(string nia)
+        {
+            var alumne = await _context.Alumnes.FindAsync(nia)
+                ?? throw new InvalidOperationException("Alumne no trobat");
 
             alumne.Actiu = true;
-
-            _context.Entry(alumne).State = EntityState.Modified;
-
             await _context.SaveChangesAsync();
-
-            return new OkResult();
+            return alumne;
         }
 
-
-        public async Task<ActionResult<Alumne>> DesactivarAlumneAsync(String nia)
+        public async Task<Alumne> DesactivarAsync(string nia)
         {
-            var alumne = await _context.Alumnes.FindAsync(nia);
-
-            if (alumne == null)
-            {
-                return new NotFoundResult();
-            }
+            var alumne = await _context.Alumnes.FindAsync(nia)
+                ?? throw new InvalidOperationException("Alumne no trobat");
 
             alumne.Actiu = false;
+            await _context.SaveChangesAsync();
+            return alumne;
+        }
 
-            _context.Entry(alumne).State = EntityState.Modified;
+        // ==================================================
+        // INSTÀNCIA
+        // ==================================================
+        public async Task<Alumne> InstanciaAsync(string nia, ClaimsPrincipal user)
+        {
+            if (user.IsInRole("AG_Alumne") && user.Identity!.Name != nia)
+                throw new UnauthorizedAccessException();
+
+            var alumne = await _context.Alumnes
+                .Include(a => a.Classe)
+                .Include(a => a.Grup)
+                .FirstOrDefaultAsync(a => a.NIA == nia);
+
+            return alumne ?? throw new InvalidOperationException("Alumne no trobat");
+        }
+
+        // ==================================================
+        // LLISTA
+        // ==================================================
+        public async Task<List<Alumne>> LlistaAsync(ClaimsPrincipal user)
+        {
+            if (user.IsInRole("AG_Alumne"))
+            {
+                var nia = user.Identity!.Name;
+                return await _context.Alumnes
+                    .Where(a => a.NIA == nia)
+                    .ToListAsync();
+            }
+
+            return await _context.Alumnes.ToListAsync();
+        }
+
+
+        public async Task<Alumne> AssignarClasseAsync(string nia, long idNovaClasse)
+        {
+            var alumne = await _context.Alumnes
+                .FirstOrDefaultAsync(a => a.NIA == nia);
+
+            if (alumne == null)
+                throw new InvalidOperationException("Alumne no trobat");
+
+            var classeExisteix = await _context.Classes
+                .AnyAsync(c => c.IdClasse == idNovaClasse);
+
+            if (!classeExisteix)
+                throw new InvalidOperationException("La classe no existeix");
+
+            // Si no canvia, retornem igualment l’objecte
+            if (alumne.IdClasse == idNovaClasse)
+                return alumne;
+
+            // Assignar nova classe
+            alumne.IdClasse = idNovaClasse;
+
+            // Desvincular del grup anterior
+            alumne.IdGrup = null; // o 0 si el mantens no nullable
 
             await _context.SaveChangesAsync();
 
-            return new OkResult();
+            return alumne; // objecte modificat
         }
-
 
     }
 

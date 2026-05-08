@@ -28,16 +28,15 @@ namespace KarmaWebAPI.Models
 
         [Required]
         [ForeignKey(nameof(Classe))]
-        public long IdClasse { get; set; }
-        public Classe Classe { get; set; } = null!;
+        public long? IdClasse { get; set; }
+        public Classe? Classe { get; set; } = null!;
 
 
         // Grup (pot canviar)
         [Required]
         [ForeignKey(nameof(Grup))]
-        public long IdGrup { get; set; }
-        public Grup Grup { get; set; } = null!;
-
+        public long? IdGrup { get; set; }
+        public Grup? Grup { get; set; } = null!;
 
     }
 }
