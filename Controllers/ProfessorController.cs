@@ -270,13 +270,6 @@ namespace KarmaWebAPI.Controllers
                 return BadRequest("No es pot esborrar el professor perquè està en una relació en ProfessorEnGrup. S'ha de desactivar.");
             }
 
-            // Comprovar si el professor està en una relació en ProfessorEnGrup
-            var esProfessorTutor = await _context.Grup.AnyAsync(g => g.IdProfessorTutor == idProfessor);
-            if (esProfessorTutor)
-            {
-                return BadRequest("No es pot esborrar el professor perquè es tutor. S'ha de desactivar.");
-            }
-
             // Iniciar la transacció
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {

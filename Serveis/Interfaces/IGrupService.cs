@@ -6,7 +6,20 @@ namespace KarmaWebAPI.Serveis.Interfaces
 {
     public interface IGrupService
     {
-        public Task<String> calculaKarmaBaseAsync(int idAnyEscolar, String idGrup);
+
+        Task<Grup> CrearAsync(long idClasse, string nom);
+        Task<bool> EsborrarAsync(long idGrup);
+        Task<Alumne> AfegirAlumneAsync(long idGrup, string nia);
+        Task<Alumne> LlevarAlumneAsync(string nia);
+
+        Task<string?> RecalcularKarmaBaseAsync(long idGrup);
+
+
+        //consultes
+        Task<Grup?> InstanciaAsync(long idGrup);
+        Task<List<Grup>> LlistaPerClasseAsync(long idClasse);
+
+
     }
 
 }

@@ -16,7 +16,7 @@ namespace KarmaWebAPI.Data
         public DbSet<Classe> Classes { get; set; } = null!;
         public DbSet<TipusCategoria> TipusCategoria { get; set; } = null!;
         public DbSet<ConfiguracioKarma> ConfiguracionsKarma { get; set; } = null!;
-        public DbSet<Grup> Grup { get; set; } = null!;
+        public DbSet<Grup> Grups { get; set; } = null!;
         public DbSet<Materia> Materia { get; set; } = null!;
         public DbSet<Avaluacio> Avaluacions { get; set; } = null!;
         public DbSet<PrivilegiAssignat> PrivilegiAssignat { get; set; } = null!;
@@ -29,14 +29,14 @@ namespace KarmaWebAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configuración de la entidad Grup
-            modelBuilder.Entity<Grup>()
-                .HasKey(g => new { g.IdAnyEscolar, g.IdGrup });
+            //// Configuración de la entidad Grup
+            //modelBuilder.Entity<Grup>()
+            //    .HasKey(g => new { g.IdAnyEscolar, g.IdGrup });
 
-            modelBuilder.Entity<Grup>()
-                .HasOne(g => g.AnyEscolar)
-                .WithMany(a => a.Grups)
-                .HasForeignKey(g => g.IdAnyEscolar);
+            //modelBuilder.Entity<Grup>()
+            //    .HasOne(g => g.AnyEscolar)
+            //    .WithMany(a => a.Grups)
+            //    .HasForeignKey(g => g.IdAnyEscolar);
 
 
             modelBuilder.Entity<ProfessorDeClasse>()

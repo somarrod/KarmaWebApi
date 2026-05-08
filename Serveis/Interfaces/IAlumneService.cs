@@ -11,9 +11,11 @@ namespace KarmaWebAPI.Serveis.Interfaces
         Task<Alumne> EditarAsync(AlumneDTO dto);
         Task<Alumne> ActivarAsync(string nia);
         Task<Alumne> DesactivarAsync(string nia);
+        Task<Alumne> AssignarClasseAsync(string nia, long idNovaClasse);
+    
+        //CONSULTES   
         Task<Alumne> InstanciaAsync(string nia, ClaimsPrincipal user);
         Task<List<Alumne>> LlistaAsync(ClaimsPrincipal user);
-        Task<Alumne> AssignarClasseAsync(string nia, long idNovaClasse);
     }
 
 }

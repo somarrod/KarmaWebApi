@@ -1,164 +1,103 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using KarmaWebAPI.Models;
-using Microsoft.EntityFrameworkCore;
-using KarmaWebAPI.Data;
-using KarmaWebAPI.DTOs;
-using Microsoft.AspNetCore.Authorization;
+﻿using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KarmaWebAPI.Controllers
 {
-    [Route("api/grup")]
     [ApiController]
+    [Route("api/grup")]
     public class GrupController : ControllerBase
     {
-        private readonly DatabaseContext _context;
-        private readonly IProfessorService _professorService;   
+        private readonly IGrupService _grupService;
 
-        public GrupController(DatabaseContext context, IProfessorService professorService)
+        public GrupController(IGrupService grupService)
         {
-            _context = context;
-            _professorService = professorService;
+            _grupService = grupService;
         }
 
-        // GET: api/Grup
-        [HttpGet("llista")]
-        public async Task<ActionResult<IEnumerable<Grup>>> Llista()
+        // ==================================================
+        // GET: api/grup/{idGrup}
+        // ==================================================
+        [HttpGet("{idGrup:long}")]
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_EquipDirectiu")]
+        public async Task<IActionResult> Instancia(long idGrup)
         {
-            return await _context.Grup.ToListAsync();
-        }
-
-
-        // GET: api/Grup/25/ESO1A
-        [HttpGet("{idAnyEscolar}/{idGrup}")]
-        public async Task<ActionResult<Grup>> Instancia(int idAnyEscolar, string idGrup)
-        {
-            var grup = await _context.Grup.FindAsync(idAnyEscolar, idGrup);
-
-            if (grup == null)
-            {
-                return NotFound();
-            }
-
-            return grup;
-        }
-
-
-        #region Serveis
-        // POST: api/Grup/crear
-        [HttpPost]
-        [Route("crear")]
-        [Authorize(Roles = "AG_Admin")]
-        public async Task<ActionResult<Grup>> Crear(GrupCrearDTO grupDTO)
-        {
-            if (grupDTO == null)
-            {
-                return BadRequest("El grup no pot ser null");
-            }
-
-            //pte validar que existe IdProfessorTutor
-            //validar que existe IdProfessorTutor
-            if (grupDTO.IdProfessorTutor != null && !(_professorService.ProfessorExisteix(grupDTO.IdProfessorTutor)))
-            {
-                return BadRequest("El id del professor introduit no és correcte");
-            }
-
-            var grup = new Grup
-            {
-                IdAnyEscolar = grupDTO.IdAnyEscolar,
-                IdProfessorTutor = grupDTO.IdProfessorTutor,
-                IdGrup = grupDTO.IdGrup,
-                Descripcio = grupDTO.Descripcio
-            };
-            _context.Grup.Add(grup);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception e) {
-                return StatusCode(500, e.InnerException != null ? e.InnerException.Message : e.Message);
-            }
-            
+            var grup = await _grupService.InstanciaAsync(idGrup);
+            if (grup == null) return NotFound();
             return Ok(grup);
         }
 
-
-        //PUT: api/Grup/5
-        [HttpPut("editar")]
-        public async Task<IActionResult> Editar(GrupEditarDTO grupDto)
+        // ==================================================
+        // GET: api/grup/per-classe/{idClasse}
+        // ==================================================
+        [HttpGet("per-classe/{idClasse:long}")]
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_EquipDirectiu")]
+        public async Task<IActionResult> LlistaPerClasse(long idClasse)
         {
-            if (grupDto == null)
-            {
-                return BadRequest("El grup no pot ser null");
-            }
+            var grups = await _grupService.LlistaPerClasseAsync(idClasse);
+            return Ok(grups);
+        }
 
-            if (grupDto.IdAnyEscolar == 0 || string.IsNullOrEmpty(grupDto.IdGrup))
-            {
-                return BadRequest("El grup no pot ser null");
-            }
-
-            if (!GrupExists(grupDto.IdAnyEscolar, grupDto.IdGrup))
-            {
-                return NotFound();
-            }
-
-            //validar que existe IdProfessorTutor
-            if (grupDto.IdProfessorTutor != null && !(_professorService.ProfessorExisteix(grupDto.IdProfessorTutor))) {
-                return BadRequest("El id del professor introduit no és correcte");
-            }
-                    
-
-            var grup = new Grup
-            {
-                IdAnyEscolar = grupDto.IdAnyEscolar,
-                IdGrup = grupDto.IdGrup,
-                IdProfessorTutor = grupDto.IdProfessorTutor,          
-                Descripcio = grupDto.Descripcio
-            };
-
-            _context.Entry(grup).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GrupExists(grup.IdAnyEscolar, grup.IdGrup))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+        // ==================================================
+        // POST: api/grup/crear
+        // ==================================================
+        [HttpPost("crear")]
+        [Authorize(Roles = "AG_Admin,AG_EquipDirectiu")]
+        public async Task<IActionResult> Crear(
+            [FromQuery] long idClasse,
+            [FromQuery] string nom)
+        {
+            var grup = await _grupService.CrearAsync(idClasse, nom);
             return Ok(grup);
         }
 
-
-        // DELETE: api/Grup/5
-        [HttpDelete("eliminar")]
-        [Authorize(Roles = "AG_Admin")]
-        public async Task<IActionResult> Delete(int idAnyEscolar, string idGrup)
+        // ==================================================
+        // DELETE: api/grup/{idGrup}
+        // ==================================================
+        [HttpDelete("{idGrup:long}")]
+        [Authorize(Roles = "AG_Admin,AG_EquipDirectiu")]
+        public async Task<IActionResult> Esborrar(long idGrup)
         {
-            var grup = await _context.Grup.FindAsync(idAnyEscolar, idGrup);
-            if (grup == null)
-            {
-                return NotFound();
-            }
-
-            _context.Grup.Remove(grup);
-            await _context.SaveChangesAsync();
-
-            return Ok($"Grup {idGrup} de l'any escolar {idAnyEscolar} ha estat esborrat");
+            var ok = await _grupService.EsborrarAsync(idGrup);
+            if (!ok) return NotFound();
+            return Ok();
         }
-        #endregion Serveis
 
-        private bool GrupExists(int idAnyEscolar, string idGrup)
+        // ==================================================
+        // PUT: api/grup/afegir-alumne
+        // ==================================================
+        [HttpPut("afegir-alumne")]
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_EquipDirectiu")]
+        public async Task<IActionResult> AfegirAlumne(
+            [FromQuery] long idGrup,
+            [FromQuery] string nia)
         {
-            return _context.Grup.Any(e => e.IdAnyEscolar == idAnyEscolar && e.IdGrup == idGrup);
+            var alumne = await _grupService.AfegirAlumneAsync(idGrup, nia);
+            return Ok(alumne);
+        }
+
+        // ==================================================
+        // PUT: api/grup/llevar-alumne
+        // ==================================================
+        [HttpPut("llevar-alumne")]
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_EquipDirectiu")]
+        public async Task<IActionResult> LlevarAlumne(
+            [FromQuery] string nia)
+        {
+            var alumne = await _grupService.LlevarAlumneAsync(nia);
+            return Ok(alumne);
+        }
+
+        // ==================================================
+        // POST: api/grup/recalcular-karma/{idGrup}
+        // ==================================================
+        [HttpPost("recalcular-karma/{idGrup:long}")]
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_EquipDirectiu")]
+        public async Task<IActionResult> RecalcularKarma(long idGrup)
+        {
+            var karma = await _grupService.RecalcularKarmaBaseAsync(idGrup);
+            return Ok(karma);
         }
     }
 }
