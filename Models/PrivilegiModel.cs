@@ -5,31 +5,23 @@ namespace KarmaWebAPI.Models
 {
     public class Privilegi
     {
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long IdPrivilegi { get; set; } //identificar únic
+        public long IdPrivilegi { get; set; }
 
         [Required]
-        public int Nivell { get; set; }
-
-        [Required]
-        [StringLength(255)]
         public string Descripcio { get; set; }
-        
+
         [Required]
-        [StringLength(1)]
-        public string EsIndividualGrup { get; set; } //valors possibles: 'I' o 'G'
+        public string Tipus { get; set; }
 
-
-        // Clave foránea para referenciar a AnyEscolar
+        // Depén del curs escolar
         [Required]
-        public int IdAnyEscolar { get; set; }
+        public long IdAnyEscolar { get; set; }
+        public AnyEscolar AnyEscolar { get; set; } = null!;
 
-        // Propiedad de navegación
-        [ForeignKey("IdAnyEscolar")]
-        public AnyEscolar AnyEscolar { get; set; }
+        // nivell mínim de karma necessari
+        [Required]
+        public int NivellPrivilegi { get; set; }
 
-
+        public bool Actiu { get; set; } = true;
     }
 }

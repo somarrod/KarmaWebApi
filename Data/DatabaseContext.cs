@@ -19,8 +19,8 @@ namespace KarmaWebAPI.Data
         public DbSet<Grup> Grups { get; set; } = null!;
         public DbSet<Materia> Materia { get; set; } = null!;
         public DbSet<Avaluacio> Avaluacions { get; set; } = null!;
-        public DbSet<PrivilegiAssignat> PrivilegiAssignat { get; set; } = null!;
-        public DbSet<Privilegi> Privilegi { get; set; } = null!;
+        public DbSet<PrivilegiAssignat> PrivilegisAssignats { get; set; } = null!;
+        public DbSet<Privilegi> Privilegis { get; set; } = null!;
         public DbSet<ProfessorDeClasse> ProfessorsDeClasse { get; set; } = null!;
         public DbSet<Professor> Professor { get; set; } = null!;
         public DbSet<Puntuacio> Puntuacio { get; set; } = null!;

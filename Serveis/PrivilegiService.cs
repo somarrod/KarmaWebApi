@@ -2,53 +2,71 @@
 using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 
-namespace KarmaWebAPI.Serveis
+public class PrivilegiService : IPrivilegiService
 {
+    private readonly DatabaseContext _context;
 
-    public class PrivilegiService : IPrivilegiService
+    public PrivilegiService(DatabaseContext context)
     {
-        private readonly DatabaseContext _context;
-
-        public PrivilegiService(DatabaseContext context)
-        {
-            _context = context;
-        }
-
-        public async Task<ActionResult<Privilegi>> CrearPrivilegiAsync(PrivilegiCrearDto privilegiDto) // Change return type to IActionResult
-        {
-            var anyEscolar = await _context.AnyEscolars.FindAsync(privilegiDto.IdAnyEscolar);
-            if (anyEscolar == null)
-            {
-                return new NotFoundObjectResult("Any escolar " + privilegiDto.IdAnyEscolar + " no trobat"); // Use NotFoundObjectResult
-            }
-
-            // Verificar si ya existe un Privilegi con el mismo nombre
-            var existePrivilegi = await _context.Privilegi
-                    .AnyAsync(p => p.Descripcio == privilegiDto.Descripcio);
-
-            if (existePrivilegi)
-            {
-                return new ConflictObjectResult("Ja existeix un privilegi amb la mateixa descripció."); // Use ConflictObjectResult
-            }
-
-            var privilegi = new Privilegi
-            {
-                Nivell = privilegiDto.Nivell,
-                Descripcio = privilegiDto.Descripcio,
-                EsIndividualGrup = privilegiDto.EsIndividualGrup,
-                IdAnyEscolar = privilegiDto.IdAnyEscolar,
-                AnyEscolar = anyEscolar // Asignar la instancia recuperada
-            };
-
-            await _context.Privilegi.AddAsync(privilegi);
-            await _context.SaveChangesAsync();
-            return new OkObjectResult(privilegi.IdPrivilegi); // Return the created object
-        }
-
+        _context = context;
     }
 
+    public async Task<Privilegi> CrearAsync(PrivilegiCrearDTO privilegi)
+    {
+        var entitat = new Privilegi
+        {
+            Descripcio = privilegi.Descripcio,
+            Tipus = privilegi.Tipus,
+            IdAnyEscolar = privilegi.IdAnyEscolar,
+            NivellPrivilegi = privilegi.NivellPrivilegi,
+            Actiu = true
+        };
+
+        _context.Privilegis.Add(entitat);
+        await _context.SaveChangesAsync();
+
+        return entitat;
+    }
+
+    public async Task<Privilegi> EditarAsync(PrivilegiEditarDTO privilegi)
+    {
+        var existent = await _context.Privilegis
+            .FirstOrDefaultAsync(p => p.IdPrivilegi == privilegi.IdPrivilegi)
+            ?? throw new InvalidOperationException("Privilegi no trobat");
+
+        existent.Tipus = privilegi.Tipus;
+        existent.Descripcio = privilegi.Descripcio;
+        existent.NivellPrivilegi = privilegi.NivellPrivilegi;
+        existent.Actiu = privilegi.Actiu;
+
+        await _context.SaveChangesAsync();
+
+        return existent; // ✅ objecte modificat
+    }
+
+    public async Task<bool> EliminarAsync(long idPrivilegi)
+    {
+        var privilegi = await _context.Privilegis.FindAsync(idPrivilegi);
+        if (privilegi == null) return false;
+
+        _context.Privilegis.Remove(privilegi);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<Privilegi?> InstanciaAsync(long idPrivilegi)
+    {
+        return await _context.Privilegis
+            .FirstOrDefaultAsync(p => p.IdPrivilegi == idPrivilegi);
+    }
+
+    public async Task<List<Privilegi>> LlistaPerAnyEscolarAsync(long idAnyEscolar)
+    {
+        return await _context.Privilegis
+            .Where(p => p.IdAnyEscolar == idAnyEscolar)
+            .OrderBy(p => p.NivellPrivilegi)
+            .ToListAsync();
+    }
 }

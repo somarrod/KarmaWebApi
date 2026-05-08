@@ -9,33 +9,33 @@ namespace KarmaWebAPI.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdPrivilegiAssignat { get; set; } //identificar únic
+        public long IdPrivilegiAssignat { get; set; }
 
-        [ForeignKey("Privilegi")]
-        public int IdPrivilegi { get; set; } //identificar únic del privilegi assignat
+        // 🔑 Camps definits en l’XMI
+        [Required]
+        public int NivellPrivilegi { get; set; }
 
-        [ForeignKey("Alumne")]
-        public string NIA { get; set; } //identificar únic del privilegi assignat
+        public string? Descripcio { get; set; }
 
         [Required]
-        public int Nivell { get; set; }
+        public DateTime DataCreacio { get; set; }
 
         [Required]
-        public String Descripcio { get; set; }
+        public string Tipus { get; set; } = string.Empty;
 
         [Required]
-        public String EsIndividualGrup { get; set; } //valors possibles: 'I' o 'G'
+        [StringLength(50)]
+        public string CodiIntern { get; set; } = string.Empty;
+
+        public DateTime? DataExecucio { get; set; }
+
+        // Relacions
+        [Required]
+        public string NIA { get; set; }
+        public Alumne Alumne { get; set; } = null!;
 
         [Required]
-        public DateOnly DataAssignacio { get; set; } //data assignació
-
-        public DateOnly? DataExecucio { get; set; } = null; //data en el que 
-
-
-        #region Navegacions
-
-        public Privilegi Privilegi { get; set; } //Privilegi
-
-        #endregion Navegacions
+        public long IdPrivilegi { get; set; }
+        public Privilegi Privilegi { get; set; } = null!;
     }
 }

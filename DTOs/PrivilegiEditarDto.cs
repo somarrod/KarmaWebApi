@@ -1,15 +1,30 @@
-﻿namespace KarmaWebAPI.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace KarmaWebAPI.DTOs
 {
 
-    public class PrivilegiEditarDto
+    public class PrivilegiEditarDTO
     {
-        public int IdPrivilegi { get; set; } //identificar únic. Es solicita al crear
-        public int Nivell { get; set; }
+        [Required]
+        public long IdPrivilegi { get; set; }
+
+
+        [Required]
         public string Descripcio { get; set; }
-        
-        public string EsIndividualGrup { get; set; }
-        
-        public int IdAnyEscolar { get; set; }
+
+        [Required]
+        public string Tipus { get; set; }
+
+        // Depén del curs escolar
+        [Required]
+        public long IdAnyEscolar { get; set; }
+
+        // nivell mínim de karma necessari
+        [Required]
+        public int NivellPrivilegi { get; set; }
+
+        public bool Actiu { get; set; } = true;
     }
 
 }

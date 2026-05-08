@@ -6,7 +6,13 @@ namespace KarmaWebAPI.Serveis.Interfaces
 {
     public interface IPrivilegiService
     {
-        public Task<ActionResult<Privilegi>> CrearPrivilegiAsync(PrivilegiCrearDto privilegiDto);
+        Task<Privilegi> CrearAsync(PrivilegiCrearDTO privilegi);
+        Task<Privilegi> EditarAsync(PrivilegiEditarDTO privilegi);
+        Task<bool> EliminarAsync(long idPrivilegi);
+
+        Task<Privilegi?> InstanciaAsync(long idPrivilegi);
+        Task<List<Privilegi>> LlistaPerAnyEscolarAsync(long idAnyEscolar);
+
 
     }
 

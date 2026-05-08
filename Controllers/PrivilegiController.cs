@@ -1,12 +1,8 @@
-﻿using System.Drawing;
-using KarmaWebAPI.Data;
-using KarmaWebAPI.DTOs;
-//using KarmaWebAPI.Migrations;
+﻿using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -14,178 +10,79 @@ namespace KarmaWebAPI.Controllers
     [Route("api/privilegi")]
     public class PrivilegiController : ControllerBase
     {
-        private readonly DatabaseContext _context;
         private readonly IPrivilegiService _privilegiService;
-        public PrivilegiController(DatabaseContext context, IPrivilegiService privilegiService)
+
+        public PrivilegiController(IPrivilegiService privilegiService)
         {
-            _context = context;
             _privilegiService = privilegiService;
         }
 
-
-        #region Consultes
-
-        //Instancia
-        [HttpGet("{idPrivilegi}")]
-        [Authorize]
-        // GET: Privilegi/GetAnyEscolar/5
-        public async Task<IActionResult> Instancia(int idPrivilegi)
+        // ==================================================
+        // GET: api/privilegi/{id}
+        // Consultar instància
+        // ==================================================
+        [HttpGet("{idPrivilegi:long}")]
+        [Authorize(Roles = "AG_Admin,AG_EquipDirectiu,AG_Professor")]
+        public async Task<IActionResult> Instancia(long idPrivilegi)
         {
-            var privilegi = await _context.Privilegi
-                .Include(p => p.AnyEscolar)
-                .FirstOrDefaultAsync(m => m.IdPrivilegi == idPrivilegi);
+            var privilegi = await _privilegiService.InstanciaAsync(idPrivilegi);
             if (privilegi == null)
-            {
                 return NotFound();
-            }
+
             return Ok(privilegi);
         }
 
-        //Llistes
-        // GET: api/llista
-        [HttpGet]
-        [Route("llista")]
-        [Authorize]
-        public async Task<ActionResult<IEnumerable<Privilegi>>> Llista()
+        // ==================================================
+        // GET: api/privilegi/per-any-escolar/{idAnyEscolar}
+        // Consultar llista per any escolar
+        // ==================================================
+        [HttpGet("per-any-escolar/{idAnyEscolar:long}")]
+        [Authorize(Roles = "AG_Admin,AG_EquipDirectiu,AG_Professor")]
+        public async Task<IActionResult> LlistaPerAnyEscolar(long idAnyEscolar)
         {
-            var privilegis = await _context.Privilegi
-                                         .Include(p => p.AnyEscolar)
-                                         .ToListAsync();
-
-            // Evitar el ciclo de referencias
-            foreach (var privilegi in privilegis)
-            {
-                privilegi.AnyEscolar.Privilegis = null;
-            }
-
-            return Ok(privilegis);
+            var llista = await _privilegiService.LlistaPerAnyEscolarAsync(idAnyEscolar);
+            return Ok(llista);
         }
 
-        //Consulta de relacionades
-        // GET: api/llista
-        [HttpGet]
-        [Route("llista-per-anyescolar")]
-        [Authorize]
-        public async Task<ActionResult<IEnumerable<Privilegi>>> LlistaPerAnyEscolar(int idAnyEscolar)
-        {
-            var anyEscolar = await _context.AnyEscolars.FindAsync(idAnyEscolar);
-            if (anyEscolar == null)
-            {
-                return NotFound("Any escolar " + idAnyEscolar + " no trobat");
-            }
-
-            var privilegis = await _context.Privilegi
-                                         .Include(p => p.AnyEscolar)
-                                         .Where(p => p.IdAnyEscolar == idAnyEscolar)
-                                         .ToListAsync();
-
-            // Evitar el ciclo de referencias
-            foreach (var privilegi in privilegis)
-            {
-                privilegi.AnyEscolar.Privilegis = null;
-            }
-
-            return Ok(privilegis);
-        }
-        #endregion Consultes
-
-        #region Serveis
-        // POST: api/Privilegi
+        // ==================================================
+        // POST: api/privilegi
+        // Crear privilegi
+        // ==================================================
         [HttpPost]
-        [Route("crear")]
-        [Authorize(Roles = "AG_Admin")]
-        public async Task<ActionResult<Privilegi>> Crear(PrivilegiCrearDto privilegiDto)
+        [Authorize(Roles = "AG_Admin,AG_EquipDirectiu")]
+        public async Task<IActionResult> Crear(
+            [FromBody] PrivilegiCrearDTO privilegi)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    var result = await _privilegiService.CrearPrivilegiAsync(privilegiDto);
-                   
-                    if (result.Result is OkObjectResult)
-                    {
-                        await transaction.CommitAsync();
-                    }
-                    else
-                    {
-                       await transaction.RollbackAsync();
-                    }
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    return StatusCode(500, $"Internal server error: {ex.Message}");
-                }
-            }
+            var creat = await _privilegiService.CrearAsync(privilegi);
+            return Ok(creat);
         }
 
-
-        // PUT: api/Privilegi/5
-        [Authorize(Roles = "AG_Admin")]
-        [HttpPut("editar")]
-        public async Task<IActionResult> Editar(PrivilegiEditarDto privilegiDto)
+        // ==================================================
+        // PUT: api/privilegi
+        // Editar privilegi
+        // ==================================================
+        [HttpPut]
+        [Authorize(Roles = "AG_Admin,AG_EquipDirectiu")]
+        public async Task<IActionResult> Editar(
+            [FromBody] PrivilegiEditarDTO privilegi)
         {
-            var anyEscolar = await _context.AnyEscolars.FindAsync(privilegiDto.IdAnyEscolar);
-            if (anyEscolar == null)
-            {
-                return NotFound("Any escolar " + privilegiDto.IdAnyEscolar + " no trobat");
-            }
-
-            var privilegi = await _context.Privilegi.FindAsync(privilegiDto.IdPrivilegi);
-            if (privilegi == null)
-            {
-                return NotFound("Privilegi " + privilegiDto.IdPrivilegi + " no trobat");
-            }
-
-            // Actualizar las propiedades de la entidad existente
-            privilegi.Nivell = privilegiDto.Nivell;
-            privilegi.Descripcio = privilegiDto.Descripcio;
-            privilegi.EsIndividualGrup = privilegiDto.EsIndividualGrup;
-            privilegi.IdAnyEscolar = privilegiDto.IdAnyEscolar;
-            privilegi.AnyEscolar = anyEscolar; // Asignar la instancia recuperada
-
-            _context.Entry(privilegi).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.InnerException != null ? e.InnerException.Message : e.Message);
-            }
-
-            return Ok(privilegiDto.IdPrivilegi);
+            var actualitzat = await _privilegiService.EditarAsync(privilegi);
+            return Ok(actualitzat);
         }
 
-
-
-        // DELETE: api/Privilegi/5
-        [HttpDelete("eliminar")]
-        [Authorize(Roles = "AG_Admin")]
-        public async Task<IActionResult> Eliminar(int idPrivilegi)
+        // ==================================================
+        // DELETE: api/privilegi/{id}
+        // Eliminar privilegi
+        // ==================================================
+        [HttpDelete("{idPrivilegi:long}")]
+        [Authorize(Roles = "AG_Admin,AG_EquipDirectiu")]
+        public async Task<IActionResult> Eliminar(long idPrivilegi)
         {
-            var privilegi = await _context.Privilegi.FindAsync(idPrivilegi);
-            if (privilegi == null)
-            {
-                return NotFound("Privilegi " + idPrivilegi + " no trobat");
-            }
+            var ok = await _privilegiService.EliminarAsync(idPrivilegi);
+            if (!ok)
+                return NotFound();
 
-            var desc = privilegi.Descripcio;
-            _context.Privilegi.Remove(privilegi);
-            await _context.SaveChangesAsync();
-
-            return Ok($"El privilegi '{desc}' ha estat esborrat");
+            return Ok();
         }
-        
-        #endregion Serveis
-
-        #region Auxiliars
-        private bool PrivilegiExists(int idPrivilegi)
-        {
-            return _context.Privilegi.Any(e => e.IdPrivilegi == idPrivilegi);
-        }
-        #endregion Auxiliars
     }
 }
