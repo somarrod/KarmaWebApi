@@ -54,7 +54,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin,AG_EquipDirectiu")]
         public async Task<ActionResult<ProfessorDeClasse>> Assignar(
             [FromQuery] string idProfessor,
-            [FromQuery] string idClasse,
+            [FromQuery] long idClasse,
             [FromQuery] long idMateria)
         {
             try
@@ -78,7 +78,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin,AG_EquipDirectiu")]
         public async Task<IActionResult> Esborrar(
             [FromQuery] string idProfessor,
-            [FromQuery] string idClasse,
+            [FromQuery] long idClasse,
             [FromQuery] long idMateria)
         {
             var esborrat = await _service.EsborrarAsync(

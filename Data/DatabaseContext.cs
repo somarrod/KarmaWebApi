@@ -68,18 +68,6 @@ namespace KarmaWebAPI.Data
             modelBuilder.Entity<ProfessorDeClasse>()
                 .HasKey(p => p.IdProfessorDeClasse);
 
-            modelBuilder.Entity<ProfessorDeClasse>()
-                .HasOne(pg => pg.Materia)
-                .WithMany(p => p.ProfessorsDelGrup)
-                .HasForeignKey(pg => pg.IdMateria);
-
-
-            //modelBuilder.Entity<ProfessorDeClasse>()
-            //    .HasOne(pg => pg.Classe)
-            //    .WithMany(g => g.ProfessorsDeClasse)
-            //    .HasForeignKey(pg => new { pg.IdAnyEscolar, pg.IdClasse })
-            //    .OnDelete(DeleteBehavior.NoAction);
-
 
 
             // Llamada al método base

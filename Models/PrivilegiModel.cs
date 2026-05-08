@@ -8,17 +8,18 @@ namespace KarmaWebAPI.Models
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdPrivilegi { get; set; } //identificar únic
+        public long IdPrivilegi { get; set; } //identificar únic
 
         [Required]
         public int Nivell { get; set; }
 
         [Required]
         [StringLength(255)]
-        public String Descripcio { get; set; }
+        public string Descripcio { get; set; }
         
-        [Required] 
-        public String EsIndividualGrup { get; set; } //valors possibles: 'I' o 'G'
+        [Required]
+        [StringLength(1)]
+        public string EsIndividualGrup { get; set; } //valors possibles: 'I' o 'G'
 
 
         // Clave foránea para referenciar a AnyEscolar

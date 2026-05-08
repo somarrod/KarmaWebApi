@@ -7,9 +7,10 @@ namespace KarmaWebAPI.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string IdClasse { get; set; }
+        public long IdClasse { get; set; }
 
         [Required]
+        [StringLength(20)]
         public string Nom { get; set; } = string.Empty;
 
         // Relació amb AnyEscolar

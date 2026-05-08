@@ -15,7 +15,7 @@ namespace KarmaWebAPI.DTOs.DisplaySets
         public long IdMateria { get; set; } //identificar únic de la materia
 
         [StringLength(5)]
-        public string IdClasse { get; set; } //identificar únic del grup
+        public long IdClasse { get; set; } //identificar únic del grup
 
         public string NomICognomsProfessor { get; set; } //nom del professor
 

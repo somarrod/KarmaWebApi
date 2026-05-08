@@ -10,12 +10,11 @@ namespace KarmaWebAPI.DTOs
         public int IdAnyEscolar { get; set; } //identificar únic del any escolar
 
         [Required]
-        [StringLength(50)]
-        public string IdClasse { get; set; }
+        public long IdClasse { get; set; }
 
         [Required]
         [StringLength(10)]
-        public String NIA { get; set; }
+        public string NIA { get; set; }
 
         [Required]
         public int IdPrivilegi { get; set; } //identificar únic del privilegi assignat

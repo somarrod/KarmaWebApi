@@ -15,7 +15,7 @@ public class ProfessorDeClasse
 
     [Required]
     [ForeignKey(nameof(Classe))]
-    public string IdClasse { get; set; }
+    public long IdClasse { get; set; }
     public Classe Classe { get; set; } = null!;
 
     [Required]

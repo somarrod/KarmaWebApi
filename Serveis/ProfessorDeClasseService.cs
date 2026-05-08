@@ -21,7 +21,7 @@ namespace KarmaWebAPI.Serveis
         // ============================
         // CREAR (ASSIGNAR)
         // ============================
-        public async Task<ProfessorDeClasse> AssignarAsync(string idProfessor, string idClasse, long idMateria)
+        public async Task<ProfessorDeClasse> AssignarAsync(string idProfessor, long idClasse, long idMateria)
         {
             // Ja existeix?
             var jaExisteix = await _context.ProfessorsDeClasse.AnyAsync(p =>
@@ -64,7 +64,7 @@ namespace KarmaWebAPI.Serveis
         // ============================
         // ESBORRAR
         // ============================
-        public async Task<bool> EsborrarAsync(string idProfessor,string idClasse, long idMateria)
+        public async Task<bool> EsborrarAsync(string idProfessor, long idClasse, long idMateria)
         {
             var relacio = await _context.ProfessorsDeClasse
                 .FirstOrDefaultAsync(p =>
@@ -141,7 +141,7 @@ namespace KarmaWebAPI.Serveis
         // ============================
 
         // Dona classe en eixa classe (independentment de la matèria)
-        public async Task<bool> ImparteixClasseAsync(string idProfessor, string idClasse)
+        public async Task<bool> ImparteixClasseAsync(string idProfessor, long idClasse)
         {
             return await _context.ProfessorsDeClasse.AnyAsync(p =>
                 p.IdProfessor == idProfessor &&
@@ -149,7 +149,7 @@ namespace KarmaWebAPI.Serveis
         }
 
         // Dona eixa matèria en eixa classe
-        public async Task<bool> ImparteixMateriaEnClasseAsync(string idProfessor, string idClasse, long idMateria)
+        public async Task<bool> ImparteixMateriaEnClasseAsync(string idProfessor, long idClasse, long idMateria)
         {
             return await _context.ProfessorsDeClasse.AnyAsync(p =>
                 p.IdProfessor == idProfessor &&
