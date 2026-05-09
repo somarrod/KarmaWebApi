@@ -48,21 +48,21 @@ namespace KarmaWebAPI.Data
                 .HasKey(a => a.IdAnyEscolar);
 
             // Configuración de la entidad ConfiguracioKarma
-            modelBuilder.Entity<ConfiguracioKarma>()
-                .HasOne(g => g.AnyEscolar)
-                .WithMany(a => a.ConfiguracionsKarma)
-                .HasForeignKey(g => g.IdAnyEscolar);
+            //modelBuilder.Entity<ConfiguracioKarma>()
+            //    .HasOne(g => g.AnyEscolar)
+            //    .WithMany(a => a.ConfiguracionsKarma)
+            //    .HasForeignKey(g => g.IdAnyEscolar);
 
             // Configuración de la entidad Avaluacio
-            modelBuilder.Entity<Avaluacio>()
-                .HasOne(p => p.AnyEscolar)
-                .WithMany(a => a.Avaluacios)
-                .HasForeignKey(p => p.IdAnyEscolar);
+            //modelBuilder.Entity<Avaluacio>()
+            //    .HasOne(p => p.AnyEscolar)
+            //    .WithMany(a => a.Avaluacios)
+            //    .HasForeignKey(p => p.IdAnyEscolar);
 
-            modelBuilder.Entity<Privilegi>()
-                .HasOne(p => p.AnyEscolar)
-                .WithMany(a => a.Privilegis)
-                .HasForeignKey(p => p.IdAnyEscolar);
+            //modelBuilder.Entity<Privilegi>()
+            //    .HasOne(p => p.AnyEscolar)
+            //    .WithMany(a => a.Privilegis)
+            //    .HasForeignKey(p => p.IdAnyEscolar);
 
             // Configuración de la entidad ProfessorDeClasse
             modelBuilder.Entity<ProfessorDeClasse>()

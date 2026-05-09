@@ -35,17 +35,5 @@ namespace KarmaWebAPI.Models
         [Required]
         public bool Actiu { get; set; } = true;
 
-
-
-
-        #region Navegacions
-
-        public ICollection<Privilegi> Privilegis { get; set; } = new List<Privilegi>();
-        public ICollection<Avaluacio> Avaluacios { get; set; } = new List<Avaluacio>();
-        public ICollection<Grup> Grups { get; set; } = new List<Grup>();
-        public ICollection<ConfiguracioKarma> ConfiguracionsKarma { get; set; } = new List<ConfiguracioKarma>();
-
-        #endregion
-
     }
 }

@@ -13,7 +13,7 @@ namespace KarmaWebAPI.Models
 
         [Required]
         [ForeignKey(nameof(Alumne))]
-        public String NIA { get; set; }
+        public string NIA { get; set; }
         public Alumne Alumne { get; set; } = null!;
 
         [Required]

@@ -40,6 +40,7 @@ namespace KarmaWebAPI.Models
 
 
         public double? KarmaActualPunts;
+        [StringLength(20)]
         public string? KarmaActualColor;
     }
 }

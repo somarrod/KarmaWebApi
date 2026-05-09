@@ -5,7 +5,9 @@ namespace KarmaWebAPI.Models
 {
     public class Grup
     {
+
         public long IdGrup { get; set; }
+        [StringLength(20)]
         public string Nom { get; set; } = string.Empty;
 
         [Required]
@@ -13,6 +15,7 @@ namespace KarmaWebAPI.Models
         public Classe Classe { get; set; } = null!;
 
         // DERIVAT / CACHE
+        [StringLength(20)]
         public string? KarmaBase { get; set; }
         public DateTime? DataUltimaActualitzacioKarma { get; set; }
     }

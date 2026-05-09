@@ -7,6 +7,7 @@ namespace KarmaWebAPI.Models
     {
         [Required]
         [EmailAddress]
+        [StringLength(255)]
         public string Email { get; set; }
 
         [Required]

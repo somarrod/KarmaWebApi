@@ -42,7 +42,7 @@ namespace KarmaWebAPI.Models
 
         public long? IdGrup { get; set; }
 
-        [StringLength(100)]
+        [StringLength(20)]
         public string? NomGrup { get; set; }
 
         // =========================
