@@ -9,17 +9,17 @@ namespace KarmaWebAPI.DTOs
     {
         [Required]
         public int IdAnyEscolar { get; set; } //identificar únic
-        
-        [Required]
-        [StringLength(50)]
-        public String IdGrup { get; set; } //identificar únic del grup
 
         [Required]
-        [StringLength(500)] // Corregido: Se usa paréntesis en lugar de '=' y se pasa el argumento requerido.  
-        public String Descripcio{ get; set; }
+        public long IdClasse { get; set; } //identificar únic
 
-        [StringLength(50)]
-        public String? IdProfessorTutor { get; set; } //tutor o tutora del grup
+        [Required]
+        public long IdGrup { get; set; } //identificar únic del grup
+
+        [Required]
+        [StringLength(20)] // Corregido: Se usa paréntesis en lugar de '=' y se pasa el argumento requerido.  
+        public string Nom{ get; set; }
+
 
     }
 

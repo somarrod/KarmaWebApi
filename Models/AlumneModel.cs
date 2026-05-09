@@ -26,8 +26,9 @@ namespace KarmaWebAPI.Models
         public string Email { get; set; } //correu electrònic 
 
 
-        [Required]
-        [ForeignKey(nameof(Classe))]
+        // FKs cap a Classe (clau composta)
+      
+        public int? IdAnyEscolar { get; set; }
         public long? IdClasse { get; set; }
         public Classe? Classe { get; set; } = null!;
 

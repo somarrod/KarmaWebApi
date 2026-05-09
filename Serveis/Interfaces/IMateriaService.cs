@@ -7,16 +7,22 @@ namespace KarmaWebAPI.Serveis.Interfaces
 
     public interface IMateriaService
     {
-        Task<Materia?> InstanciaAsync(int idMateria, ClaimsPrincipal user);
+        // =========================
+        // CONSULTES
+        // =========================
+        Task<Materia?> InstanciaAsync(long idMateria, ClaimsPrincipal user);
         Task<List<Materia>> LlistaAsync(ClaimsPrincipal user);
 
+        // =========================
+        // SERVEIS
+        // =========================
         Task<Materia> CrearAsync(MateriaCrearDTO dto);
         Task<Materia> EditarAsync(MateriaEditarDTO dto);
 
-        Task<Materia> ActivarAsync(int idMateria);
-        Task<Materia> DesactivarAsync(int idMateria);
+        Task<Materia> ActivarAsync(long idMateria);
+        Task<Materia> DesactivarAsync(long idMateria);
 
-        Task<bool> EliminarAsync(int idMateria);
+        Task<bool> EliminarAsync(long idMateria);
     }
 
 }

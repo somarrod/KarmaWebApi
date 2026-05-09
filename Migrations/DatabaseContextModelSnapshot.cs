@@ -41,6 +41,16 @@ namespace KarmaWebAPI.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int?>("IdAnyEscolar")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("IdClasse")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("IdGrup")
+                        .IsRequired()
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Nom")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -48,45 +58,11 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasKey("NIA");
 
-                    b.ToTable("Alumne");
-                });
+                    b.HasIndex("IdGrup");
 
-            modelBuilder.Entity("KarmaWebAPI.Models.AlumneEnGrup", b =>
-                {
-                    b.Property<int>("IdAlumneEnGrup")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.HasIndex("IdAnyEscolar", "IdClasse");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAlumneEnGrup"));
-
-                    b.Property<int>("IdAnyEscolar")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IdGrup")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Karma")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("NIA")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<int>("PuntuacioTotal")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdAlumneEnGrup");
-
-                    b.HasIndex("NIA");
-
-                    b.HasIndex("IdAnyEscolar", "IdGrup");
-
-                    b.ToTable("AlumneEnGrup");
+                    b.ToTable("Alumnes");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.AnyEscolar", b =>
@@ -103,12 +79,15 @@ namespace KarmaWebAPI.Migrations
                     b.Property<DateOnly>("DataIniciCurs")
                         .HasColumnType("date");
 
-                    b.Property<int>("DiesAvaluacio")
-                        .HasColumnType("int");
+                    b.Property<bool>("ReiniciaCadaAvaluacio")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("SaldoKarmaInicial")
+                        .HasColumnType("float");
 
                     b.HasKey("IdAnyEscolar");
 
-                    b.ToTable("AnyEscolar");
+                    b.ToTable("AnyEscolars");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.ApiUser", b =>
@@ -183,100 +162,218 @@ namespace KarmaWebAPI.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("KarmaWebAPI.Models.Categoria", b =>
+            modelBuilder.Entity("KarmaWebAPI.Models.Avaluacio", b =>
                 {
-                    b.Property<int>("IdCategoria")
+                    b.Property<long>("IdAvaluacio")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCategoria"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdAvaluacio"));
 
-                    b.Property<bool>("Activa")
-                        .HasColumnType("bit");
+                    b.Property<DateOnly>("DataFinal")
+                        .HasColumnType("date");
 
-                    b.Property<string>("Descripcio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("IdTipusCategoria")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdCategoria");
-
-                    b.HasIndex("IdTipusCategoria");
-
-                    b.ToTable("Categoria");
-                });
-
-            modelBuilder.Entity("KarmaWebAPI.Models.ConfiguracioKarma", b =>
-                {
-                    b.Property<int>("IdConfiguracioKarma")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdConfiguracioKarma"));
-
-                    b.Property<string>("ColorNivell")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateOnly>("DataInicial")
+                        .HasColumnType("date");
 
                     b.Property<int>("IdAnyEscolar")
                         .HasColumnType("int");
 
-                    b.Property<int>("KarmaMaxim")
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("NotaMaximaKarma")
+                        .HasColumnType("float");
+
+                    b.Property<double>("NotaMinimaKarma")
+                        .HasColumnType("float");
+
+                    b.HasKey("IdAvaluacio");
+
+                    b.HasIndex("IdAnyEscolar");
+
+                    b.ToTable("Avaluacions");
+                });
+
+            modelBuilder.Entity("KarmaWebAPI.Models.Categoria", b =>
+                {
+                    b.Property<long>("IdCategoria")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdCategoria"));
+
+                    b.Property<bool>("Activa")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Comentaris")
+                        .HasMaxLength(999)
+                        .HasColumnType("nvarchar(999)");
+
+                    b.Property<string>("Descripcio")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("Editable")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("IdTipusCategoria")
+                        .HasColumnType("bigint");
+
+                    b.Property<double>("NumPunts")
+                        .HasColumnType("float");
+
+                    b.Property<int>("TipusCategoriaIdTipusCategoria")
                         .HasColumnType("int");
 
-                    b.Property<int>("KarmaMinim")
+                    b.HasKey("IdCategoria");
+
+                    b.HasIndex("TipusCategoriaIdTipusCategoria");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("KarmaWebAPI.Models.Classe", b =>
+                {
+                    b.Property<int>("IdAnyEscolar")
+                        .HasColumnType("int");
+
+                    b.Property<long>("IdClasse")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdClasse"));
+
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("IdAnyEscolar", "IdClasse");
+
+                    b.ToTable("Classes");
+                });
+
+            modelBuilder.Entity("KarmaWebAPI.Models.ConfiguracioKarma", b =>
+                {
+                    b.Property<long>("IdConfiguracioKarma")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdConfiguracioKarma"));
+
+                    b.Property<string>("ColorKarma")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IdAnyEscolar")
                         .HasColumnType("int");
 
                     b.Property<int>("NivellPrivilegis")
                         .HasColumnType("int");
 
+                    b.Property<double>("NumPuntsMaxim")
+                        .HasColumnType("float");
+
+                    b.Property<double>("NumPuntsMinim")
+                        .HasColumnType("float");
+
                     b.HasKey("IdConfiguracioKarma");
 
                     b.HasIndex("IdAnyEscolar");
 
-                    b.ToTable("ConfiguracioKarma");
+                    b.ToTable("ConfiguracionsKarma");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.Grup", b =>
                 {
+                    b.Property<long>("IdGrup")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdGrup"));
+
+                    b.Property<DateTime?>("DataUltimaActualitzacioKarma")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("IdAnyEscolar")
-                        .HasColumnType("int")
-                        .HasColumnOrder(0);
+                        .HasColumnType("int");
 
-                    b.Property<string>("IdGrup")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnOrder(1);
-
-                    b.Property<string>("Descripcio")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("IdProfessorTutor")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<long>("IdClasse")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("KarmaBase")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("IdGrup");
+
+                    b.HasIndex("IdAnyEscolar", "IdClasse");
+
+                    b.ToTable("Grups");
+                });
+
+            modelBuilder.Entity("KarmaWebAPI.Models.KarmaAlumne", b =>
+                {
+                    b.Property<long>("IdKarmaAlumne")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdKarmaAlumne"));
+
+                    b.Property<string>("Comentaris")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("IdAvaluacio")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("KarmaActual")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("IdAnyEscolar", "IdGrup");
+                    b.Property<string>("KarmaInicial")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("IdProfessorTutor");
+                    b.Property<string>("NIA")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(10)");
 
-                    b.ToTable("Grup");
+                    b.Property<double?>("NotaKarma")
+                        .HasColumnType("float");
+
+                    b.Property<double>("NumPuntsActuals")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("NumPuntsAvaluacioAnteriorDrv")
+                        .HasColumnType("float");
+
+                    b.Property<double>("NumPuntsInicials")
+                        .HasColumnType("float");
+
+                    b.HasKey("IdKarmaAlumne");
+
+                    b.HasIndex("IdAvaluacio");
+
+                    b.HasIndex("NIA", "IdAvaluacio");
+
+                    b.ToTable("KarmaAlumnes");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.Materia", b =>
                 {
-                    b.Property<int>("IdMateria")
+                    b.Property<long>("IdMateria")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdMateria"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdMateria"));
 
                     b.Property<bool>("Activa")
                         .HasColumnType("bit");
@@ -287,101 +384,93 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasKey("IdMateria");
 
-                    b.ToTable("Materia");
-                });
-
-            modelBuilder.Entity("KarmaWebAPI.Models.Avaluacio", b =>
-                {
-                    b.Property<int>("IdAvaluacio")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAvaluacio"));
-
-                    b.Property<DateOnly>("DataFi")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly>("DataInici")
-                        .HasColumnType("date");
-
-                    b.Property<int>("IdAnyEscolar")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdAvaluacio");
-
-                    b.HasIndex("IdAnyEscolar");
-
-                    b.ToTable("Avaluacio");
+                    b.ToTable("Materies");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.Privilegi", b =>
                 {
-                    b.Property<int>("IdPrivilegi")
+                    b.Property<long>("IdPrivilegi")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPrivilegi"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdPrivilegi"));
+
+                    b.Property<bool>("Actiu")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("AnyEscolarIdAnyEscolar")
+                        .HasColumnType("int");
 
                     b.Property<string>("Descripcio")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EsIndividualGrup")
+                    b.Property<long>("IdAnyEscolar")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("NivellPrivilegi")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Tipus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IdAnyEscolar")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Nivell")
-                        .HasColumnType("int");
-
                     b.HasKey("IdPrivilegi");
 
-                    b.HasIndex("IdAnyEscolar");
+                    b.HasIndex("AnyEscolarIdAnyEscolar");
 
-                    b.ToTable("Privilegi");
+                    b.ToTable("Privilegis");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.PrivilegiAssignat", b =>
                 {
-                    b.Property<int>("IdPrivilegiAssignat")
+                    b.Property<long>("IdPrivilegiAssignat")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPrivilegiAssignat"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdPrivilegiAssignat"));
 
-                    b.Property<DateOnly>("DataAssignacio")
-                        .HasColumnType("date");
+                    b.Property<string>("AlumneNIA")
+                        .HasColumnType("nvarchar(10)");
 
-                    b.Property<DateOnly?>("DataExecucio")
-                        .HasColumnType("date");
+                    b.Property<string>("CodiIntern")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("DataCreacio")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataExecucio")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Descripcio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("IdPrivilegi")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("NIA")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EsIndividualGrup")
+                    b.Property<int>("NivellPrivilegi")
+                        .HasColumnType("int");
+
+                    b.Property<long>("PrivilegiIdPrivilegi")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Tipus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("IdAlumneEnGrup")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdPrivilegi")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Nivell")
-                        .HasColumnType("int");
 
                     b.HasKey("IdPrivilegiAssignat");
 
-                    b.HasIndex("IdAlumneEnGrup");
+                    b.HasIndex("AlumneNIA");
 
-                    b.HasIndex("IdPrivilegi");
+                    b.HasIndex("PrivilegiIdPrivilegi");
 
-                    b.ToTable("PrivilegiAssignat");
+                    b.ToTable("PrivilegisAssignats");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.Professor", b =>
@@ -408,87 +497,94 @@ namespace KarmaWebAPI.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<bool>("PertanyAEquipDirectiu")
+                        .HasColumnType("bit");
+
                     b.HasKey("IdProfessor");
 
-                    b.ToTable("Professor");
-                });
-
-            modelBuilder.Entity("KarmaWebAPI.Models.ProfessorDeClasse", b =>
-                {
-                    b.Property<int>("IdProfessorDeClasse")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProfessorDeClasse"));
-
-                    b.Property<int>("IdAnyEscolar")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IdGrup")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("IdMateria")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IdProfessor")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("IdProfessorDeClasse");
-
-                    b.HasIndex("IdMateria");
-
-                    b.HasIndex("IdProfessor");
-
-                    b.HasIndex("IdAnyEscolar", "IdGrup");
-
-                    b.ToTable("ProfessorDeClasse");
+                    b.ToTable("Professors");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.Puntuacio", b =>
                 {
-                    b.Property<int>("IdPuntuacio")
+                    b.Property<long>("IdPuntuacio")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPuntuacio"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdPuntuacio"));
 
-                    b.Property<DateOnly>("DataEntrada")
+                    b.Property<string>("AlumneNIA")
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<long>("AvaluacioIdAvaluacio")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("CategoriaIdCategoria")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("DataCreacio")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateOnly>("DataEvent")
                         .HasColumnType("date");
 
-                    b.Property<int>("IdAlumneEnGrup")
-                        .HasColumnType("int");
+                    b.Property<string>("DescripcioAdicional")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("IdCategoria")
-                        .HasColumnType("int");
+                    b.Property<long>("IdAvaluacio")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdAvaluacio")
-                        .HasColumnType("int");
+                    b.Property<long>("IdCategoria")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("IdClasse")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("IdGrup")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("IdProfessor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Motiu")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Punts")
-                        .HasColumnType("int");
+                    b.Property<string>("NIA")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UsuariCreacio")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("NomClasse")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NomGrup")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<double>("NumPunts")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Tipus")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("nvarchar(1)");
 
                     b.HasKey("IdPuntuacio");
 
-                    b.HasIndex("IdAlumneEnGrup");
+                    b.HasIndex("AlumneNIA");
 
-                    b.HasIndex("IdCategoria");
+                    b.HasIndex("AvaluacioIdAvaluacio");
 
-                    b.HasIndex("IdAvaluacio");
+                    b.HasIndex("CategoriaIdCategoria");
 
-                    b.ToTable("Puntuacio");
+                    b.HasIndex("IdProfessor");
+
+                    b.HasIndex("NIA", "IdAvaluacio");
+
+                    b.ToTable("Puntuacions");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.TipusCategoria", b =>
@@ -499,6 +595,9 @@ namespace KarmaWebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTipusCategoria"));
 
+                    b.Property<bool>("Actiu")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Descripcio")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -506,32 +605,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasKey("IdTipusCategoria");
 
-                    b.ToTable("TipusCategoria");
-                });
-
-            modelBuilder.Entity("KarmaWebAPI.Models.VPrivilegiAvaluacio", b =>
-                {
-                    b.Property<int>("IdAlumneEnGrup")
-                        .HasColumnType("int")
-                        .HasColumnName("IdAlumneEnGrup");
-
-                    b.Property<int>("IdAvaluacio")
-                        .HasColumnType("int")
-                        .HasColumnName("IdAvaluacio");
-
-                    b.Property<int>("IdPrivilegi")
-                        .HasColumnType("int")
-                        .HasColumnName("IdPrivilegi");
-
-                    b.HasIndex("IdAlumneEnGrup");
-
-                    b.HasIndex("IdAvaluacio");
-
-                    b.HasIndex("IdPrivilegi");
-
-                    b.ToTable((string)null);
-
-                    b.ToView("VPrivilegiAvaluacio", (string)null);
+                    b.ToTable("TipusCategories");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -667,48 +741,94 @@ namespace KarmaWebAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("KarmaWebAPI.Models.AlumneEnGrup", b =>
+            modelBuilder.Entity("ProfessorDeClasse", b =>
                 {
-                    b.HasOne("KarmaWebAPI.Models.AnyEscolar", "AnyEscolar")
-                        .WithMany("AlumnesEnGrup")
-                        .HasForeignKey("IdAnyEscolar")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.Property<long>("IdProfessorDeClasse")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
 
-                    b.HasOne("KarmaWebAPI.Models.Alumne", "Alumne")
-                        .WithMany("AlumneEnGrups")
-                        .HasForeignKey("NIA")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdProfessorDeClasse"));
+
+                    b.Property<int>("IdAnyEscolar")
+                        .HasColumnType("int");
+
+                    b.Property<long>("IdClasse")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("IdMateria")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("IdProfessor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("IdProfessorDeClasse");
+
+                    b.HasIndex("IdMateria");
+
+                    b.HasIndex("IdAnyEscolar", "IdClasse");
+
+                    b.HasIndex("IdProfessor", "IdClasse", "IdMateria")
+                        .IsUnique();
+
+                    b.ToTable("ProfessorsDeClasse");
+                });
+
+            modelBuilder.Entity("KarmaWebAPI.Models.Alumne", b =>
+                {
+                    b.HasOne("KarmaWebAPI.Models.Grup", "Grup")
+                        .WithMany()
+                        .HasForeignKey("IdGrup")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("KarmaWebAPI.Models.Grup", "Grup")
-                        .WithMany("AlumnesEnGrup")
-                        .HasForeignKey("IdAnyEscolar", "IdGrup")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.HasOne("KarmaWebAPI.Models.Classe", "Classe")
+                        .WithMany("Alumnes")
+                        .HasForeignKey("IdAnyEscolar", "IdClasse")
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.Navigation("Alumne");
-
-                    b.Navigation("AnyEscolar");
+                    b.Navigation("Classe");
 
                     b.Navigation("Grup");
+                });
+
+            modelBuilder.Entity("KarmaWebAPI.Models.Avaluacio", b =>
+                {
+                    b.HasOne("KarmaWebAPI.Models.AnyEscolar", "AnyEscolar")
+                        .WithMany()
+                        .HasForeignKey("IdAnyEscolar")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AnyEscolar");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.Categoria", b =>
                 {
                     b.HasOne("KarmaWebAPI.Models.TipusCategoria", "TipusCategoria")
-                        .WithMany("Categories")
-                        .HasForeignKey("IdTipusCategoria")
+                        .WithMany()
+                        .HasForeignKey("TipusCategoriaIdTipusCategoria")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("TipusCategoria");
                 });
 
+            modelBuilder.Entity("KarmaWebAPI.Models.Classe", b =>
+                {
+                    b.HasOne("KarmaWebAPI.Models.AnyEscolar", "AnyEscolar")
+                        .WithMany()
+                        .HasForeignKey("IdAnyEscolar")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AnyEscolar");
+                });
+
             modelBuilder.Entity("KarmaWebAPI.Models.ConfiguracioKarma", b =>
                 {
                     b.HasOne("KarmaWebAPI.Models.AnyEscolar", "AnyEscolar")
-                        .WithMany("ConfiguracionsKarma")
+                        .WithMany()
                         .HasForeignKey("IdAnyEscolar")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -718,37 +838,39 @@ namespace KarmaWebAPI.Migrations
 
             modelBuilder.Entity("KarmaWebAPI.Models.Grup", b =>
                 {
-                    b.HasOne("KarmaWebAPI.Models.AnyEscolar", "AnyEscolar")
+                    b.HasOne("KarmaWebAPI.Models.Classe", "Classe")
                         .WithMany("Grups")
-                        .HasForeignKey("IdAnyEscolar")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("IdAnyEscolar", "IdClasse")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("KarmaWebAPI.Models.Professor", "ProfessorTutor")
-                        .WithMany("GrupsTutoritzats")
-                        .HasForeignKey("IdProfessorTutor");
-
-                    b.Navigation("AnyEscolar");
-
-                    b.Navigation("ProfessorTutor");
+                    b.Navigation("Classe");
                 });
 
-            modelBuilder.Entity("KarmaWebAPI.Models.Avaluacio", b =>
+            modelBuilder.Entity("KarmaWebAPI.Models.KarmaAlumne", b =>
                 {
-                    b.HasOne("KarmaWebAPI.Models.AnyEscolar", "AnyEscolar")
-                        .WithMany("Avaluacios")
-                        .HasForeignKey("IdAnyEscolar")
+                    b.HasOne("KarmaWebAPI.Models.Avaluacio", "Avaluacio")
+                        .WithMany()
+                        .HasForeignKey("IdAvaluacio")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AnyEscolar");
+                    b.HasOne("KarmaWebAPI.Models.Alumne", "Alumne")
+                        .WithMany()
+                        .HasForeignKey("NIA")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Alumne");
+
+                    b.Navigation("Avaluacio");
                 });
 
             modelBuilder.Entity("KarmaWebAPI.Models.Privilegi", b =>
                 {
                     b.HasOne("KarmaWebAPI.Models.AnyEscolar", "AnyEscolar")
-                        .WithMany("Privilegis")
-                        .HasForeignKey("IdAnyEscolar")
+                        .WithMany()
+                        .HasForeignKey("AnyEscolarIdAnyEscolar")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -757,108 +879,52 @@ namespace KarmaWebAPI.Migrations
 
             modelBuilder.Entity("KarmaWebAPI.Models.PrivilegiAssignat", b =>
                 {
-                    b.HasOne("KarmaWebAPI.Models.AlumneEnGrup", "AlumneEnGrup")
+                    b.HasOne("KarmaWebAPI.Models.Alumne", "Alumne")
                         .WithMany()
-                        .HasForeignKey("IdAlumneEnGrup")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AlumneNIA");
 
                     b.HasOne("KarmaWebAPI.Models.Privilegi", "Privilegi")
                         .WithMany()
-                        .HasForeignKey("IdPrivilegi")
+                        .HasForeignKey("PrivilegiIdPrivilegi")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AlumneEnGrup");
+                    b.Navigation("Alumne");
 
                     b.Navigation("Privilegi");
                 });
 
-            modelBuilder.Entity("KarmaWebAPI.Models.ProfessorDeClasse", b =>
-                {
-                    b.HasOne("KarmaWebAPI.Models.AnyEscolar", "AnyEscolar")
-                        .WithMany()
-                        .HasForeignKey("IdAnyEscolar")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KarmaWebAPI.Models.Materia", "Materia")
-                        .WithMany("ProfessorsDelGrup")
-                        .HasForeignKey("IdMateria")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KarmaWebAPI.Models.Professor", "Professor")
-                        .WithMany("ProfessorDeClasses")
-                        .HasForeignKey("IdProfessor")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("KarmaWebAPI.Models.Grup", "Grup")
-                        .WithMany("ProfessorsDeGrup")
-                        .HasForeignKey("IdAnyEscolar", "IdGrup")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("AnyEscolar");
-
-                    b.Navigation("Grup");
-
-                    b.Navigation("Materia");
-
-                    b.Navigation("Professor");
-                });
-
             modelBuilder.Entity("KarmaWebAPI.Models.Puntuacio", b =>
                 {
-                    b.HasOne("KarmaWebAPI.Models.AlumneEnGrup", "AlumneEnGrup")
-                        .WithMany("Puntuacions")
-                        .HasForeignKey("IdAlumneEnGrup")
+                    b.HasOne("KarmaWebAPI.Models.Alumne", "Alumne")
+                        .WithMany()
+                        .HasForeignKey("AlumneNIA");
+
+                    b.HasOne("KarmaWebAPI.Models.Avaluacio", "Avaluacio")
+                        .WithMany()
+                        .HasForeignKey("AvaluacioIdAvaluacio")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("KarmaWebAPI.Models.Categoria", "Categoria")
                         .WithMany()
-                        .HasForeignKey("IdCategoria");
-
-                    b.HasOne("KarmaWebAPI.Models.Avaluacio", "Avaluacio")
-                        .WithMany("Puntuacions")
-                        .HasForeignKey("IdAvaluacio")
+                        .HasForeignKey("CategoriaIdCategoria")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AlumneEnGrup");
+                    b.HasOne("KarmaWebAPI.Models.Professor", "Professor")
+                        .WithMany()
+                        .HasForeignKey("IdProfessor")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Alumne");
+
+                    b.Navigation("Avaluacio");
 
                     b.Navigation("Categoria");
 
-                    b.Navigation("Avaluacio");
-                });
-
-            modelBuilder.Entity("KarmaWebAPI.Models.VPrivilegiAvaluacio", b =>
-                {
-                    b.HasOne("KarmaWebAPI.Models.AlumneEnGrup", "AlumneEnGrup")
-                        .WithMany()
-                        .HasForeignKey("IdAlumneEnGrup")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KarmaWebAPI.Models.Avaluacio", "Avaluacio")
-                        .WithMany()
-                        .HasForeignKey("IdAvaluacio")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KarmaWebAPI.Models.Privilegi", "Privilegi")
-                        .WithMany()
-                        .HasForeignKey("IdPrivilegi")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AlumneEnGrup");
-
-                    b.Navigation("Avaluacio");
-
-                    b.Navigation("Privilegi");
+                    b.Navigation("Professor");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -912,56 +978,40 @@ namespace KarmaWebAPI.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("KarmaWebAPI.Models.Alumne", b =>
+            modelBuilder.Entity("ProfessorDeClasse", b =>
                 {
-                    b.Navigation("AlumneEnGrups");
+                    b.HasOne("KarmaWebAPI.Models.Materia", "Materia")
+                        .WithMany()
+                        .HasForeignKey("IdMateria")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KarmaWebAPI.Models.Professor", "Professor")
+                        .WithMany()
+                        .HasForeignKey("IdProfessor")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KarmaWebAPI.Models.Classe", "Classe")
+                        .WithMany("ProfessorsDeClasse")
+                        .HasForeignKey("IdAnyEscolar", "IdClasse")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Classe");
+
+                    b.Navigation("Materia");
+
+                    b.Navigation("Professor");
                 });
 
-            modelBuilder.Entity("KarmaWebAPI.Models.AlumneEnGrup", b =>
+            modelBuilder.Entity("KarmaWebAPI.Models.Classe", b =>
                 {
-                    b.Navigation("Puntuacions");
-                });
-
-            modelBuilder.Entity("KarmaWebAPI.Models.AnyEscolar", b =>
-                {
-                    b.Navigation("AlumnesEnGrup");
-
-                    b.Navigation("ConfiguracionsKarma");
+                    b.Navigation("Alumnes");
 
                     b.Navigation("Grups");
 
-                    b.Navigation("Avaluacios");
-
-                    b.Navigation("Privilegis");
-                });
-
-            modelBuilder.Entity("KarmaWebAPI.Models.Grup", b =>
-                {
-                    b.Navigation("AlumnesEnGrup");
-
-                    b.Navigation("ProfessorsDeGrup");
-                });
-
-            modelBuilder.Entity("KarmaWebAPI.Models.Materia", b =>
-                {
-                    b.Navigation("ProfessorsDelGrup");
-                });
-
-            modelBuilder.Entity("KarmaWebAPI.Models.Avaluacio", b =>
-                {
-                    b.Navigation("Puntuacions");
-                });
-
-            modelBuilder.Entity("KarmaWebAPI.Models.Professor", b =>
-                {
-                    b.Navigation("GrupsTutoritzats");
-
-                    b.Navigation("ProfessorDeClasses");
-                });
-
-            modelBuilder.Entity("KarmaWebAPI.Models.TipusCategoria", b =>
-                {
-                    b.Navigation("Categories");
+                    b.Navigation("ProfessorsDeClasse");
                 });
 #pragma warning restore 612, 618
         }

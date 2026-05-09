@@ -5,11 +5,15 @@ namespace KarmaWebAPI.Models
 {
     public class Grup
     {
-
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long IdGrup { get; set; }
+
         [StringLength(20)]
         public string Nom { get; set; } = string.Empty;
 
+        [Required]
+        public int IdAnyEscolar { get; set; }
         [Required]
         public long IdClasse { get; set; }
         public Classe Classe { get; set; } = null!;

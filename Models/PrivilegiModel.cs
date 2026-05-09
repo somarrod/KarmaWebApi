@@ -5,6 +5,8 @@ namespace KarmaWebAPI.Models
 {
     public class Privilegi
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long IdPrivilegi { get; set; }
 
         [Required]

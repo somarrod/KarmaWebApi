@@ -7,7 +7,7 @@ namespace KarmaWebAPI.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdMateria { get; set; } //identificar únic
+        public long IdMateria { get; set; } //identificar únic
 
         [Required]
         public string Nom { get; set; } //nom de la materia

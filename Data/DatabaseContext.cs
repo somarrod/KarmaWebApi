@@ -29,45 +29,68 @@ namespace KarmaWebAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //// Configuración de la entidad Grup
-            //modelBuilder.Entity<Grup>()
-            //    .HasKey(g => new { g.IdAnyEscolar, g.IdGrup });
-
-            //modelBuilder.Entity<Grup>()
-            //    .HasOne(g => g.AnyEscolar)
-            //    .WithMany(a => a.Grups)
-            //    .HasForeignKey(g => g.IdAnyEscolar);
-
-
-            modelBuilder.Entity<ProfessorDeClasse>()
-                .HasIndex(p => new { p.IdProfessor, p.IdClasse, p.IdMateria })
-                .IsUnique();
 
             // Configuración de la entidad AnyEscolar
             modelBuilder.Entity<AnyEscolar>()
                 .HasKey(a => a.IdAnyEscolar);
 
-            // Configuración de la entidad ConfiguracioKarma
-            //modelBuilder.Entity<ConfiguracioKarma>()
-            //    .HasOne(g => g.AnyEscolar)
-            //    .WithMany(a => a.ConfiguracionsKarma)
-            //    .HasForeignKey(g => g.IdAnyEscolar);
+            // =========================
+            // CLASSE → clau composta
+            // =========================
+            modelBuilder.Entity<Classe>()
+                .HasKey(c => new { c.IdAnyEscolar, c.IdClasse });
 
-            // Configuración de la entidad Avaluacio
-            //modelBuilder.Entity<Avaluacio>()
-            //    .HasOne(p => p.AnyEscolar)
-            //    .WithMany(a => a.Avaluacios)
-            //    .HasForeignKey(p => p.IdAnyEscolar);
+            // =========================
+            // ALUMNE → FK composta cap a CLASSE
+            // =========================
+            modelBuilder.Entity<Alumne>()
+                .HasOne(a => a.Classe)
+                .WithMany(c => c.Alumnes)
+                .HasForeignKey(a => new { a.IdAnyEscolar, a.IdClasse })
+                .OnDelete(DeleteBehavior.Restrict);
 
-            //modelBuilder.Entity<Privilegi>()
-            //    .HasOne(p => p.AnyEscolar)
-            //    .WithMany(a => a.Privilegis)
-            //    .HasForeignKey(p => p.IdAnyEscolar);
+            // =========================
+            // PROFESSORDECLASSE → FK composta cap a CLASSE
+            // =========================
+            modelBuilder.Entity<ProfessorDeClasse>()
+                .HasOne(pc => pc.Classe)
+                .WithMany(c => c.ProfessorsDeClasse)
+                .HasForeignKey(pc => new { pc.IdAnyEscolar, pc.IdClasse })
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            // =========================
+            // GRUP → FK composta (AÇÒ ÉS EL QUE ET FALTAVA)
+            // =========================
+            modelBuilder.Entity<Grup>()
+                .HasOne(g => g.Classe)
+                .WithMany(c => c.Grups)   // o .WithMany() si no vols navegació
+                .HasForeignKey(g => new { g.IdAnyEscolar, g.IdClasse })
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             // Configuración de la entidad ProfessorDeClasse
             modelBuilder.Entity<ProfessorDeClasse>()
                 .HasKey(p => p.IdProfessorDeClasse);
 
+
+            modelBuilder.Entity<Puntuacio>()
+                .HasOne(p => p.Professor)
+                .WithMany()
+                .HasForeignKey(p => p.IdProfessor)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            //ÍNDEX
+            modelBuilder.Entity<Puntuacio>()
+                .HasIndex(p => new { p.NIA, p.IdAvaluacio });
+
+            modelBuilder.Entity<KarmaAlumne>()
+                .HasIndex(k => new { k.NIA, k.IdAvaluacio });
+
+            modelBuilder.Entity<ProfessorDeClasse>()
+                .HasIndex(p => new { p.IdProfessor, p.IdClasse, p.IdMateria })
+                .IsUnique();
 
 
             // Llamada al método base

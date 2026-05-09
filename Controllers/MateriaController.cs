@@ -20,7 +20,7 @@ namespace KarmaWebAPI.Controllers
         // =========================
         // GET instància
         // =========================
-        [HttpGet("{idMateria}")]
+        [HttpGet("{idMateria:long}")]
         [Authorize(Roles = "AG_Admin,AG_Professor")]
         public async Task<IActionResult> Instancia(int idMateria)
         {
@@ -86,9 +86,9 @@ namespace KarmaWebAPI.Controllers
         // =========================
         // DELETE eliminar
         // =========================
-        [HttpDelete("{idMateria}")]
+        [HttpDelete("{idMateria:long}")]
         [Authorize(Roles = "AG_Admin")]
-        public async Task<IActionResult> Eliminar(int idMateria)
+        public async Task<IActionResult> Eliminar(long idMateria)
         {
             var ok = await _service.EliminarAsync(idMateria);
             if (!ok)

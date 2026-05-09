@@ -20,7 +20,7 @@ namespace KarmaWebAPI.Serveis
         // =========================
         // INSTÀNCIA
         // =========================
-        public async Task<Materia?> InstanciaAsync(int idMateria, ClaimsPrincipal user)
+        public async Task<Materia?> InstanciaAsync(long idMateria, ClaimsPrincipal user)
         {
             var materia = await _context.Materies.FindAsync(idMateria);
             if (materia == null) return null;
@@ -96,7 +96,7 @@ namespace KarmaWebAPI.Serveis
         // =========================
         // ACTIVAR / DESACTIVAR
         // =========================
-        public async Task<Materia> ActivarAsync(int idMateria)
+        public async Task<Materia> ActivarAsync(long idMateria)
         {
             var materia = await _context.Materies.FindAsync(idMateria)
                 ?? throw new InvalidOperationException("La matèria indicada no existeix");
@@ -106,7 +106,7 @@ namespace KarmaWebAPI.Serveis
             return materia;
         }
 
-        public async Task<Materia> DesactivarAsync(int idMateria)
+        public async Task<Materia> DesactivarAsync(long idMateria)
         {
             var materia = await _context.Materies.FindAsync(idMateria)
                 ?? throw new InvalidOperationException("La matèria indicada no existeix");
@@ -119,7 +119,7 @@ namespace KarmaWebAPI.Serveis
         // =========================
         // ELIMINAR
         // =========================
-        public async Task<bool> EliminarAsync(int idMateria)
+        public async Task<bool> EliminarAsync(long idMateria)
         {
             var materia = await _context.Materies.FindAsync(idMateria);
             if (materia == null) return false;
