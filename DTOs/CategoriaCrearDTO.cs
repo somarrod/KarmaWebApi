@@ -4,17 +4,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace KarmaWebAPI.DTOs
 {
-
     public class CategoriaCrearDTO
     {
-
-        [Required]
-        public string Descripcio { get; set; }
-
-        [Required]
-        public int IdTipusCategoria { get; set; }
-
-
+        public string Descripcio { get; set; } = string.Empty;
+        public double NumPunts { get; set; }
+        public bool Editable { get; set; }
+        public string? Comentaris { get; set; }
+        public long IdTipusCategoria { get; set; }
     }
 
 }

@@ -14,7 +14,7 @@ namespace KarmaWebAPI.Models
         [StringLength(100)]
         public string Descripcio { get; set; }
 
-        // Relació 1 -> N
-        public ICollection<Categoria> Categories { get; set; }
+        public bool Actiu { get; set; } = true;
+
     }
 }

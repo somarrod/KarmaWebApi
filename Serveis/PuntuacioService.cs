@@ -128,11 +128,25 @@
             // ===============================
             // Categoria
             // ===============================
-            var categoriaExisteix = await _context.Categories
-                .AnyAsync(c => c.IdCategoria == idCategoria);
+            Categoria categoria = await _context.Categories
+                    .FirstAsync(c => c.IdCategoria == idCategoria);
 
-            if (!categoriaExisteix)
+            if (categoria == null)
                 throw new InvalidOperationException("Categoria no existent");
+            
+
+            // VALIDACIÓ EDITABLE
+            if (!categoria.Editable && numPunts != categoria.NumPunts)
+            {
+                throw new InvalidOperationException(
+                    "Aquesta categoria no permet modificar el nombre de punts");
+            }
+
+            // Si NO és editable, força el valor
+            if (!categoria.Editable)
+            {
+                numPunts = categoria.NumPunts;
+            }
 
             // ===============================
             // Crear puntuació

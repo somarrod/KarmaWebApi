@@ -1,209 +1,111 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
-using Microsoft.EntityFrameworkCore;
-using KarmaWebAPI.Data;
-using KarmaWebAPI.DTOs;
-using Microsoft.AspNetCore.Authorization;
 using KarmaWebAPI.Serveis.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KarmaWebAPI.Controllers
 {
-    [Route("api/categoria")]
-    [ApiController]
-    public class CategoriaController : ControllerBase
+    namespace KarmaWebAPI.Controllers
     {
-        private readonly DatabaseContext _context;
-
-        public CategoriaController(DatabaseContext context)
+        [ApiController]
+        [Route("api/categoria")]
+        public class CategoriaController : ControllerBase
         {
-            _context = context;
-        }
+            private readonly ICategoriaService _service;
 
-        // GET: api/Categoria
-        [HttpGet("llista")]
-        public async Task<ActionResult<IEnumerable<Categoria>>> Lista()
-        {
-            return await _context.Categories
-                .Include(c => c.TipusCategoria)
-                .ToListAsync();
-        }
-
-        // GET: api/Categoria/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Categoria>> Instancia(int id)
-        {
-            Categoria categoria = await _context.Categories
-                   .Include(c => c.TipusCategoria)
-                   .FirstOrDefaultAsync(c => c.IdCategoria == id);
-
-            if (categoria == null)         
-                return NotFound();            
-
-            return categoria;
-        }
-
-        // POST: api/Categoria
-        [HttpPost("crear")]
-        [Authorize(Roles = "AG_Admin,AG_Professor")]
-        public async Task<ActionResult<Categoria>> Crear(CategoriaCrearDTO categoriaDTO)
-        {
-
-            // comprovem que el tipus existeix
-            var tipus = await _context.TipusCategoria
-                .FindAsync(categoriaDTO.IdTipusCategoria);
-
-            if (tipus == null)
-                return BadRequest("El tipus de categoria indicat no existeix");
-
-            var categoria = new Categoria
+            public CategoriaController(ICategoriaService service)
             {
-                Descripcio = categoriaDTO.Descripcio,
-                IdTipusCategoria = categoriaDTO.IdTipusCategoria,
-                Activa = true
-            };
-
-
-            _context.Categories.Add(categoria);
-            try
-            {
-                await _context.SaveChangesAsync();                
-            }
-            catch (Exception ex) 
-            {
-                return StatusCode(500, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                _service = service;
             }
 
-            return Ok(categoria);
-        }
-
-
-        // PUT: api/Categoria/5
-        [HttpPut("editar")]
-        [Authorize(Roles = "AG_Admin,AG_Professor")]
-        public async Task<IActionResult> Editar(CategoriaEditarDTO categoriaDto)
-        {
-            var categoria = new Categoria
+            // ==================================================
+            // GET: api/categoria/{idCategoria}
+            // Instància
+            // ==================================================
+            [HttpGet("{idCategoria:long}")]
+            [Authorize(Roles = "AG_Admin,AG_Professor")]
+            public async Task<IActionResult> Instancia(long idCategoria)
             {
-                IdCategoria = categoriaDto.IdCategoria,
-                Descripcio = categoriaDto.Descripcio
-            };
+                var categoria = await _service.InstanciaAsync(idCategoria, User);
 
-            _context.Entry(categoria).State = EntityState.Modified;
+                if (categoria == null)
+                    return NotFound("Categoria no trobada");
 
-            try
-            {
-                await _context.SaveChangesAsync();
+                return Ok(categoria);
             }
-            catch (DbUpdateConcurrencyException)
+
+            // ==================================================
+            // GET: api/categoria/llista
+            // Admin -> totes
+            // Professor -> només actives
+            // ==================================================
+            [HttpGet("llista")]
+            [Authorize(Roles = "AG_Admin,AG_Professor")]
+            public async Task<IActionResult> Llista()
             {
-                if (!CategoriaExiste(categoriaDto.IdCategoria))
-                {
+                var llista = await _service.LlistaAsync(User);
+                return Ok(llista);
+            }
+
+            // ==================================================
+            // POST: api/categoria/crear
+            // ==================================================
+            [HttpPost("crear")]
+            [Authorize(Roles = "AG_Admin")]
+            public async Task<IActionResult> Crear(CategoriaCrearDTO dto)
+            {
+                var categoria = await _service.CrearAsync(dto);
+                return Ok(categoria);
+            }
+
+            // ==================================================
+            // PUT: api/categoria/editar
+            // ==================================================
+            [HttpPut("editar")]
+            [Authorize(Roles = "AG_Admin")]
+            public async Task<IActionResult> Editar(CategoriaEditarDTO dto)
+            {
+                var categoria = await _service.EditarAsync(dto);
+                return Ok(categoria);
+            }
+
+            // ==================================================
+            // PUT: api/categoria/activar
+            // ==================================================
+            [HttpPut("activar")]
+            [Authorize(Roles = "AG_Admin")]
+            public async Task<IActionResult> Activar(long idCategoria)
+            {
+                var categoria = await _service.ActivarAsync(idCategoria);
+                return Ok(categoria);
+            }
+
+            // ==================================================
+            // PUT: api/categoria/desactivar
+            // ==================================================
+            [HttpPut("desactivar")]
+            [Authorize(Roles = "AG_Admin")]
+            public async Task<IActionResult> Desactivar(long idCategoria)
+            {
+                var categoria = await _service.DesactivarAsync(idCategoria);
+                return Ok(categoria);
+            }
+
+            // ==================================================
+            // DELETE: api/categoria/{idCategoria}
+            // ==================================================
+            [HttpDelete("{idCategoria:long}")]
+            [Authorize(Roles = "AG_Admin")]
+            public async Task<IActionResult> Eliminar(long idCategoria)
+            {
+                var ok = await _service.EliminarAsync(idCategoria);
+
+                if (!ok)
                     return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+
+                return Ok();
             }
-
-            return Ok(categoria);
-        }
-
-
-        // PUT: api/Categoria/activar
-        [HttpPut("activar")]
-        [Authorize(Roles = "AG_Admin,AG_Professor")]
-        public async Task<IActionResult> ActivarCategoria(int idCategoria)
-        {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    var categoria = await _context.Categories.FindAsync(idCategoria);
-
-                    if (categoria != null)
-                    {
-                        categoria.Activa = true;
-
-                        _context.Entry(categoria).State = EntityState.Modified;
-                        await _context.SaveChangesAsync();
-                        await _context.Database.CommitTransactionAsync();
-
-                        return Ok(categoria);
-                    }
-                    else 
-                    {
-                        await transaction.RollbackAsync();
-                        return NotFound("La categoria indicada no existeix");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    return StatusCode(500, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
-                }
-            }
-        }
-
-
-        // PUT: api/Categoria/desactivar
-        [HttpPut("desactivar")]
-        [Authorize(Roles = "AG_Admin,AG_Professor")]
-        public async Task<IActionResult> DesactivarCategoria(int idCategoria)
-        {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    var categoria = await _context.Categories.FindAsync(idCategoria);
-
-                    if (categoria != null)
-                    {
-                        categoria.Activa = false;
-
-                        _context.Entry(categoria).State = EntityState.Modified;
-                        await _context.SaveChangesAsync();
-                        await _context.Database.CommitTransactionAsync();
-
-                        return Ok(categoria);
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                        return NotFound("La categoria indicada no existeix");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    return StatusCode(500, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
-                }
-            }
-        }
-
-
-        // DELETE: api/Categoria/5
-        [HttpDelete("eliminar")]
-        [Authorize(Roles = "AG_Admin,AG_Professor")]
-        public async Task<IActionResult> Eliminar(int idCategoria)
-        {
-            var categoria = await _context.Categories.FindAsync(idCategoria);
-            if (categoria == null)
-            {
-                return NotFound();
-            }
-
-            var desc = categoria.Descripcio;
-
-            _context.Categories.Remove(categoria);
-            await _context.SaveChangesAsync();
-
-            return Ok($"La categoria '{desc}' ha estat esborrada.");
-        }
-
-        private bool CategoriaExiste(int id)
-        {
-            return _context.Categories.Any(e => e.IdCategoria == id);
         }
     }
 }

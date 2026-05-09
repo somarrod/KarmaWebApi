@@ -14,7 +14,7 @@ namespace KarmaWebAPI.Data
         public DbSet<Categoria> Categories { get; set; } = null!;
 
         public DbSet<Classe> Classes { get; set; } = null!;
-        public DbSet<TipusCategoria> TipusCategoria { get; set; } = null!;
+        public DbSet<TipusCategoria> TipusCategories { get; set; } = null!;
         public DbSet<ConfiguracioKarma> ConfiguracionsKarma { get; set; } = null!;
         public DbSet<Grup> Grups { get; set; } = null!;
         public DbSet<Materia> Materies { get; set; } = null!;
