@@ -34,7 +34,7 @@ namespace KarmaWebAPI.Serveis
                     $"El professor amb Id {idProfessor} ja està assignat a la classe i matèria.");
 
             // Professor existeix?
-            if (!await _context.Professor.AnyAsync(p => p.IdProfessor == idProfessor))
+            if (!await _context.Professors.AnyAsync(p => p.IdProfessor == idProfessor))
                 throw new InvalidOperationException(
                     $"El professor amb Id {idProfessor} no existeix.");
 
@@ -44,7 +44,7 @@ namespace KarmaWebAPI.Serveis
                     $"La classe amb Id {idClasse} no existeix.");
 
             // Matèria existeix?
-            if (!await _context.Materia.AnyAsync(m => m.IdMateria == idMateria))
+            if (!await _context.Materies.AnyAsync(m => m.IdMateria == idMateria))
                 throw new InvalidOperationException(
                     $"La matèria amb Id {idMateria} no existeix.");
 

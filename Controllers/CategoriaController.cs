@@ -23,7 +23,7 @@ namespace KarmaWebAPI.Controllers
         [HttpGet("llista")]
         public async Task<ActionResult<IEnumerable<Categoria>>> Lista()
         {
-            return await _context.Categoria
+            return await _context.Categories
                 .Include(c => c.TipusCategoria)
                 .ToListAsync();
         }
@@ -32,7 +32,7 @@ namespace KarmaWebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Categoria>> Instancia(int id)
         {
-            var categoria = await _context.Categoria
+            Categoria categoria = await _context.Categories
                    .Include(c => c.TipusCategoria)
                    .FirstOrDefaultAsync(c => c.IdCategoria == id);
 
@@ -63,7 +63,7 @@ namespace KarmaWebAPI.Controllers
             };
 
 
-            _context.Categoria.Add(categoria);
+            _context.Categories.Add(categoria);
             try
             {
                 await _context.SaveChangesAsync();                
@@ -119,7 +119,7 @@ namespace KarmaWebAPI.Controllers
             {
                 try
                 {
-                    var categoria = await _context.Categoria.FindAsync(idCategoria);
+                    var categoria = await _context.Categories.FindAsync(idCategoria);
 
                     if (categoria != null)
                     {
@@ -155,7 +155,7 @@ namespace KarmaWebAPI.Controllers
             {
                 try
                 {
-                    var categoria = await _context.Categoria.FindAsync(idCategoria);
+                    var categoria = await _context.Categories.FindAsync(idCategoria);
 
                     if (categoria != null)
                     {
@@ -187,7 +187,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin,AG_Professor")]
         public async Task<IActionResult> Eliminar(int idCategoria)
         {
-            var categoria = await _context.Categoria.FindAsync(idCategoria);
+            var categoria = await _context.Categories.FindAsync(idCategoria);
             if (categoria == null)
             {
                 return NotFound();
@@ -195,7 +195,7 @@ namespace KarmaWebAPI.Controllers
 
             var desc = categoria.Descripcio;
 
-            _context.Categoria.Remove(categoria);
+            _context.Categories.Remove(categoria);
             await _context.SaveChangesAsync();
 
             return Ok($"La categoria '{desc}' ha estat esborrada.");
@@ -203,7 +203,7 @@ namespace KarmaWebAPI.Controllers
 
         private bool CategoriaExiste(int id)
         {
-            return _context.Categoria.Any(e => e.IdCategoria == id);
+            return _context.Categories.Any(e => e.IdCategoria == id);
         }
     }
 }

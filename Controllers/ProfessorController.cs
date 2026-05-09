@@ -30,7 +30,7 @@ namespace KarmaWebAPI.Controllers
         [HttpGet("{idProfessor}")]
         public async Task<ActionResult<Professor>> Instancia(string idProfessor)
         {
-            var professor = await _context.Professor.FindAsync(idProfessor);
+            var professor = await _context.Professors.FindAsync(idProfessor);
 
             if (professor == null)
             {
@@ -44,7 +44,7 @@ namespace KarmaWebAPI.Controllers
         [HttpGet("llista")]
         public async Task<ActionResult<IEnumerable<Professor>>> Llista()
         {
-            return await _context.Professor.ToListAsync();
+            return await _context.Professors.ToListAsync();
         }
 
 
@@ -99,14 +99,14 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin, AG_Professor")]
         public async Task<IActionResult> Editar(ProfessorDTO professorDto)
         {
-            var professor = await _context.Professor.FindAsync(professorDto.IdProfessor);
+            var professor = await _context.Professors.FindAsync(professorDto.IdProfessor);
             if (professor == null)
             {
                 return NotFound();
             }
 
             // Comprovar si l'email ja existeix en altres professors
-            var emailExists = await _context.Professor.AnyAsync(p => p.Email == professorDto.Email && p.IdProfessor != professorDto.IdProfessor);
+            var emailExists = await _context.Professors.AnyAsync(p => p.Email == professorDto.Email && p.IdProfessor != professorDto.IdProfessor);
             if (emailExists)
             {
                 return BadRequest("L'email ja està en ús per un altre professor.");
@@ -122,7 +122,7 @@ namespace KarmaWebAPI.Controllers
                     professor.Cognoms = professorDto.Cognoms;
                     professor.Email = professorDto.Email;
 
-                    _context.Professor.Update(professor);
+                    _context.Professors.Update(professor);
                     await _context.SaveChangesAsync();
 
                     // Actualitzar l'email en AspNetUsers
@@ -166,7 +166,7 @@ namespace KarmaWebAPI.Controllers
             {
                 try
                 {
-                    var professor = await _context.Professor.FindAsync(idProfessor);
+                    var professor = await _context.Professors.FindAsync(idProfessor);
                     if (professor == null)
                     {
                         return NotFound();
@@ -213,7 +213,7 @@ namespace KarmaWebAPI.Controllers
             {
                 try
                 {
-                    var professor = await _context.Professor.FindAsync(idProfessor);
+                    var professor = await _context.Professors.FindAsync(idProfessor);
                     if (professor == null)
                     {
                         return NotFound();
@@ -257,7 +257,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin, AG_Professor")]
         public async Task<IActionResult> EliminarProfessor(String idProfessor)
         {
-            var professor = await _context.Professor.FindAsync(idProfessor);
+            var professor = await _context.Professors.FindAsync(idProfessor);
             if (professor == null)
             {
                 return NotFound();
@@ -276,7 +276,7 @@ namespace KarmaWebAPI.Controllers
                 try
                 {
                     // Eliminar el professor
-                    _context.Professor.Remove(professor);
+                    _context.Professors.Remove(professor);
                     await _context.SaveChangesAsync();
 
                     // Eliminar l'usuari en AspNetUsers

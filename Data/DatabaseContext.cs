@@ -11,19 +11,19 @@ namespace KarmaWebAPI.Data
         // Definición de DbSets para cada entidad
         public DbSet<Alumne> Alumnes { get; set; } = null!;
         public DbSet<AnyEscolar> AnyEscolars { get; set; } = null!;
-        public DbSet<Categoria> Categoria { get; set; } = null!;
+        public DbSet<Categoria> Categories { get; set; } = null!;
 
         public DbSet<Classe> Classes { get; set; } = null!;
         public DbSet<TipusCategoria> TipusCategoria { get; set; } = null!;
         public DbSet<ConfiguracioKarma> ConfiguracionsKarma { get; set; } = null!;
         public DbSet<Grup> Grups { get; set; } = null!;
-        public DbSet<Materia> Materia { get; set; } = null!;
+        public DbSet<Materia> Materies { get; set; } = null!;
         public DbSet<Avaluacio> Avaluacions { get; set; } = null!;
         public DbSet<PrivilegiAssignat> PrivilegisAssignats { get; set; } = null!;
         public DbSet<Privilegi> Privilegis { get; set; } = null!;
         public DbSet<ProfessorDeClasse> ProfessorsDeClasse { get; set; } = null!;
-        public DbSet<Professor> Professor { get; set; } = null!;
-        public DbSet<Puntuacio> Puntuacio { get; set; } = null!;
+        public DbSet<Professor> Professors { get; set; } = null!;
+        public DbSet<Puntuacio> Puntuacions { get; set; } = null!;
 
         public DbSet<KarmaAlumne> KarmaAlumnes { get; set; } = null!;
 

@@ -38,5 +38,8 @@ namespace KarmaWebAPI.Models
         public long? IdGrup { get; set; }
         public Grup? Grup { get; set; } = null!;
 
+
+        public double? KarmaActualPunts;
+        public string? KarmaActualColor;
     }
 }

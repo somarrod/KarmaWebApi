@@ -19,7 +19,7 @@ public class ProfessorService: IProfessorService
 
     public List<Professor> GetProfessors()
     {
-        return _context.Professor.ToList();
+        return _context.Professors.ToList();
     }
 
 
@@ -34,7 +34,7 @@ public class ProfessorService: IProfessorService
             Email = professorDto.Email
         };
 
-        _context.Professor.Add(professor);
+        _context.Professors.Add(professor);
         await _context.SaveChangesAsync();
 
         return new OkObjectResult(professor);
@@ -42,7 +42,7 @@ public class ProfessorService: IProfessorService
 
     public async Task<ActionResult<Professor>> ActivarProfessorAsync(String idProfessor)
     {
-        var professor = await _context.Professor.FindAsync(idProfessor);
+        var professor = await _context.Professors.FindAsync(idProfessor);
 
         if (professor == null)
         {
@@ -60,7 +60,7 @@ public class ProfessorService: IProfessorService
 
     public async Task<ActionResult<Professor>> DesactivarProfessorAsync(String idProfessor)
     {
-        var professor = await _context.Professor.FindAsync(idProfessor);
+        var professor = await _context.Professors.FindAsync(idProfessor);
 
         if (professor == null)
         {
@@ -79,7 +79,7 @@ public class ProfessorService: IProfessorService
 
     public async Task PertanyEquipDirectiuAsync(string idProfessor, bool pertanyAEquipDirectiu)
     {
-        var professor = await _context.Professor
+        var professor = await _context.Professors
             .FirstOrDefaultAsync(p => p.IdProfessor == idProfessor);
 
         if (professor == null)
@@ -108,7 +108,7 @@ public class ProfessorService: IProfessorService
 
     public bool ProfessorExisteix(string idProfessor)
     {
-        return _context.Professor.Any(e => e.IdProfessor == idProfessor);
+        return _context.Professors.Any(e => e.IdProfessor == idProfessor);
     }
 
    

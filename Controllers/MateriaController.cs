@@ -1,226 +1,100 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
-using Microsoft.EntityFrameworkCore;
-using KarmaWebAPI.Data;
-using KarmaWebAPI.DTOs;
+using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KarmaWebAPI.Controllers
 {
-    [Route("api/materia")]
     [ApiController]
+    [Route("api/materia")]
     public class MateriaController : ControllerBase
     {
-        private readonly DatabaseContext _context;
+        private readonly IMateriaService _service;
 
-        public MateriaController(DatabaseContext context)
+        public MateriaController(IMateriaService service)
         {
-            _context = context;
+            _service = service;
         }
 
-        // GET: api/Materia/5
+        // =========================
+        // GET instància
+        // =========================
         [HttpGet("{idMateria}")]
-        public async Task<ActionResult<Materia>> ObtenerMateria(int idMateria)
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
+        public async Task<IActionResult> Instancia(int idMateria)
         {
-            var materia = await _context.Materia.FindAsync(idMateria);
-
+            var materia = await _service.InstanciaAsync(idMateria, User);
             if (materia == null)
-            {
                 return NotFound("Matèria no trobada");
-            }
 
-            if (User.IsInRole("AG_Professor") && !materia.Activa) 
-            {
-                return NotFound("Matèria no trobada");
-            }
-
-                return materia;
+            return Ok(materia);
         }
 
-        // GET: api/Materia
+        // =========================
+        // GET llista
+        // =========================
         [HttpGet("llista")]
-        [Authorize(Roles = "AG_Admin, AG_Professor")]
-        public async Task<ActionResult<IEnumerable<Materia>>> Llista()
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
+        public async Task<IActionResult> Llista()
         {
-
-            if (User.IsInRole("AG_Admin"))
-            {
-                // Devuelve todas las materias si el usuario tiene el rol AG_Admin
-                return await _context.Materia.ToListAsync();
-            }
-            else 
-            {
-                // Devuelve solo las materias activas si el usuario tiene el rol AG_Professor
-                return await _context.Materia.Where(m => m.Activa).ToListAsync();
-            }
+            var llista = await _service.LlistaAsync(User);
+            return Ok(llista);
         }
 
-
-        // POST: api/Materia
+        // =========================
+        // POST crear
+        // =========================
         [HttpPost("crear")]
         [Authorize(Roles = "AG_Admin")]
-        public async Task<ActionResult<Materia>> CrearMateria(MateriaCrearDTO materiaDto)
+        public async Task<IActionResult> Crear(MateriaCrearDTO dto)
         {
-
-            // Comprovar si ja existeix una matèria amb el mateix nom (ignorant majúscules/minúscules)
-            var existeix = await _context.Materia
-                        .AnyAsync(m => m.Nom.ToLower() == materiaDto.Nom.ToLower());
-
-            if (existeix)
-            {
-                return Conflict(new { missatge = "Ja existeix una matèria amb aquest nom." });
-            }
-
-                        var materia = new Materia
-            {
-                Nom = materiaDto.Nom,
-                Activa = true
-            };
-
-            _context.Materia.Add(materia);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("CrearMateria", new { id = materia.IdMateria }, materia);
+            var materia = await _service.CrearAsync(dto);
+            return Ok(materia);
         }
 
-
-        // PUT: api/Materia/5
+        // =========================
+        // PUT editar
+        // =========================
         [HttpPut("editar")]
         [Authorize(Roles = "AG_Admin")]
-        public async Task<IActionResult> EditarMateria(MateriaEditarDTO materiaDto)
+        public async Task<IActionResult> Editar(MateriaEditarDTO dto)
         {
-            // Comprovar si ja existeix una matèria amb el mateix nom (ignorant majúscules/minúscules)
-            var existeix = await _context.Materia
-                        .AnyAsync(m => m.Nom.ToLower() == materiaDto.Nom.ToLower() &&
-                                       m.IdMateria != materiaDto.IdMateria);
-
-            if (existeix)
-            {
-                return Conflict(new { missatge = "Ja existeix una matèria amb aquest nom." });
-            }
-
-
-            var materia = new Materia
-            {
-                IdMateria = materiaDto.IdMateria,
-                Nom = materiaDto.Nom,
-                Activa = materiaDto.Activa
-            };
-
-            _context.Entry(materia).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MateriaExiste(materiaDto.IdMateria))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Ok(materiaDto);
+            var materia = await _service.EditarAsync(dto);
+            return Ok(materia);
         }
 
-        // PUT: api/Materia/activar
+        // =========================
+        // PUT activar / desactivar
+        // =========================
         [HttpPut("activar")]
         [Authorize(Roles = "AG_Admin,AG_Professor")]
-        public async Task<IActionResult> ActivarMateria(int idMateria)
+        public async Task<IActionResult> Activar(int idMateria)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    var materia = await _context.Materia.FindAsync(idMateria);
-
-                    if (materia != null)
-                    {
-                        materia.Activa = true;
-
-                        _context.Entry(materia).State = EntityState.Modified;
-                        await _context.SaveChangesAsync();
-                        await _context.Database.CommitTransactionAsync();
-
-                        return Ok(materia);
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                        return NotFound("La matèria indicada no existeix");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    return StatusCode(500, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
-                }
-            }
+            var materia = await _service.ActivarAsync(idMateria);
+            return Ok(materia);
         }
 
-
-        // PUT: api/Materia/desactivar
         [HttpPut("desactivar")]
         [Authorize(Roles = "AG_Admin,AG_Professor")]
-        public async Task<IActionResult> DesactivarMateria(int idMateria)
+        public async Task<IActionResult> Desactivar(int idMateria)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    var materia = await _context.Materia.FindAsync(idMateria);
-
-                    if (materia != null)
-                    {
-                        materia.Activa = false;
-
-                        _context.Entry(materia).State = EntityState.Modified;
-                        await _context.SaveChangesAsync();
-                        await _context.Database.CommitTransactionAsync();
-
-                        return Ok(materia);
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                        return NotFound("La matèria indicada no existeix");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    return StatusCode(500, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
-                }
-            }
+            var materia = await _service.DesactivarAsync(idMateria);
+            return Ok(materia);
         }
 
-        // DELETE: api/Materia/5
+        // =========================
+        // DELETE eliminar
+        // =========================
         [HttpDelete("{idMateria}")]
         [Authorize(Roles = "AG_Admin")]
-        public async Task<IActionResult> EliminarMateria(int idMateria)
+        public async Task<IActionResult> Eliminar(int idMateria)
         {
-            var materia = await _context.Materia.FindAsync(idMateria);
-            if (materia == null)
-            {
+            var ok = await _service.EliminarAsync(idMateria);
+            if (!ok)
                 return NotFound();
-            }
 
-            var nom = materia.Nom;
-
-            _context.Materia.Remove(materia);
-            await _context.SaveChangesAsync();
-
-            return Ok($"La matèria {nom} ha estat esborrada.");
-        }
-
-        private bool MateriaExiste(int idMateria)
-        {
-            return _context.Materia.Any(e => e.IdMateria == idMateria);
+            return Ok();
         }
     }
 }

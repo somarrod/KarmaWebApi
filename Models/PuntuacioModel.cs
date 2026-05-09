@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KarmaWebAPI.Models
 {
@@ -7,36 +7,75 @@ namespace KarmaWebAPI.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdPuntuacio { get; set; } //identificar únic
+        public long IdPuntuacio { get; set; }
+
+        // =========================
+        // Alumne
+        // =========================
+        [Required]
+        public string NIA { get; set; } = string.Empty;
+        public Alumne Alumne { get; set; } = null!;
+
+        // =========================
+        // Professor que crea la puntuació
+        // =========================
+        [Required]
+        public string IdProfessor { get; set; } = string.Empty;
+        public Professor Professor { get; set; } = null!;
+
+        // =========================
+        // Categoria (XMI)
+        // =========================
+        [Required]
+        public long IdCategoria { get; set; }
+        public Categoria Categoria { get; set; } = null!;
+
+        // =========================
+        // Snapshot de context
+        // =========================
+        [Required]
+        public long IdClasse { get; set; }
 
         [Required]
-        public DateOnly DataEntrada { get; set; } = DateOnly.FromDateTime(DateTime.Now); //data
+        [StringLength(100)]
+        public string NomClasse { get; set; } = string.Empty;
+
+        public long? IdGrup { get; set; }
+
+        [StringLength(100)]
+        public string? NomGrup { get; set; }
+
+        // =========================
+        // Dades de puntuació
+        // =========================
+        [Required]
+        public double NumPunts { get; set; }
+
+        // 'S' = Sumar/Restar, 'I' = ReIniciar
+        [Required]
+        [StringLength(1)]
+        public string Tipus { get; set; } = string.Empty;
+
+        // NOT NULL (XMI)
+        [Required]
+        public string Motiu { get; set; } = string.Empty;
+
+        public string? DescripcioAdicional { get; set; }
+
+        // =========================
+        // Dates
+        // =========================
+        [Required]
+        public DateOnly DataEvent { get; set; }
 
         [Required]
-        [Range(-3, 3, ErrorMessage = "El valor ha de ser mínim -3 i màxim 3.")]
-        public int Punts { get; set; } = 0; //Activa, per defecte true
-        
-        [StringLength(255)]
-        public String Motiu { get; set; }
+        public DateTime DataCreacio { get; set; }
 
-        [StringLength(50)]
-        public String? UsuariCreacio { get; set; } 
-
-        [ForeignKey("Avaluacio")]
+        // =========================
+        // Avaluació
+        // =========================
         [Required]
-        public int IdAvaluacio { get; set; }
-
-        [ForeignKey("Categoria")]
-        public int? IdCategoria { get; set; } //identificar únic
-
-        [ForeignKey("AlumneEnGrup")]
-        public int IdAlumneEnGrup { get; set; } //identificar únic
-
-        //Navegacions
+        public long IdAvaluacio { get; set; }
         public Avaluacio Avaluacio { get; set; } = null!;
-
-        public Categoria Categoria { get; set; }
-
-
     }
 }

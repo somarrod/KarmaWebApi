@@ -1,113 +1,244 @@
 ﻿namespace KarmaWebAPI.Serveis
 {
-    using System;
-    using System.Linq;
-    using System.Security.Cryptography;
-    using System.Threading.Tasks;
     using KarmaWebAPI.Data;
     using KarmaWebAPI.DTOs;
     using KarmaWebAPI.Models;
     using KarmaWebAPI.Serveis.Interfaces;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using System;
+    using System.Linq;
+    using System.Security.Claims;
+    using System.Security.Cryptography;
+    using System.Threading.Tasks;
 
     public class PuntuacioService : IPuntuacioService
     {
         private readonly DatabaseContext _context;
         private readonly IGrupService _grupService;
 
-        public PuntuacioService(DatabaseContext context,  IGrupService grupService)
+        public PuntuacioService(
+            DatabaseContext context,
+            IGrupService grupService)
         {
             _context = context;
             _grupService = grupService;
         }
 
-        public async Task<ActionResult<Puntuacio>> CrearPuntuacioAsync(PuntuacioCrearDTO puntuacioDto, String? usuariCreacio)
+        // ==================================================
+        // ASSIGNAR PUNTS (S)
+        // ==================================================
+        public async Task<Puntuacio> AssignarPuntsAsync(
+            string nia,
+            long idAvaluacio,
+            long idCategoria,
+            double numPunts,
+            string motiu,
+            string? descripcioAdicional,
+            ClaimsPrincipal user)
         {
+            return await CrearPuntuacioAsync(
+                nia,
+                idAvaluacio,
+                idCategoria,
+                "S",
+                numPunts,
+                motiu,
+                descripcioAdicional,
+                user);
+        }
+
+        // ==================================================
+        // REINICIAR PUNTS (I)
+        // ==================================================
+        public async Task<Puntuacio> ReiniciarPuntsAsync(
+            string nia,
+            long idAvaluacio,
+            long idCategoria,
+            double nouValor,
+            string motiu,
+            string? descripcioAdicional,
+            ClaimsPrincipal user)
+        {
+            return await CrearPuntuacioAsync(
+                nia,
+                idAvaluacio,
+                idCategoria,
+                "I",
+                nouValor,
+                motiu,
+                descripcioAdicional,
+                user);
+        }
+
+        // ==================================================
+        // IMPLEMENTACIÓ INTERNA COMUNA
+        // ==================================================
+        private async Task<Puntuacio> CrearPuntuacioAsync(
+            string nia,
+            long idAvaluacio,
+            long idCategoria,
+            string tipus,
+            double numPunts,
+            string motiu,
+            string? descripcioAdicional,
+            ClaimsPrincipal user)
+        {
+            var ara = DateTime.Now;
+            var hui = DateOnly.FromDateTime(ara);
+
+            // ===============================
+            // Professor (usuari autenticat)
+            // ===============================
+            var idProfessor = user.Identity?.Name
+                ?? throw new InvalidOperationException("Usuari no autenticat");
+
+            var professorExisteix = await _context.Professors
+                .AnyAsync(p => p.IdProfessor == idProfessor);
+
+            if (!professorExisteix)
+                throw new InvalidOperationException("El professor no existeix");
+
+            // ===============================
+            // Alumne + context snapshot
+            // ===============================
+            var alumne = await _context.Alumnes
+                .Include(a => a.Classe)
+                .Include(a => a.Grup)
+                .FirstOrDefaultAsync(a => a.NIA == nia)
+                ?? throw new InvalidOperationException("Alumne no trobat");
+
+            if (!alumne.IdClasse.HasValue)
+                throw new InvalidOperationException("L’alumne no té classe");
+
+            // ===============================
+            // Avaluació (validació forta)
+            // ===============================
+            Avaluacio avaluacio = await _context.Avaluacions
+                .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio)
+                ?? throw new InvalidOperationException("Avaluació no trobada");
+
+            if (avaluacio.IdAnyEscolar != alumne.Classe.IdAnyEscolar)
+                throw new InvalidOperationException("Avaluació fora del curs de l’alumne");
+
+            if (hui < avaluacio.DataInicial || hui > avaluacio.DataFinal)
+                throw new InvalidOperationException("La data no cau dins de l’avaluació");
+
+            // ===============================
+            // Categoria
+            // ===============================
+            var categoriaExisteix = await _context.Categories
+                .AnyAsync(c => c.IdCategoria == idCategoria);
+
+            if (!categoriaExisteix)
+                throw new InvalidOperationException("Categoria no existent");
+
+            // ===============================
+            // Crear puntuació
+            // ===============================
             var puntuacio = new Puntuacio
             {
-                Motiu = puntuacioDto.Motiu,
-                Punts = puntuacioDto.Punts,
-                IdCategoria = puntuacioDto.IdCategoria,
-                IdAvaluacio = puntuacioDto.IdAvaluacio,
-                IdAlumneEnGrup = puntuacioDto.IdAlumneEnGrup,
-                DataEntrada = DateOnly.FromDateTime(DateTime.Now),
-                UsuariCreacio = usuariCreacio
+                NIA = nia,
+                IdProfessor = idProfessor,
+                IdCategoria = idCategoria,
+
+                IdClasse = alumne.IdClasse.Value,
+                NomClasse = alumne.Classe.Nom,
+
+                IdGrup = alumne.IdGrup,
+                NomGrup = alumne.Grup?.Nom,
+
+                NumPunts = numPunts,
+                Tipus = tipus,
+                Motiu = motiu,
+                DescripcioAdicional = descripcioAdicional,
+
+                DataEvent = hui,
+                DataCreacio = ara,
+
+                IdAvaluacio = idAvaluacio
             };
 
-            _context.Puntuacio.Add(puntuacio);
+            _context.Puntuacions.Add(puntuacio);
             await _context.SaveChangesAsync();
 
-            return new OkObjectResult(puntuacio);
+            // ===============================
+            // KARMA ALUMNE
+            // ===============================
+            KarmaAlumne karma = await _context.KarmaAlumnes
+                .FirstAsync(k => k.NIA == nia && k.IdAvaluacio == idAvaluacio);
+
+            if (tipus == "S")
+                karma.NumPuntsActuals += numPunts;
+            else if (tipus == "I")
+                karma.NumPuntsActuals = numPunts;
+            else
+                throw new InvalidOperationException("Tipus de puntuació no vàlid");
+
+            ConfiguracioKarma configuracio = await _context.ConfiguracionsKarma
+                .FirstAsync(c =>
+                    c.IdAnyEscolar == avaluacio.IdAnyEscolar &&
+                    karma.NumPuntsActuals >= c.NumPuntsMinim &&
+                    karma.NumPuntsActuals < c.NumPuntsMaxim);
+
+            karma.KarmaActual = configuracio.ColorKarma;
+
+            // Karma actual derivat de l’alumne
+            alumne.KarmaActualPunts = karma.NumPuntsActuals;
+            alumne.KarmaActualColor = configuracio.ColorKarma;
+
+            await _context.SaveChangesAsync();
+
+            // ===============================
+            // KARMA BASE DEL GRUP
+            // ===============================
+            if (alumne.IdGrup.HasValue)
+                await _grupService.RecalcularKarmaBaseAsync(alumne.IdGrup.Value);
+
+            return puntuacio;
         }
 
-        public async Task<ActionResult<Puntuacio>> TCREARAsync(PuntuacioCrearDTO puntuacioDto, String? usuariCreacio)
+        // ==================================================
+        // CONSULTES
+        // ==================================================
+        public async Task<Puntuacio?> InstanciaAsync(long idPuntuacio)
         {
-
-            //    var puntuacio = await CrearPuntuacioAsync(puntuacioDto, usuariCreacio);
-
-            //    if (puntuacio == null)
-            //    {
-            return new ObjectResult("No s'ha pogut crear la puntuació")
-            {
-                StatusCode = 500
-            };
-            //    }
-
-            //    var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(puntuacioDto.IdAlumneEnGrup);
-
-            //    if (alumneEnGrup != null)
-            //    {             
-            //        int idAlumneEnGrup = puntuacioDto.IdAlumneEnGrup;
-            //        // Specify the interface explicitly to resolve ambiguity
-            //        var resultado = null; // await _alumneEnGrupService.AfegirPuntuacioAsync(idAlumneEnGrup, puntuacioDto.Punts);
-
-            //        await _grupService.calculaKarmaBaseAsync(alumneEnGrup.IdAnyEscolar, alumneEnGrup.IdGrup);
-            //    }
-            //    await _context.SaveChangesAsync();
-
-            //    return puntuacio;
+            return await _context.Puntuacions
+                .Include(p => p.Alumne)
+                .Include(p => p.Professor)
+                .Include(p => p.Categoria)
+                .FirstOrDefaultAsync(p => p.IdPuntuacio == idPuntuacio);
         }
-    
 
-        public async Task<ActionResult<String>> TELIMINARAsync(int idPuntuacio)
+        public async Task<List<Puntuacio>> LlistaPerAlumneAsync(string nia, long? idAvaluacio = null)
         {
-            //try { 
-            //var puntuacio = await _context.Puntuacio.FindAsync(idPuntuacio);
+            var q = _context.Puntuacions.Where(p => p.NIA == nia);
 
-            //if (puntuacio == null)
-            //{
-            //    return new ObjectResult($"No existeix la puntuació amb id {idPuntuacio}")
-            //    {
-            //        StatusCode = 500
-            //    };
-            //}
+            if (idAvaluacio.HasValue)
+                q = q.Where(p => p.IdAvaluacio == idAvaluacio.Value);
 
-            ////var alumneEnGrup = await _context.AlumneEnGrup.FindAsync(puntuacio.IdAlumneEnGrup);
+            return await q.OrderByDescending(p => p.DataEvent).ToListAsync();
+        }
 
-            ////if (alumneEnGrup != null)
-            ////{
-            ////    int total = alumneEnGrup.PuntuacioTotal - puntuacio.Punts;
-            ////    int idAlumneEnGrup = puntuacio.IdAlumneEnGrup;
+        public async Task<List<Puntuacio>> LlistaPerClasseAsync(long idClasse, long? idAvaluacio = null)
+        {
+            var q = _context.Puntuacions.Where(p => p.IdClasse == idClasse);
 
-            //    //var resultado = await _alumneEnGrupService.ResetPuntuacioTotalAsync(idAlumneEnGrup, 0);
+            if (idAvaluacio.HasValue)
+                q = q.Where(p => p.IdAvaluacio == idAvaluacio.Value);
 
-            // //   await _grupService.calculaKarmaBaseAsync(alumneEnGrup.IdAnyEscolar, alumneEnGrup.IdGrup);
-            //}
+            return await q.OrderByDescending(p => p.DataEvent).ToListAsync();
+        }
 
-            //_context.Puntuacio.Remove(puntuacio);
+        public async Task<List<Puntuacio>> LlistaPerGrupAsync(long idGrup, long? idAvaluacio = null)
+        {
+            var q = _context.Puntuacions.Where(p => p.IdGrup == idGrup);
 
-            //await _context.SaveChangesAsync();
+            if (idAvaluacio.HasValue)
+                q = q.Where(p => p.IdAvaluacio == idAvaluacio.Value);
 
-            return new OkObjectResult($"La puntuació amb Id {idPuntuacio} ha estat esborrada");
-            //}
-            //catch (Exception ex)
-            //{
-            //    return new ObjectResult($"Error: {ex.Message}")
-            //    {
-            //        StatusCode = 500
-            //    };
-            //}
+            return await q.OrderByDescending(p => p.DataEvent).ToListAsync();
         }
     }
 
