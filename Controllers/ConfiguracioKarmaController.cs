@@ -98,7 +98,7 @@ namespace KarmaWebAPI.Controllers
             try
             {
                 await _service.ValidarConfiguracioCompletaAsync(idAnyEscolar);
-                return Ok(); // ✅ configuració correcta
+                return Ok(); // configuració correcta
             }
             catch (InvalidOperationException ex)
             {

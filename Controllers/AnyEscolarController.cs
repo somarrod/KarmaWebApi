@@ -134,54 +134,6 @@ namespace KarmaWebAPI.Controllers
         }
         #endregion Serveis
 
-        #region Transaccions
-        // POST: api/AnyEscolar/TCREAR
-        /* [HttpPost]
-         [Route("tcrear")]
-         [Authorize(Roles = "AG_Admin")]
-         public async Task<ActionResult<AnyEscolar>> TCREAR(AnyEscolarCrearDto anyEscolarDto)
-         {
-             using (var transaction = await _context.Database.BeginTransactionAsync())
-             {
-                 try
-                 {
-                     var result = await _anyEscolarService.TCREARAsync(anyEscolarDto);
-
-                     if (result.Result is not OkObjectResult)
-                     {
-                         await transaction.RollbackAsync();
-                         return result;
-                     }
-
-                     await transaction.CommitAsync();
-                     return result;
-                 }
-                 catch (Exception ex)
-                 {
-                     await transaction.RollbackAsync();
-                     return StatusCode(500, $"Internal server error: {ex.Message}");
-
-                 }
-             }
-         }*/
-
-
-
-        /*[HttpPut("actualitza-karma")]
-        [Authorize(Roles = "AG_Admin,AG_Professor")]
-        public async Task<IActionResult> ActualitzaKarma(int idAnyEscolar)
-        {
-            try
-            {
-                var result = await _anyEscolarService.ActualitzaKarmaAsync(idAnyEscolar);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }*/
-        #endregion Transaccions
 
         #region Auxiliars
 

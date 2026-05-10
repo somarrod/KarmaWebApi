@@ -50,7 +50,7 @@ namespace KarmaWebAPI.Controllers
         // -------------------------------------------------
         // GET: api/avaluacio/{idAvaluacio}
         // -------------------------------------------------
-        [HttpGet("{idAvaluacio}")]
+        [HttpGet("{idAvaluacio:long}")]
         [Authorize(Roles = "AG_Professor,AG_Alumne,AG_Admin")]
         public async Task<ActionResult<Avaluacio>> Instancia(int idAvaluacio)
         {
@@ -63,7 +63,7 @@ namespace KarmaWebAPI.Controllers
         }
 
         // -------------------------------------------------
-        // POST: api/avaluacio/crear   (TCREAR)
+        // POST: api/avaluacio/crear  
         // -------------------------------------------------
         [HttpPost("crear")]
         [Authorize(Roles = "AG_Professor,AG_Admin")]
@@ -81,7 +81,7 @@ namespace KarmaWebAPI.Controllers
         }
 
         // -------------------------------------------------
-        // PUT: api/avaluacio/editar   (TEDITAR)
+        // PUT: api/avaluacio/editar  
         // -------------------------------------------------
         [HttpPut("editar")]
         [Authorize(Roles = "AG_Professor,AG_Admin")]
@@ -103,7 +103,7 @@ namespace KarmaWebAPI.Controllers
         }
 
         // -------------------------------------------------
-        // POST: api/avaluacio/{id}/iniciar   (TINICIAR_AVALUACIO)
+        // POST: api/avaluacio/{id}/iniciar  
         // -------------------------------------------------
         [HttpPost("{idAvaluacio:long}/iniciar")]
         [Authorize(Roles = "AG_Professor,AG_Admin")]
@@ -118,9 +118,9 @@ namespace KarmaWebAPI.Controllers
         }
 
         // -------------------------------------------------
-        // POST: api/avaluacio/{id}/finalitzar   (TFINALITZAR_AVALUACIO)
+        // POST: api/avaluacio/{id}/finalitzar  
         // -------------------------------------------------
-        [HttpPost("{idAvaluacio}/finalitzar")]
+        [HttpPost("{idAvaluacio:long}/finalitzar")]
         [Authorize(Roles = "AG_Professor,AG_Admin")]
 
         [HttpPost("{idAvaluacio:long}/finalitzar")]

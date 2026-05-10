@@ -1,234 +1,122 @@
-﻿using KarmaWebAPI.Data;
+﻿using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
 
-public class PuntuacioService : IPuntuacioService
+namespace KarmaWebAPI.Controllers
 {
-    private readonly DatabaseContext _context;
-    private readonly IGrupService _grupService;
-
-    public PuntuacioService(
-        DatabaseContext context,
-        IGrupService grupService)
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize]
+    public class PuntuacioController : ControllerBase
     {
-        _context = context;
-        _grupService = grupService;
-    }
+        private readonly IPuntuacioService _puntuacioService;
 
-    // ==================================================
-    // ASSIGNAR PUNTS (S)
-    // ==================================================
-    public async Task<Puntuacio> AssignarPuntsAsync(
-        string nia,
-        long idAvaluacio,
-        long idCategoria,
-        double numPunts,
-        string motiu,
-        string? descripcioAdicional,
-        ClaimsPrincipal user)
-    {
-        return await CrearPuntuacioAsync(
-            nia,
-            idAvaluacio,
-            idCategoria,
-            "S",
-            numPunts,
-            motiu,
-            descripcioAdicional,
-            user);
-    }
-
-    // ==================================================
-    // REINICIAR PUNTS (I)
-    // ==================================================
-    public async Task<Puntuacio> ReiniciarPuntsAsync(
-        string nia,
-        long idAvaluacio,
-        long idCategoria,
-        double nouValor,
-        string motiu,
-        string? descripcioAdicional,
-        ClaimsPrincipal user)
-    {
-        return await CrearPuntuacioAsync(
-            nia,
-            idAvaluacio,
-            idCategoria,
-            "I",
-            nouValor,
-            motiu,
-            descripcioAdicional,
-            user);
-    }
-
-    // ==================================================
-    // IMPLEMENTACIÓ INTERNA COMUNA
-    // ==================================================
-    private async Task<Puntuacio> CrearPuntuacioAsync(
-        string nia,
-        long idAvaluacio,
-        long idCategoria,
-        string tipus,
-        double numPunts,
-        string motiu,
-        string? descripcioAdicional,
-        ClaimsPrincipal user)
-    {
-        var ara = DateTime.Now;
-        var hui = DateOnly.FromDateTime(ara);
-
-        // ===============================
-        // Professor (usuari autenticat)
-        // ===============================
-        var idProfessor = user.Identity?.Name
-            ?? throw new InvalidOperationException("Usuari no autenticat");
-
-        var professorExisteix = await _context.Professors
-            .AnyAsync(p => p.IdProfessor == idProfessor);
-
-        if (!professorExisteix)
-            throw new InvalidOperationException("El professor no existeix");
-
-        // ===============================
-        // Alumne + context snapshot
-        // ===============================
-        var alumne = await _context.Alumnes
-            .Include(a => a.Classe)
-            .Include(a => a.Grup)
-            .FirstOrDefaultAsync(a => a.NIA == nia)
-            ?? throw new InvalidOperationException("Alumne no trobat");
-
-        if (!alumne.IdClasse.HasValue)
-            throw new InvalidOperationException("L’alumne no té classe");
-
-        // ===============================
-        // Avaluació (validació forta)
-        // ===============================
-        var avaluacio = await _context.Avaluacions
-            .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio)
-            ?? throw new InvalidOperationException("Avaluació no trobada");
-
-        if (avaluacio.IdAnyEscolar != alumne.Classe.IdAnyEscolar)
-            throw new InvalidOperationException("Avaluació fora del curs de l’alumne");
-
-        if (hui < avaluacio.DataInicial || hui > avaluacio.DataFinal)
-            throw new InvalidOperationException("La data no cau dins de l’avaluació");
-
-        // ===============================
-        // Categoria
-        // ===============================
-        var categoriaExisteix = await _context.Categories
-            .AnyAsync(c => c.IdCategoria == idCategoria);
-
-        if (!categoriaExisteix)
-            throw new InvalidOperationException("Categoria no existent");
-
-        // ===============================
-        // Crear puntuació
-        // ===============================
-        var puntuacio = new Puntuacio
+        public PuntuacioController(IPuntuacioService puntuacioService)
         {
-            NIA = nia,
-            IdProfessor = idProfessor,
-            IdCategoria = idCategoria,
+            _puntuacioService = puntuacioService;
+        }
 
-            IdClasse = alumne.IdClasse.Value,
-            NomClasse = alumne.Classe.Nom,
+        // ==================================================
+        // ASSIGNAR PUNTS (S)
+        // ==================================================
+        [HttpPost("assignar")]
+        public async Task<IActionResult> AssignarPunts(
+            [FromBody] PuntuacioCrearDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            IdGrup = alumne.IdGrup,
-            NomGrup = alumne.Grup?.Nom,
+            Puntuacio p = await _puntuacioService.AssignarPuntsAsync(
+                dto.NIA,
+                dto.IdAvaluacio,
+                dto.IdCategoria,
+                dto.NumPunts,
+                dto.Motiu,
+                dto.DescripcioAdicional,
+                User);
 
-            NumPunts = numPunts,
-            Tipus = tipus,
-            Motiu = motiu,
-            DescripcioAdicional = descripcioAdicional,
+            return Ok(p);
+        }
 
-            DataEvent = hui,
-            DataCreacio = ara,
+        // ==================================================
+        // REINICIAR PUNTS (I)
+        // ==================================================
+        [HttpPost("reiniciar")]
+        public async Task<IActionResult> ReiniciarPunts(
+            [FromBody] PuntuacioCrearDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            IdAvaluacio = idAvaluacio
-        };
+            Puntuacio p = await _puntuacioService.ReiniciarPuntsAsync(
+                dto.NIA,
+                dto.IdAvaluacio,
+                dto.IdCategoria,
+                dto.NumPunts,
+                dto.Motiu,
+                dto.DescripcioAdicional,
+                User);
 
-        _context.Puntuacions.Add(puntuacio);
-        await _context.SaveChangesAsync();
+            return Ok(p);
+        }
 
-        // ===============================
-        // KARMA ALUMNE
-        // ===============================
-        KarmaAlumne karma = await _context.KarmaAlumnes
-            .FirstAsync(k => k.NIA == nia && k.IdAvaluacio == idAvaluacio);
+        // ==================================================
+        // OBTINDRE UNA PUNTUACIÓ (INSTÀNCIA)
+        // ==================================================
+        [HttpGet("{idPuntuacio:long}")]
+        public async Task<IActionResult> Instancia(long idPuntuacio)
+        {
+            Puntuacio? p = await _puntuacioService.InstanciaAsync(idPuntuacio);
 
-        if (tipus == "S")
-            karma.NumPuntsActuals += numPunts;
-        else if (tipus == "I")
-            karma.NumPuntsActuals = numPunts;
-        else
-            throw new InvalidOperationException("Tipus de puntuació no vàlid");
+            if (p == null)
+                return NotFound();
 
-        var configuracio = await _context.ConfiguracionsKarma
-            .FirstAsync(c =>
-                c.IdAnyEscolar == avaluacio.IdAnyEscolar &&
-                karma.NumPuntsActuals >= c.NumPuntsMinim &&
-                karma.NumPuntsActuals < c.NumPuntsMaxim);
+            return Ok(p);
+        }
 
-        karma.KarmaActual = configuracio.ColorKarma;
+        // ==================================================
+        // LLISTA PER ALUMNE
+        // ==================================================
+        [HttpGet("alumne/{nia}")]
+        public async Task<IActionResult> LlistaPerAlumne(
+            string nia,
+            [FromQuery] long? idAvaluacio)
+        {
+            var llista = await _puntuacioService
+                .LlistaPerAlumneAsync(nia, idAvaluacio);
 
-        // Karma actual derivat de l’alumne
-        alumne.KarmaActualPunts = karma.NumPuntsActuals;
-        alumne.KarmaActualColor = configuracio.ColorKarma;
+            return Ok(llista);
+        }
 
-        await _context.SaveChangesAsync();
+        // ==================================================
+        // LLISTA PER CLASSE
+        // ==================================================
+        [HttpGet("classe/{idClasse:long}")]
+        public async Task<IActionResult> LlistaPerClasse(
+            long idClasse,
+            [FromQuery] long? idAvaluacio)
+        {
+            var llista = await _puntuacioService
+                .LlistaPerClasseAsync(idClasse, idAvaluacio);
 
-        // ===============================
-        // KARMA BASE DEL GRUP
-        // ===============================
-        if (alumne.IdGrup.HasValue)
-            await _grupService.RecalcularKarmaBaseAsync(alumne.IdGrup.Value);
+            return Ok(llista);
+        }
 
-        return puntuacio;
-    }
+        // ==================================================
+        // LLISTA PER GRUP
+        // ==================================================
+        [HttpGet("grup/{idGrup:long}")]
+        public async Task<IActionResult> LlistaPerGrup(
+            long idGrup,
+            [FromQuery] long? idAvaluacio)
+        {
+            var llista = await _puntuacioService
+                .LlistaPerGrupAsync(idGrup, idAvaluacio);
 
-    // ==================================================
-    // CONSULTES
-    // ==================================================
-    public async Task<Puntuacio?> InstanciaAsync(long idPuntuacio)
-    {
-        return await _context.Puntuacions
-            .Include(p => p.Alumne)
-            .Include(p => p.Professor)
-            .Include(p => p.Categoria)
-            .FirstOrDefaultAsync(p => p.IdPuntuacio == idPuntuacio);
-    }
-
-    public async Task<List<Puntuacio>> LlistaPerAlumneAsync(string nia, long? idAvaluacio = null)
-    {
-        var q = _context.Puntuacions.Where(p => p.NIA == nia);
-
-        if (idAvaluacio.HasValue)
-            q = q.Where(p => p.IdAvaluacio == idAvaluacio.Value);
-
-        return await q.OrderByDescending(p => p.DataEvent).ToListAsync();
-    }
-
-    public async Task<List<Puntuacio>> LlistaPerClasseAsync(long idClasse, long? idAvaluacio = null)
-    {
-        var q = _context.Puntuacions.Where(p => p.IdClasse == idClasse);
-
-        if (idAvaluacio.HasValue)
-            q = q.Where(p => p.IdAvaluacio == idAvaluacio.Value);
-
-        return await q.OrderByDescending(p => p.DataEvent).ToListAsync();
-    }
-
-    public async Task<List<Puntuacio>> LlistaPerGrupAsync(long idGrup, long? idAvaluacio = null)
-    {
-        var q = _context.Puntuacions.Where(p => p.IdGrup == idGrup);
-
-        if (idAvaluacio.HasValue)
-            q = q.Where(p => p.IdAvaluacio == idAvaluacio.Value);
-
-        return await q.OrderByDescending(p => p.DataEvent).ToListAsync();
+            return Ok(llista);
+        }
     }
 }

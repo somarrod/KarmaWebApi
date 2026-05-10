@@ -58,6 +58,7 @@ namespace KarmaWebAPI.Controllers
         {
             // Aquest mètode usarà directament el context o un mètode del servei
             // si vols, després el podem encapsular també
+            //PENDENT SOFIA
 
             return Ok(); // placeholder si encara no l’exposes
         }

@@ -7,23 +7,23 @@ namespace KarmaWebAPI.DTOs
 
     public class PuntuacioCrearDTO
     {
-        [ForeignKey("AlumneEnGrup")]
-        public int IdAlumneEnGrup { get; set; } //identificar únic
+        [ForeignKey("Alumne")]
+        public string NIA { get; set; } //identificar únic
 
         [ForeignKey("Avaluacio")]
         [Required]
         public int IdAvaluacio { get; set; }
 
         [ForeignKey("Categoria")]
-        public int? IdCategoria { get; set; } //identificar únic
+        public long IdCategoria { get; set; } //identificar únic
 
-        [Required]
-        [Range(-3, 3, ErrorMessage = "El valor ha de ser mínim -3 i màxim 3.")]
-        public int Punts { get; set; } = 0; //Activa, per defecte true
+        public int NumPunts { get; set; } = 0; //Activa, per defecte true
 
         [StringLength(255)]
         public String Motiu { get; set; }
 
+        [StringLength(255)]
+        public String DescripcioAdicional { get; set; }
     }
 
 }
