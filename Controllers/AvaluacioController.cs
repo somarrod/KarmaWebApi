@@ -122,9 +122,6 @@ namespace KarmaWebAPI.Controllers
         // -------------------------------------------------
         [HttpPost("{idAvaluacio:long}/finalitzar")]
         [Authorize(Roles = "AG_Professor,AG_Admin")]
-
-        [HttpPost("{idAvaluacio:long}/finalitzar")]
-        [Authorize(Roles = "AG_Professor,AG_Admin")]
         public async Task<ActionResult<Avaluacio>> Finalitzar(int idAvaluacio)
         {
             var avaluacio = await _avaluacioService.TFinalitzarAsync(idAvaluacio);

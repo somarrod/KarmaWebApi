@@ -21,8 +21,8 @@ namespace KarmaWebAPI.Controllers
         // GET instància
         // =========================
         [HttpGet("{idMateria:long}")]
-        [Authorize(Roles = "AG_Admin,AG_Professor")]
-        public async Task<IActionResult> Instancia(int idMateria)
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
+        public async Task<IActionResult> Instancia(long idMateria)
         {
             var materia = await _service.InstanciaAsync(idMateria, User);
             if (materia == null)
@@ -35,7 +35,7 @@ namespace KarmaWebAPI.Controllers
         // GET llista
         // =========================
         [HttpGet("llista")]
-        [Authorize(Roles = "AG_Admin,AG_Professor")]
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
         public async Task<IActionResult> Llista()
         {
             var llista = await _service.LlistaAsync(User);
@@ -67,17 +67,17 @@ namespace KarmaWebAPI.Controllers
         // =========================
         // PUT activar / desactivar
         // =========================
-        [HttpPut("activar")]
-        [Authorize(Roles = "AG_Admin,AG_Professor")]
-        public async Task<IActionResult> Activar(int idMateria)
+        [HttpPut("activar/{idMateria:long}")]
+        [Authorize(Roles = "AG_Admin")]
+        public async Task<IActionResult> Activar(long idMateria)
         {
             var materia = await _service.ActivarAsync(idMateria);
             return Ok(materia);
         }
 
-        [HttpPut("desactivar")]
-        [Authorize(Roles = "AG_Admin,AG_Professor")]
-        public async Task<IActionResult> Desactivar(int idMateria)
+        [HttpPut("desactivar/{idMateria:long}")]
+        [Authorize(Roles = "AG_Admin")]
+        public async Task<IActionResult> Desactivar(long idMateria)
         {
             var materia = await _service.DesactivarAsync(idMateria);
             return Ok(materia);

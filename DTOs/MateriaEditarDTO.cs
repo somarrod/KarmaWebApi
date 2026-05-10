@@ -13,8 +13,6 @@ namespace KarmaWebAPI.DTOs
         [Required]
         public string Nom { get; set; } //nom de la materia
 
-        [Required]
-        public bool Activa { get; set; }
     }
 
 }

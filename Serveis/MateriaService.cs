@@ -39,7 +39,8 @@ namespace KarmaWebAPI.Serveis
         {
             if (user.IsInRole("AG_Admin"))
             {
-                return await _context.Materies.ToListAsync();
+                return await _context.Materies
+                    .OrderBy(m => m.Nom).ToListAsync();
             }
 
             // Professor → només actives
@@ -87,7 +88,6 @@ namespace KarmaWebAPI.Serveis
                 ?? throw new InvalidOperationException("Matèria no trobada");
 
             materia.Nom = dto.Nom;
-            materia.Activa = dto.Activa;
 
             await _context.SaveChangesAsync();
             return materia;

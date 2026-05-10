@@ -52,15 +52,17 @@ namespace KarmaWebAPI.Configurations
                                   .AddScoped<IAlumneService, AlumneService>()
                                   .AddScoped<IAnyEscolarService, AnyEscolarService>()
                                   .AddScoped<IAvaluacioService, AvaluacioService>()
+                                  .AddScoped<ICategoriaService, CategoriaService>()
                                   .AddScoped<IConfiguracioKarmaService, ConfiguracioKarmaService>()
                                   .AddScoped<IGrupService, GrupService>()
                                   .AddScoped<IKarmaAlumneService, KarmaAlumneService>()
+                                  .AddScoped<IMateriaService, MateriaService>()
+                                  .AddScoped<IPrivilegiAssignatService, PrivilegiAssignatService>()
                                   .AddScoped<IPrivilegiService, PrivilegiService>()
                                   .AddScoped<IProfessorDeClasseService, ProfessorDeClasseService>()                             
                                   .AddScoped<IProfessorService, ProfessorService>()
-                                  .AddScoped<IPuntuacioService, PuntuacioService>();
-            ;
-            // Otros servicios
+                                  .AddScoped<IPuntuacioService, PuntuacioService>()
+                                  .AddScoped<ITipusCategoriaService, TipusCategoriaService>();         
         }
 
     }
