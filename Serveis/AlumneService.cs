@@ -35,26 +35,40 @@ namespace KarmaWebAPI.Serveis
         // ==================================================
         public async Task<Alumne> CrearAsync(AlumneDTO dto)
         {
-            using var tx = await _context.Database.BeginTransactionAsync();
+
+            
+
+                using var tx = await _context.Database.BeginTransactionAsync();
 
             var alumne = new Alumne
             {
                 NIA = dto.NIA,
                 Nom = dto.Nom,
                 Cognoms = dto.Cognoms,
-                Email = dto.Email,
                 Actiu = true,
                 IdClasse = dto.IdClasse,
                 IdGrup = dto.IdGrup
             };
 
-            _context.Alumnes.Add(alumne);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                _context.Alumnes.Add(alumne);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                await tx.RollbackAsync();
+                throw new InvalidOperationException(
+                    "Ja existeix un alumne amb aquest NIA o les dades no són vàlides."
+                );
+            }
+
 
             // Crear usuari AG_Alumne
             var password = FuncionsAuxiliars.ConstruirPasswordAlumne(dto);
             var identityResult = await _accountService.CreateUserAsync(
-                dto.NIA, dto.Email, "AG_Alumne", password);
+                dto.NIA, null, "AG_Alumne", password);
 
             if (!identityResult.Succeeded)
             {
@@ -91,19 +105,11 @@ namespace KarmaWebAPI.Serveis
             if (alumne == null)
                 throw new InvalidOperationException("Alumne no trobat");
 
-            // Comprovar email duplicat
-            var emailDuplicat = await _context.Alumnes.AnyAsync(a =>
-                a.Email == dto.Email && a.NIA != dto.NIA);
-
-            if (emailDuplicat)
-                throw new InvalidOperationException("L'email ja està en ús per un altre alumne");
-
             alumne.Nom = dto.Nom;
             alumne.Cognoms = dto.Cognoms;
-            alumne.Email = dto.Email;
 
             await _context.SaveChangesAsync();
-            return alumne; // ✅ objecte modificat
+            return alumne; // objecte modificat
         }
 
 

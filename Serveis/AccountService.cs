@@ -19,19 +19,21 @@ public class AccountService
 
     public async Task<IdentityResult> CreateUserAsync(string id, string email, string role, string password)
     {
-        // Verificar si el email ya existe en la base de datos
-        var existingUser = await _context.Users
-                                .Where(u => u.Email == email)
-                                .FirstOrDefaultAsync();
+        if (email != null) { 
+            // Verificar si el email ya existe en la base de datos
+            var existingUser = await _context.Users
+                                    .Where(u => u.Email == email)
+                                    .FirstOrDefaultAsync();
 
-        if (existingUser != null)
-        {
-            // El email ya está registrado
-            return IdentityResult.Failed(new IdentityError
+            if (existingUser != null)
             {
-                Code = "DuplicateEmail",
-                Description = "L'email utilitzat ja està prèviament registrat."
-            });
+                // El email ya está registrado
+                return IdentityResult.Failed(new IdentityError
+                {
+                    Code = "DuplicateEmail",
+                    Description = "L'email utilitzat ja està prèviament registrat."
+                });
+            }
         }
 
         // Crear el nuevo usuario
@@ -39,27 +41,38 @@ public class AccountService
         {
             UserName = id,
             Email = email,
-            Login = email
+            Login = email!=null?email:id
         };
 
         var userCreated = await _userManager.CreateAsync(user, password);
 
         if (userCreated.Succeeded)
         {
-            // Asignar el rol al usuario
-            var userMng = await _userManager.FindByEmailAsync(email);
-            var roleResult = await _userManager.AddToRoleAsync(userMng,role);
+            ApiUser? userMng;
+
+            if (!string.IsNullOrEmpty(email))
+            {
+                userMng = await _userManager.FindByEmailAsync(email);
+            }
+            else
+            {
+                userMng = await _userManager.FindByNameAsync(id);
+            }
+
+            if (userMng == null)
+                throw new Exception("Usuari creat però no trobat per a assignar rol.");
+
+            var roleResult = await _userManager.AddToRoleAsync(userMng, role);
             if (!roleResult.Succeeded)
             {
-                // Reemplazar BadRequest con una excepción personalizada o un manejo adecuado
-                throw new System.Exception(string.Join("; ", roleResult.Errors.Select(e => e.Description)));
+                throw new Exception(string.Join("; ",
+                    roleResult.Errors.Select(e => e.Description)));
             }
-            // await _signInManager.SignInAsync(user, isPersistent: false);
         }
         else
         {
-            // Reemplazar BadRequest con una excepción personalizada o un manejo adecuado
-            throw new System.Exception(string.Join("; ", userCreated.Errors.Select(e => e.Description)));
+            throw new Exception(string.Join("; ",
+                userCreated.Errors.Select(e => e.Description)));
         }
         return userCreated;
     }

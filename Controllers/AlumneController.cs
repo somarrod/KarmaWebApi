@@ -46,8 +46,20 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin,AG_Professor")]
         public async Task<IActionResult> Crear([FromBody] AlumneDTO dto)
         {
-            var alumne = await _alumneService.CrearAsync(dto);
-            return Ok(alumne);
+           try
+            {
+                var alumne = await _alumneService.CrearAsync(dto);
+                return Ok(alumne);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500,
+                    new { error = "S'ha produït un error intern en crear l'alumne." });
+            }
         }
 
         // ==================================================

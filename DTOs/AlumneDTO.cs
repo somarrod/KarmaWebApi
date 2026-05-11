@@ -17,9 +17,6 @@ namespace KarmaWebAPI.DTOs
         [Required]
         public string Cognoms { get; set; } //cognoms de l'alumne 
 
-        [Required] 
-        public string Email { get; set; } //correu electrònic 
-
         public long? IdClasse { get; set; } //classe --> opcional
 
         public long? IdGrup { get; set; } //opcional i ha de coincidir en la classe
