@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
-using Microsoft.EntityFrameworkCore;
-using KarmaWebAPI.Data;
-using KarmaWebAPI.DTOs;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
 using KarmaWebAPI.Serveis.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -13,301 +11,110 @@ namespace KarmaWebAPI.Controllers
     [ApiController]
     public class ProfessorController : ControllerBase
     {
-        private readonly DatabaseContext _context;
-        private readonly IProfessorService _professorService;   
+        private readonly IProfessorService _service;
         private readonly AccountService _accountService;
         private readonly UserManager<ApiUser> _userManager;
 
-        public ProfessorController(DatabaseContext context, IProfessorService professorService , UserManager<ApiUser> userManager, AccountService accountService)
+        public ProfessorController(
+            IProfessorService service,
+            AccountService accountService,
+            UserManager<ApiUser> userManager)
         {
-            _context = context;
-            _professorService = professorService;
+            _service = service;
             _accountService = accountService;
             _userManager = userManager;
         }
 
-        // GET: api/Professor/5
-        [HttpGet("{idProfessor}")]
-        public async Task<ActionResult<Professor>> Instancia(string idProfessor)
-        {
-            var professor = await _context.Professors.FindAsync(idProfessor);
-
-            if (professor == null)
-            {
-                return NotFound();
-            }
-
-            return professor;
-        }
-
-        // GET: api/Professor
         [HttpGet("llista")]
         public async Task<ActionResult<IEnumerable<Professor>>> Llista()
         {
-            return await _context.Professors.ToListAsync();
+            return Ok(await _service.LlistarProfessorsAsync());
         }
 
+        [HttpGet("{idProfessor}")]
+        public async Task<ActionResult<Professor>> Obtenir(string idProfessor)
+        {
+            var professor = await _service.ObtenirProfessorPerIdAsync(idProfessor);
+            return professor == null ? NotFound() : Ok(professor);
+        }
 
-        // POST: api/Professor/crear
         [Authorize(Roles = "AG_Admin")]
         [HttpPost("crear")]
-        public async Task<ActionResult<Professor>> Crear(ProfessorDTO professorDto)
+        public async Task<IActionResult> Crear([FromBody] ProfessorDTO dto)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
+            try
             {
-                try
-                {
-                    var result = await _professorService.CrearProfessorAsync(professorDto);
+                var password = FuncionsAuxiliars.ConstruirPasswordProfessor(dto);
 
-                    // Fix: Ensure the result is cast or converted to the correct type
-                    if (result.Result is OkObjectResult okResult && okResult.Value is Professor professor)
-                    {
+                var result = await _accountService.CreateUserAsync(
+                    dto.IdProfessor,
+                    dto.Email,
+                    "AG_Professor",
+                    password);
 
-                        var password = FuncionsAuxiliars.ConstruirPasswordProfessor(professorDto);
+                if (!result.Succeeded)
+                    return BadRequest(result.Errors.First().Description);
 
-                        // Utilizar el nuevo método CreateUserAsync
-                        var userCreated = await _accountService.CreateUserAsync(professorDto.IdProfessor, professorDto.Email, "AG_Professor", password);
-
-                        if (!userCreated.Succeeded)
-                        {
-                            await transaction.RollbackAsync();
-                            return BadRequest(userCreated.Errors.First().Description);
-                        }
-                        else { 
-                            await transaction.CommitAsync();
-                            return Ok(professor);
-                    }
-                }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                        return BadRequest("No ha estat possible crear el Professor.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-
-                    return StatusCode(500, ex.InnerException!=null ? ex.InnerException.Message : ex.Message);
-                }
+                var professor = await _service.CrearProfessorAsync(dto);
+                return Ok(professor);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
             }
         }
 
-
-        // PUT: api/Professor/editar
+        [Authorize(Roles = "AG_Admin,AG_EquipDirectiu,AG_Professor")]
         [HttpPut("editar")]
-        [Authorize(Roles = "AG_Admin, AG_Professor")]
-        public async Task<IActionResult> Editar(ProfessorDTO professorDto)
+        public async Task<IActionResult> Editar([FromBody] ProfessorDTO dto)
         {
-            var professor = await _context.Professors.FindAsync(professorDto.IdProfessor);
-            if (professor == null)
+            try
             {
-                return NotFound();
+                var userId = User.Identity!.Name!;
+                bool esAdminOEquip = User.IsInRole("AG_Admin") || User.IsInRole("AG_EquipDirectiu");
+
+                var professor = await _service.EditarProfessorAsync(dto, userId, esAdminOEquip);
+                return Ok(professor);
             }
-
-            // Comprovar si l'email ja existeix en altres professors
-            var emailExists = await _context.Professors.AnyAsync(p => p.Email == professorDto.Email && p.IdProfessor != professorDto.IdProfessor);
-            if (emailExists)
+            catch (UnauthorizedAccessException)
             {
-                return BadRequest("L'email ja està en ús per un altre professor.");
+                return Forbid();
             }
-
-            // Iniciar la transacció
-            using (var transaction = await _context.Database.BeginTransactionAsync())
+            catch (Exception ex)
             {
-                try
-                {
-                    // Actualitzar les dades del professor
-                    professor.Nom = professorDto.Nom;
-                    professor.Cognoms = professorDto.Cognoms;
-                    professor.Email = professorDto.Email;
-
-                    _context.Professors.Update(professor);
-                    await _context.SaveChangesAsync();
-
-                    // Actualitzar l'email en AspNetUsers
-                    var user = await _userManager.FindByNameAsync(professorDto.IdProfessor.ToString());
-                    if (user != null)
-                    {
-                        user.Email = professorDto.Email;
-
-                        var result = await _userManager.UpdateAsync(user);
-                        if (!result.Succeeded)
-                        {
-                            throw new Exception("Error actualitzant l'email en AspNetUsers.");
-                        }
-                        await _context.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        throw new Exception("Error actualitzant l'email en AspNetUsers.");
-                    }
-
-                    // Confirmar la transacció
-                    await transaction.CommitAsync();
-
-                    return Ok(professor);
-                }
-                catch (Exception ex)
-                {
-                    // Tirar enrere la transacció en cas d'error
-                    await transaction.RollbackAsync();
-                    return StatusCode(500, $"Error actualitzant el professor: {ex.Message}");
-                }
+                return StatusCode(500, ex.Message);
             }
         }
 
-
-        // PUT: api/Alumne/editar
-        [HttpPut("activar")]
-        public async Task<IActionResult> ActivarProfessor(String idProfessor)
+        [Authorize(Roles = "AG_Admin")]
+        [HttpPut("activar/{idProfessor}")]
+        public async Task<IActionResult> Activar(string idProfessor)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    var professor = await _context.Professors.FindAsync(idProfessor);
-                    if (professor == null)
-                    {
-                        return NotFound();
-                    }
-                    var activationResult = await _professorService.ActivarProfessorAsync(idProfessor);
-
-                    // Fix: Ensure the variable name does not conflict with the outer scope
-                    if (activationResult.Result is OkResult okResult)
-                    {
-                        // Utilizar el nuevo método CreateUserAsync
-                        var reactivationResult = await _accountService.ReactivateUserAsync(professor.Email);
-
-                        if (!(reactivationResult.Succeeded))
-                        {
-                            await transaction.RollbackAsync();
-                            return BadRequest(reactivationResult.Errors.First().Description);
-                        }
-                        else
-                        {
-                            await transaction.CommitAsync();
-                            return Ok(professor);
-                        }
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                        return BadRequest("No ha estat possible activar el professor.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-
-                    return StatusCode(500, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
-                }
-            }
+            var professor = await _service.ActivarProfessorAsync(idProfessor);
+            await _accountService.ReactivateUserAsync(professor.Email);
+            return Ok(professor);
         }
 
-        // PUT: api/Alumne/editar
-        [HttpPut("desactivar")]
-        public async Task<IActionResult> DesactivarProfessor(String idProfessor)
+        [Authorize(Roles = "AG_Admin")]
+        [HttpPut("desactivar/{idProfessor}")]
+        public async Task<IActionResult> Desactivar(string idProfessor)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    var professor = await _context.Professors.FindAsync(idProfessor);
-                    if (professor == null)
-                    {
-                        return NotFound();
-                    }
-                    var activationResult = await _professorService.DesactivarProfessorAsync(idProfessor);
-
-                    // Fix: Ensure the variable name does not conflict with the outer scope
-                    if (activationResult.Result is OkResult okResult)
-                    {
-                        // Utilizar el nuevo método CreateUserAsync
-                        var reactivationResult = await _accountService.InactivateUserAsync(professor.Email);
-
-                        if (!(reactivationResult.Succeeded))
-                        {
-                            await transaction.RollbackAsync();
-                            return BadRequest(reactivationResult.Errors.First().Description);
-                        }
-                        else
-                        {
-                            await transaction.CommitAsync();
-                            return Ok(professor);
-                        }
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                        return BadRequest("No ha estat possible desactivar l'alumne.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-
-                    return StatusCode(500, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
-                }
-            }
+            var professor = await _service.DesactivarProfessorAsync(idProfessor);
+            await _accountService.InactivateUserAsync(professor.Email);
+            return Ok(professor);
         }
 
-
-        [HttpDelete("eliminar")]
-        [Authorize(Roles = "AG_Admin, AG_Professor")]
-        public async Task<IActionResult> EliminarProfessor(String idProfessor)
+        [Authorize(Roles = "AG_Admin")]
+        [HttpDelete("eliminar/{idProfessor}")]
+        public async Task<IActionResult> Eliminar(string idProfessor)
         {
-            var professor = await _context.Professors.FindAsync(idProfessor);
-            if (professor == null)
-            {
-                return NotFound();
-            }
+            await _service.EliminarProfessorAsync(idProfessor);
 
-            // Comprovar si el professor està en una relació en ProfessorEnGrup
-            var professorEnGrupExists = await _context.ProfessorsDeClasse.AnyAsync(peg => peg.IdProfessor == idProfessor);
-            if (professorEnGrupExists)
-            {
-                return BadRequest("No es pot esborrar el professor perquè està en una relació en ProfessorEnGrup. S'ha de desactivar.");
-            }
+            var user = await _userManager.FindByNameAsync(idProfessor);
+            if (user != null)
+                await _userManager.DeleteAsync(user);
 
-            // Iniciar la transacció
-            using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    // Eliminar el professor
-                    _context.Professors.Remove(professor);
-                    await _context.SaveChangesAsync();
-
-                    // Eliminar l'usuari en AspNetUsers
-                    var user = await _userManager.FindByNameAsync(idProfessor.ToString());
-                    if (user != null)
-                    {
-                        var result = await _userManager.DeleteAsync(user);
-                        if (!result.Succeeded)
-                        {
-                            throw new Exception("Error eliminant l'usuari en AspNetUsers.");
-                        }
-                        await _context.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        throw new Exception("Error eliminant l'usuari en AspNetUsers.");
-                    }
-
-                    // Confirmar la transacció
-                    await transaction.CommitAsync();
-
-                    return Ok("Professor eliminat correctament.");
-                }
-                catch (Exception ex)
-                {
-                    // Tirar enrere la transacció en cas d'error
-                    await transaction.RollbackAsync();
-                    return StatusCode(500, $"Error eliminant el professor: {ex.Message}");
-                }
-            }
+            return Ok();
         }
-
     }
 }

@@ -9,7 +9,9 @@ namespace KarmaWebAPI.DTOs
     {
         [Required]
         [StringLength(50)]
-        public String IdProfessor { get; set; }
+        //identificador que assigna gva
+        public string IdProfessor { get; set; }
+      
 
         [Required]
         [StringLength(200)]
@@ -23,6 +25,10 @@ namespace KarmaWebAPI.DTOs
         [StringLength(255)]
         public string Email { get; set; } //correu electrònic 
 
+
+        [Required]
+        [StringLength(255)]
+        public bool PertanyAEquipDirectiu { get; set; } = false; //correu electrònic 
     }
 
 }
