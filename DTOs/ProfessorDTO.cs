@@ -27,7 +27,6 @@ namespace KarmaWebAPI.DTOs
 
 
         [Required]
-        [StringLength(255)]
         public bool PertanyAEquipDirectiu { get; set; } = false; //correu electrònic 
     }
 

@@ -10,9 +10,15 @@ namespace KarmaWebAPI.Serveis.Interfaces
 
         // Llistar tots els professors ordenats per cognoms
         Task<List<Professor>> LlistarProfessorsAsync();
+        
+        // Llistar tots els professors ACTIUS ordenats per cognoms
+        Task<List<Professor>> LlistarProfessorsActiusAsync();
+        
 
         // Buscar professor per identificador
         Task<Professor?> ObtenirProfessorPerIdAsync(string idProfessor);
+
+
 
         // Crear professor (i assignar rols si pertoca)
         Task<Professor> CrearProfessorAsync(ProfessorDTO professorDto);

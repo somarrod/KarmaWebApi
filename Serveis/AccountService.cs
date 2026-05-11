@@ -99,4 +99,30 @@ public class AccountService
         var result = await _userManager.UpdateAsync(user);
         return result;
     }
+
+
+    public async Task BloquejarUsuariAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId)
+            ?? throw new InvalidOperationException("Usuari no trobat");
+
+        await _userManager.SetLockoutEndDateAsync(
+            user,
+            DateTimeOffset.MaxValue
+        );
+    }
+
+
+    public async Task DesbloquejarUsuariAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId)
+            ?? throw new InvalidOperationException("Usuari no trobat");
+
+        await _userManager.SetLockoutEndDateAsync(
+            user,
+            null
+        );
+    }
+
+
 }

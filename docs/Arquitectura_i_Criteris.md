@@ -47,11 +47,10 @@ Aquesta separació permet reutilització, testabilitat i una evolució més segu
 
 ## 3. Models i fidelitat al domini
 
-Els models reflecteixen estrictament el domini definit a l’XMI.  
-No s’afegeixen camps “per comoditat” ni s’eliminen camps “per simplificar”.
+Els models reflecteixen estrictament el model orientat a objectes de Karma.
 
 Principis seguits:
-- Tot camp de l’XMI existeix en el model
+- Tot atribut del model orientat a objectes existeix en el model
 - Relacions obligatòries es representen explícitament
 - Les dades històriques es conserven mitjançant snapshots
 
@@ -186,7 +185,13 @@ Una migració inicial amb mètodes `Up()` i `Down()` buits indica un problema de
 
 ---
 
-## 11. Principi general
+## 12. Postman
+
+El projecte disponsa d'una col·lecció Postman amb exemples reals de les dades a utilitzar.
+
+---
+
+## 13. Principi general
 
 El principi fonamental del projecte és:
 

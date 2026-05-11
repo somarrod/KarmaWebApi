@@ -24,12 +24,24 @@ namespace KarmaWebAPI.Controllers
             _accountService = accountService;
             _userManager = userManager;
         }
+        //--------------------------------------------------
+        // CONSULTES 
+        //--------------------------------------------------
 
         [HttpGet("llista")]
         public async Task<ActionResult<IEnumerable<Professor>>> Llista()
         {
             return Ok(await _service.LlistarProfessorsAsync());
         }
+
+
+        [HttpGet("llista/actius")]
+        public async Task<ActionResult<IEnumerable<Professor>>> LlistaActius()
+        {
+            var professors = await _service.LlistarProfessorsActiusAsync();
+            return Ok(professors);
+        }
+
 
         [HttpGet("{idProfessor}")]
         public async Task<ActionResult<Professor>> Obtenir(string idProfessor)
@@ -38,10 +50,15 @@ namespace KarmaWebAPI.Controllers
             return professor == null ? NotFound() : Ok(professor);
         }
 
+        //--------------------------------------------------
+        // SERVEIS 
+        //--------------------------------------------------
         [Authorize(Roles = "AG_Admin")]
         [HttpPost("crear")]
         public async Task<IActionResult> Crear([FromBody] ProfessorDTO dto)
         {
+            ApiUser? user = null;
+
             try
             {
                 var password = FuncionsAuxiliars.ConstruirPasswordProfessor(dto);
@@ -55,11 +72,16 @@ namespace KarmaWebAPI.Controllers
                 if (!result.Succeeded)
                     return BadRequest(result.Errors.First().Description);
 
+                user = await _userManager.FindByNameAsync(dto.IdProfessor);
+
                 var professor = await _service.CrearProfessorAsync(dto);
                 return Ok(professor);
             }
             catch (Exception ex)
             {
+                if (user != null)
+                    await _userManager.DeleteAsync(user); // rollback manual
+
                 return StatusCode(500, ex.Message);
             }
         }
@@ -86,7 +108,7 @@ namespace KarmaWebAPI.Controllers
             }
         }
 
-        [Authorize(Roles = "AG_Admin")]
+        [Authorize(Roles = "AG_Admin,AG_EquipDirectiu")]
         [HttpPut("activar/{idProfessor}")]
         public async Task<IActionResult> Activar(string idProfessor)
         {
@@ -95,7 +117,7 @@ namespace KarmaWebAPI.Controllers
             return Ok(professor);
         }
 
-        [Authorize(Roles = "AG_Admin")]
+        [Authorize(Roles = "AG_Admin,AG_EquipDirectiu")]
         [HttpPut("desactivar/{idProfessor}")]
         public async Task<IActionResult> Desactivar(string idProfessor)
         {

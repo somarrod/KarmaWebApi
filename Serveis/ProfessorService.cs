@@ -24,6 +24,17 @@ public class ProfessorService : IProfessorService
             .ToListAsync();
     }
 
+
+    public async Task<List<Professor>> LlistarProfessorsActiusAsync()
+    {
+        return await _context.Professors
+            .Where(p => p.Actiu)
+            .OrderBy(p => p.Cognoms)
+            .ThenBy(p => p.Nom)
+            .ToListAsync();
+    }
+
+
     public async Task<Professor?> ObtenirProfessorPerIdAsync(string idProfessor)
     {
         return await _context.Professors.FindAsync(idProfessor);
