@@ -5,10 +5,9 @@ namespace KarmaWebAPI.Models
 
     public class LoginModel
     {
-        [Required]
-        [EmailAddress]
+        [Required]      
         [StringLength(255)]
-        public string Email { get; set; }
+        public string Login { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

@@ -72,8 +72,19 @@ namespace KarmaWebAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            // Buscar el usuario por email
-            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            ApiUser? user;
+
+            // Si té format email, busquem per email
+            if (FuncionsAuxiliars.IsValidEmail(model.Login))
+            {
+                user = await _userManager.FindByEmailAsync(model.Login);
+            }
+            else
+            {
+                // Si no, busquem per id (UserName)
+                user = await _userManager.FindByIdAsync(model.Login);
+            }
 
             if (user == null)
             {

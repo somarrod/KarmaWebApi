@@ -50,8 +50,6 @@ namespace KarmaWebAPI
             return new string(array);
         }
 
-
-
         public static string ConstruirPasswordProfessor(ProfessorDTO professorDTO)
         {
 
@@ -70,5 +68,20 @@ namespace KarmaWebAPI
             return $"{primeraLletraNom}{primeraLletraCognoms}{alumneDTO.NIA}!";
         }
 
+        public static bool IsValidEmail(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return false;
+
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(value);
+                return addr.Address == value;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
-}
+ }

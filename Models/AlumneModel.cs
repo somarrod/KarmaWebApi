@@ -21,20 +21,13 @@ namespace KarmaWebAPI.Models
         [Required]
         public Boolean Actiu { get; set; } = true; //indica si està actiu o no 
         
-        [Required]
-        [StringLength(255)]
-        public string Email { get; set; } //correu electrònic 
-
-
-        // FKs cap a Classe (clau composta)
-      
+        // FKs cap a Classe (clau composta) 
         public int? IdAnyEscolar { get; set; }
         public long? IdClasse { get; set; }
         public Classe? Classe { get; set; } 
 
 
         // Grup (pot canviar)
-        [Required]
         [ForeignKey(nameof(Grup))]
         public long? IdGrup { get; set; }
         public Grup? Grup { get; set; }

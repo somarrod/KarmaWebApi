@@ -5,6 +5,7 @@ using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 
 public class AccountService
 {
@@ -17,9 +18,22 @@ public class AccountService
         _context = context;
     }
 
-    public async Task<IdentityResult> CreateUserAsync(string id, string email, string role, string password)
+    public async Task<IdentityResult> CreateUserAsync(string id, string? email, string role, string password)
     {
-        if (email != null) { 
+        string login = null;
+
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            email = $"{id}@alumnat.val";
+            login = id;
+        }
+        else 
+        {
+            login = email;
+        }
+
+        if (email != null)
+        {
             // Verificar si el email ya existe en la base de datos
             var existingUser = await _context.Users
                                     .Where(u => u.Email == email)
@@ -37,27 +51,20 @@ public class AccountService
         }
 
         // Crear el nuevo usuario
-        var user = new ApiUser
-        {
-            UserName = id,
-            Email = email,
-            Login = email!=null?email:id
-        };
+        ApiUser user = new ApiUser
+            {
+                UserName = id,
+                Email = email,
+                Login = login
+            };
+      
 
         var userCreated = await _userManager.CreateAsync(user, password);
 
         if (userCreated.Succeeded)
         {
             ApiUser? userMng;
-
-            if (!string.IsNullOrEmpty(email))
-            {
-                userMng = await _userManager.FindByEmailAsync(email);
-            }
-            else
-            {
-                userMng = await _userManager.FindByNameAsync(id);
-            }
+            userMng = await _userManager.FindByEmailAsync(email);
 
             if (userMng == null)
                 throw new Exception("Usuari creat però no trobat per a assignar rol.");

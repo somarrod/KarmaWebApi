@@ -4,6 +4,7 @@ using KarmaWebAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KarmaWebAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260511175213_UpdateAlumneModelv2")]
+    partial class UpdateAlumneModelv2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,6 +46,7 @@ namespace KarmaWebAPI.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<long?>("IdGrup")
+                        .IsRequired()
                         .HasColumnType("bigint");
 
                     b.Property<string>("Nom")
@@ -772,7 +776,9 @@ namespace KarmaWebAPI.Migrations
                 {
                     b.HasOne("KarmaWebAPI.Models.Grup", "Grup")
                         .WithMany()
-                        .HasForeignKey("IdGrup");
+                        .HasForeignKey("IdGrup")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KarmaWebAPI.Models.Classe", "Classe")
                         .WithMany("Alumnes")
