@@ -83,7 +83,7 @@ namespace KarmaWebAPI.Controllers
             else
             {
                 // Si no, busquem per id (UserName)
-                user = await _userManager.FindByIdAsync(model.Login);
+                user = await _userManager.FindByNameAsync(model.Login);
             }
 
             if (user == null)

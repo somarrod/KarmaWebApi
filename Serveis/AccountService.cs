@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using KarmaWebAPI;
 using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
@@ -142,6 +143,40 @@ public class AccountService
             user,
             null
         );
+    }
+
+    public async Task EnsureUserWithRoleAsync(
+    string userName,
+    string email,
+    string role,
+    string password)
+
+    {
+        var user = await _userManager.FindByNameAsync(userName);
+
+        if (user == null)
+        {
+            user = new ApiUser
+            {
+                UserName = userName,
+                Email = email,
+                Login = userName,
+                IsActive = true
+            };
+
+            var result = await _userManager.CreateAsync(user, password);
+            if (!result.Succeeded)
+                throw new Exception(string.Join("; ",
+                    result.Errors.Select(e => e.Description)));
+        }
+
+        if (!await _userManager.IsInRoleAsync(user, role))
+        {
+            var roleResult = await _userManager.AddToRoleAsync(user, role);
+            if (!roleResult.Succeeded)
+                throw new Exception(string.Join("; ",
+                    roleResult.Errors.Select(e => e.Description)));
+        }
     }
 
 

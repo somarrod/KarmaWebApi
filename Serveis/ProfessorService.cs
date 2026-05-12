@@ -1,4 +1,5 @@
-﻿using KarmaWebAPI.Data;
+﻿using KarmaWebAPI;
+using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
@@ -8,11 +9,13 @@ using Microsoft.EntityFrameworkCore;
 public class ProfessorService : IProfessorService
 {
     private readonly DatabaseContext _context;
+    private readonly AccountService _accountService;
     private readonly UserManager<ApiUser> _userManager;
 
-    public ProfessorService(DatabaseContext context, UserManager<ApiUser> userManager)
+    public ProfessorService(DatabaseContext context, UserManager<ApiUser> userManager, AccountService accountService)
     {
         _context = context;
+        _accountService = accountService;
         _userManager = userManager;
     }
 
@@ -134,4 +137,40 @@ public class ProfessorService : IProfessorService
     {
         return _context.Professors.Any(p => p.IdProfessor == idProfessor);
     }
+
+    public async Task SincronitzarIdentityAsync()
+{
+    var professors = await _context.Professors.ToListAsync();
+
+    foreach (var professor in professors)
+    {
+            ProfessorDTO dto = new ProfessorDTO
+            {
+                Cognoms = professor.Cognoms,
+                Nom = professor.Nom,
+                IdProfessor = professor.IdProfessor
+            };
+            string password = FuncionsAuxiliars.ConstruirPasswordProfessor(dto);
+            
+            await _accountService.EnsureUserWithRoleAsync(
+                professor.IdProfessor,
+                professor.Email,
+                "AG_Professor",
+                password);
+
+            if (professor.PertanyAEquipDirectiu)
+            {
+                await _accountService.EnsureUserWithRoleAsync(
+                    professor.IdProfessor,
+                    professor.Email,
+                    "AG_EquipDirectiu",
+                    password);
+            }
+
+        if (professor.Actiu)
+        {
+            await _accountService.ReactivateUserAsync(professor.IdProfessor);
+        }
+    }
+}
 }

@@ -41,5 +41,7 @@ namespace KarmaWebAPI.Serveis.Interfaces
 
         // Comprovació d’existència
         bool ProfessorExisteix(string idProfessor);
+
+        Task SincronitzarIdentityAsync();
     }
 }
