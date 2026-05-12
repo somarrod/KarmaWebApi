@@ -34,4 +34,8 @@ public interface IKarmaAlumneService
         string nia,
         int idAnyEscolar);
 
+    Task<string> ObtenirKarmaPerPuntsAsync(
+    int idAnyEscolar,
+    double punts);
+
 }

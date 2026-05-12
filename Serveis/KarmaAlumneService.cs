@@ -44,7 +44,7 @@ public class KarmaAlumneService : IKarmaAlumneService
             if (avaluacio == null)
                 throw new InvalidOperationException("Avaluació no trobada");
 
-            var karma = await ObtenerKarmaPerPuntsAsync(
+            var karma = await ObtenirKarmaPerPuntsAsync(
                 avaluacio.IdAnyEscolar,
                 puntsInicials);
 
@@ -107,7 +107,7 @@ public class KarmaAlumneService : IKarmaAlumneService
             var avaluacio = karma.Avaluacio;
 
 
-            karma.KarmaActual = await ObtenerKarmaPerPuntsAsync(
+            karma.KarmaActual = await ObtenirKarmaPerPuntsAsync(
                 karma.Avaluacio.IdAnyEscolar,
                 karma.NumPuntsActuals);
 
@@ -220,7 +220,7 @@ public class KarmaAlumneService : IKarmaAlumneService
             }
 
 
-            var karma = await ObtenerKarmaPerPuntsAsync(
+            var karma = await ObtenirKarmaPerPuntsAsync(
                 avaluacio.IdAnyEscolar,
                 puntsInicials);
 
@@ -249,7 +249,7 @@ public class KarmaAlumneService : IKarmaAlumneService
         if (karmaAlumne == null)
             return;
 
-        var karma = await ObtenerKarmaPerPuntsAsync(
+        var karma = await ObtenirKarmaPerPuntsAsync(
             karmaAlumne.Avaluacio.IdAnyEscolar,
             karmaAlumne.NumPuntsActuals);
 
@@ -259,7 +259,7 @@ public class KarmaAlumneService : IKarmaAlumneService
     }
 
     //MÈTODE PRIVAT PER A OBTENIR EL KARMA EN FUNCIó DELS PUNTS
-    private async Task<string> ObtenerKarmaPerPuntsAsync(
+    public async Task<string> ObtenirKarmaPerPuntsAsync(
     int idAnyEscolar,
     double punts)
     {

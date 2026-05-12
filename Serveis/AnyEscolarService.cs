@@ -13,19 +13,51 @@ namespace KarmaWebAPI.Serveis
     {
         private readonly DatabaseContext _context;
         private readonly IAvaluacioService _avaluacioService;
+        private readonly IKarmaAlumneService _karmaAlumneService;
 
-        public AnyEscolarService(DatabaseContext context, IAvaluacioService avaluacioService)
+        public AnyEscolarService(DatabaseContext context, IAvaluacioService avaluacioService, IKarmaAlumneService karmaAlumneService)
         {
             _context = context;
             _avaluacioService = avaluacioService;
+            _karmaAlumneService = karmaAlumneService;
         }
 
         public async Task<AnyEscolar> CrearAnyEscolarAsync(AnyEscolarCrearDTO anyEscolarDto)
         {
 
+            // 1. Validació de dates
+            if (anyEscolarDto.DataIniciCurs >= anyEscolarDto.DataFiCurs)
+                throw new InvalidOperationException(
+                    "La data d'inici del curs ha de ser anterior a la data de finalització.");
+
+            int idAnyEscolar =
+                int.Parse(
+                    (anyEscolarDto.DataIniciCurs.Year - 2000).ToString() +
+                    (anyEscolarDto.DataFiCurs.Year - 2000).ToString()
+                );
+
+            // 2. Validar que no existisca ja l'any escolar
+            bool existeix = await _context.AnyEscolars
+                .AnyAsync(a => a.IdAnyEscolar == idAnyEscolar);
+
+            if (existeix)
+                throw new InvalidOperationException(
+                    $"Ja existeix un any escolar amb l'identificador {idAnyEscolar}.");
+
+
+            // 3. Validació de solapament de dates
+            bool solapat = await _context.AnyEscolars.AnyAsync(a =>
+                anyEscolarDto.DataIniciCurs <= a.DataFiCurs &&
+                anyEscolarDto.DataFiCurs >= a.DataIniciCurs);
+
+            if (solapat)
+                throw new InvalidOperationException(
+                    "Les dates de l'any escolar se solapen amb un altre any escolar existent.");
+
+
             var anyEscolar = new AnyEscolar
             {
-                IdAnyEscolar = int.Parse((anyEscolarDto.DataIniciCurs.Year -2000).ToString() + (anyEscolarDto.DataFiCurs.Year -2000).ToString()),
+                IdAnyEscolar = idAnyEscolar,
                 DataIniciCurs = anyEscolarDto.DataIniciCurs,
                 DataFiCurs = anyEscolarDto.DataFiCurs,
                 SaldoKarmaInicial = anyEscolarDto.SaldoKarmaInicial,
@@ -45,17 +77,61 @@ namespace KarmaWebAPI.Serveis
                 .FirstOrDefaultAsync(a => a.IdAnyEscolar == dto.IdAnyEscolar);
 
             if (anyEscolar == null)
-                return null;
+                throw new InvalidOperationException("L'any escolar no existeix.");
 
-            anyEscolar.DataIniciCurs = dto.DataIniciCurs;
-            anyEscolar.DataFiCurs = dto.DataFiCurs;
+            // ✅ Guardem valors antics per a comparar
+            bool canviSaldo = anyEscolar.SaldoKarmaInicial != dto.SaldoKarmaInicial;
+            bool reiniciaCadaAvaluacio = dto.ReiniciaCadaAvaluacio;
+
+            // ✅ Actualitzar dades de l'any escolar
             anyEscolar.SaldoKarmaInicial = dto.SaldoKarmaInicial;
             anyEscolar.ReiniciaCadaAvaluacio = dto.ReiniciaCadaAvaluacio;
             anyEscolar.Actiu = dto.Actiu;
 
-            await _context.SaveChangesAsync();
+            // ✅ 3. Actualitzar karma només si cal
+            if (canviSaldo && reiniciaCadaAvaluacio)
+            {
+                DateOnly avui = DateOnly.FromDateTime(DateTime.Today);
 
-            return anyEscolar; // retorna objecte actualitzat
+
+                List<long> avaluacionsFutures = await _context.Avaluacions
+                    .Where(a =>
+                        a.IdAnyEscolar == dto.IdAnyEscolar &&
+                        a.DataInicial > avui)
+                    .Select(a => a.IdAvaluacio)
+                    .ToListAsync();
+
+                if (avaluacionsFutures.Any())
+                {
+                    List<KarmaAlumne> karmes = await _context.KarmaAlumnes
+                        .Where(k => avaluacionsFutures.Contains(k.IdAvaluacio))
+                        .ToListAsync();
+
+                    foreach (var karma in karmes)
+                    {
+                        karma.NumPuntsInicials = dto.SaldoKarmaInicial;
+                        //PENDENT ACTUALITZAR EL COLOR
+
+                        // ✅ Recalcular color amb la lògica REAL del sistema
+                        karma.KarmaInicial = await _karmaAlumneService
+                            .ObtenirKarmaPerPuntsAsync(
+                                dto.IdAnyEscolar,
+                                dto.SaldoKarmaInicial);
+
+                        karma.NumPuntsActuals = dto.SaldoKarmaInicial;
+                        //PENDENT ACTUALITZAR EL COLOR
+
+                        // ✅ Recalcular color amb la lògica REAL del sistema
+                        karma.KarmaActual = await _karmaAlumneService
+                            .ObtenirKarmaPerPuntsAsync(
+                                dto.IdAnyEscolar,
+                                dto.SaldoKarmaInicial);
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return anyEscolar;
         }
 
 
@@ -72,38 +148,6 @@ namespace KarmaWebAPI.Serveis
                 .AsNoTracking()
                 .ToListAsync();
         }
-
-
-        /*
-        public async Task<IActionResult> ActualitzaKarmaAsync(int idAnyEscolar)
-        {
-            try
-            {
-                var configuracioKarmaList = await _context.ConfiguracioKarma
-                    .Where(c => c.IdAnyEscolar == idAnyEscolar)
-                    .ToListAsync();
-
-                if (configuracioKarmaList != null)
-                {
-                    foreach (var configuracioKarma in configuracioKarmaList)
-                    {
-                        var alumnes = await _context.AlumneEnGrup
-                           .Where(a => a.IdAnyEscolar == configuracioKarma.IdAnyEscolar &&
-                                       a.PuntuacioTotal >= configuracioKarma.KarmaMinim &&
-                                       a.PuntuacioTotal <= configuracioKarma.KarmaMaxim)
-                           .ToListAsync();
-
-                        alumnes.ForEach(a => a.Karma = configuracioKarma.ColorNivell);
-                    }
-                }
-                await _context.SaveChangesAsync();
-                return new OkResult(); // Use OkResult explicitly
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error actualitzant el karma", ex);
-            }
-        }*/
 
 
     }

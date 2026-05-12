@@ -70,45 +70,24 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin")]
         public async Task<ActionResult<AnyEscolar>> Crear(AnyEscolarCrearDTO anyEscolarDto)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
+            using var transaction = await _context.Database.BeginTransactionAsync();
 
-                try
-                {
-                    var anyEscolar = await _anyEscolarService.CrearAnyEscolarAsync(anyEscolarDto);
-                    return Ok(anyEscolar);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, $"Internal server error: {ex.Message}");
-                }
-            }
-        }
-
-        #region Comentat - Editar no ha d'estar disponible
-        // PUT: api/AnyEscolars/5
-        
-        [Authorize(Roles = "AG_Admin")]
-        [HttpPut]
-        public async Task<ActionResult<AnyEscolar>> Editar([FromBody] AnyEscolarEditarDTO dto)
-        {
             try
             {
-                var anyEscolar = await _anyEscolarService.EditarAnyEscolarAsync(dto);
+                var anyEscolar = await _anyEscolarService.CrearAnyEscolarAsync(anyEscolarDto);
 
-                if (anyEscolar == null)
-                    return NotFound();
-
+                await transaction.CommitAsync(); // COMMIT explícit
                 return Ok(anyEscolar);
             }
             catch (Exception ex)
             {
+                await transaction.RollbackAsync(); // ROLLBACK explícit
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
-        #endregion Comentat - Editar no ha d'estar disponible      
-
+       
+              
         // DELETE: api/AnyEscolars/5
         [HttpDelete("eliminar")]
         [Authorize(Roles = "AG_Admin")]
@@ -132,6 +111,40 @@ namespace KarmaWebAPI.Controllers
                 return StatusCode(500, e.InnerException != null ? e.InnerException.Message : e.Message);
             }
         }
+
+
+        // ==================================================
+        // PUT: api/any-escolar/editar
+        // ==================================================
+        [HttpPut("editar")]
+        [Authorize(Roles = "AG_Admin")]
+        public async Task<IActionResult> Editar([FromBody] AnyEscolarEditarDTO dto)
+        {
+            using var tx = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var anyEscolar = await _anyEscolarService.EditarAnyEscolarAsync(dto);
+
+                await tx.CommitAsync();
+                return Ok(anyEscolar);
+            }
+            catch (InvalidOperationException ex)
+            {
+                await tx.RollbackAsync();
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await tx.RollbackAsync();
+                return StatusCode(500, new
+                {
+                    error = "S'ha produït un error intern en editar l'any escolar",
+                    detail = ex.Message
+                });
+            }
+        }
+
         #endregion Serveis
 
 
