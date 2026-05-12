@@ -140,7 +140,7 @@ namespace KarmaWebAPI.Controllers
         }
 
         
-        [Authorize(Roles = "AG_Admin")]
+        [Authorize(Roles = "AG_Admin, AG_Professor")]
         [HttpPost("sincronitzar-identity")]
         public async Task<IActionResult> SincronitzarIdentity()
         {
