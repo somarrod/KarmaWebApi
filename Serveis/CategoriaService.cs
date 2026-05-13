@@ -1,5 +1,6 @@
 ﻿using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
+using KarmaWebAPI.DTOs.DisplaySets;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -15,34 +16,79 @@ namespace KarmaWebAPI.Serveis
             _context = context;
         }
 
-        public async Task<Categoria?> InstanciaAsync(long idCategoria, ClaimsPrincipal user)
-        {
-            var categoria = await _context.Categories
-                .Include(c => c.TipusCategoria)
-                .FirstOrDefaultAsync(c => c.IdCategoria == idCategoria);
-
-            if (categoria == null) return null;
-
-            if (user.IsInRole("AG_Professor") && !categoria.Activa)
-                return null;
-
-            return categoria;
-        }
-
-        public async Task<List<Categoria>> LlistaAsync(ClaimsPrincipal user)
+        public async Task<CategoriaDisplaySet?> InstanciaAsync(long idCategoria, ClaimsPrincipal user)
         {
             var query = _context.Categories
-                .Include(c => c.TipusCategoria)
                 .AsQueryable();
 
-            if (user.IsInRole("AG_Professor"))
+            // Professors i alumnes només veuen actives
+            if (user.IsInRole("AG_Professor") || user.IsInRole("AG_Alumne"))
+            {
                 query = query.Where(c => c.Activa);
+            }
 
-            return await query.ToListAsync();
+            return await query
+                .Where(c => c.IdCategoria == idCategoria)
+                .Select(c => new CategoriaDisplaySet
+                {
+                    IdCategoria = c.IdCategoria,
+                    Descripcio = c.Descripcio,
+                    NumPunts = c.NumPunts,
+                    Editable = c.Editable,
+                    Comentaris = c.Comentaris,
+                    Activa = c.Activa,
+
+                    IdTipusCategoria = c.IdTipusCategoria,
+                    DescripcioTipusCategoria = c.TipusCategoria.Descripcio
+                })
+                .FirstOrDefaultAsync();
+        }
+
+
+        public async Task<List<CategoriaDisplaySet>> LlistaAsync(ClaimsPrincipal user)
+        {
+            var query = _context.Categories
+                .AsQueryable();
+
+            // Professors i alumnes només veuen actives
+            if (user.IsInRole("AG_Professor") || user.IsInRole("AG_Alumne"))
+            {
+                query = query.Where(c => c.Activa);
+            }
+
+            return await query
+                .Select(c => new CategoriaDisplaySet
+                {
+                    IdCategoria = c.IdCategoria,
+                    Descripcio = c.Descripcio,
+                    NumPunts = c.NumPunts,
+                    Editable = c.Editable,
+                    Comentaris = c.Comentaris,
+                    Activa = c.Activa,
+
+                    IdTipusCategoria = c.IdTipusCategoria,
+                    DescripcioTipusCategoria = c.TipusCategoria.Descripcio
+                })
+                .ToListAsync();
         }
 
         public async Task<Categoria> CrearAsync(CategoriaCrearDTO dto)
         {
+            // ===============================
+            // Validar TipusCategoria
+            // ===============================
+            var tipusCategoria = await _context.TipusCategories
+                .FirstOrDefaultAsync(t => t.IdTipusCategoria == dto.IdTipusCategoria);
+
+            if (tipusCategoria == null)
+                throw new InvalidOperationException("El tipus de categoria no existeix");
+
+            if (!tipusCategoria.Actiu)
+                throw new InvalidOperationException("El tipus de categoria no està actiu");
+
+            // ===============================
+            // Crear categoria
+            // ===============================
             var categoria = new Categoria
             {
                 Descripcio = dto.Descripcio,
@@ -55,6 +101,7 @@ namespace KarmaWebAPI.Serveis
 
             _context.Categories.Add(categoria);
             await _context.SaveChangesAsync();
+
             return categoria;
         }
 

@@ -93,6 +93,12 @@ namespace KarmaWebAPI.Data
                 .IsUnique();
 
 
+            modelBuilder.Entity<Categoria>()
+                .HasOne(c => c.TipusCategoria)
+                .WithMany(t => t.Categories)
+                .HasForeignKey(c => c.IdTipusCategoria);
+
+
             // Llamada al método base
             base.OnModelCreating(modelBuilder);
         }

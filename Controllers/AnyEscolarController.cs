@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace KarmaWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/anyescolar")]
+    [Route("api/any-escolar")]
     
     public class AnyEscolarController : ControllerBase
     {

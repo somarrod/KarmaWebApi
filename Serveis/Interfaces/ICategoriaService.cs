@@ -1,4 +1,5 @@
 ﻿using KarmaWebAPI.DTOs;
+using KarmaWebAPI.DTOs.DisplaySets;
 using KarmaWebAPI.Models;
 using System.Security.Claims;
 
@@ -12,8 +13,8 @@ namespace KarmaWebAPI.Serveis.Interfaces
         Task<Categoria> CrearAsync(CategoriaCrearDTO dto);
         Task<Categoria> EditarAsync(CategoriaEditarDTO dto);
 
-        Task<Categoria> ActivarAsync(long idCategoria);
-        Task<Categoria> DesactivarAsync(long idCategoria);
+        Task<CategoriaDisplaySet> ActivarAsync(long idCategoria);
+        Task<CategoriaDisplaySet> DesactivarAsync(long idCategoria);
 
         Task<bool> EliminarAsync(long idCategoria);
     }

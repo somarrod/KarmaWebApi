@@ -8,13 +8,15 @@ namespace KarmaWebAPI.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdTipusCategoria { get; set; }
+        public long IdTipusCategoria { get; set; }
 
         [Required]
         [StringLength(100)]
         public string Descripcio { get; set; }
 
         public bool Actiu { get; set; } = true;
+
+        public ICollection<Categoria> Categories { get; set; }
 
     }
 }

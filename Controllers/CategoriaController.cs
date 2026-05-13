@@ -24,7 +24,7 @@ namespace KarmaWebAPI.Controllers
             // Instància
             // ==================================================
             [HttpGet("{idCategoria:long}")]
-            [Authorize(Roles = "AG_Admin,AG_Professor")]
+            [Authorize(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
             public async Task<IActionResult> Instancia(long idCategoria)
             {
                 var categoria = await _service.InstanciaAsync(idCategoria, User);
@@ -41,7 +41,7 @@ namespace KarmaWebAPI.Controllers
             // Professor -> només actives
             // ==================================================
             [HttpGet("llista")]
-            [Authorize(Roles = "AG_Admin,AG_Professor")]
+            [Authorize(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
             public async Task<IActionResult> Llista()
             {
                 var llista = await _service.LlistaAsync(User);

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace KarmaWebAPI.Serveis
 {
     using KarmaWebAPI.Data;
+    using KarmaWebAPI.DTOs;
     using KarmaWebAPI.Models;
     using KarmaWebAPI.Serveis.Interfaces;
     using Microsoft.EntityFrameworkCore;
@@ -25,20 +26,32 @@ namespace KarmaWebAPI.Serveis
 
         public async Task<List<TipusCategoria>> LlistaAsync()
         {
-            return await _context.TipusCategories.ToListAsync();
+            return await _context.TipusCategories
+                .OrderBy(a => a.Descripcio)
+                .ToListAsync();
         }
 
-        public async Task<TipusCategoria> CrearAsync(string descripcio)
+        public async Task<List<TipusCategoria>> LlistaActiusAsync()
+        {
+            return await _context.TipusCategories
+                .AsNoTracking()
+                .Where(t => t.Actiu)
+                .OrderBy(t => t.Descripcio)
+                .ToListAsync();
+        }
+
+
+        public async Task<TipusCategoria> CrearAsync(TipusCategoriaCrearDTO dto)
         {
             var existeix = await _context.TipusCategories
-                .AnyAsync(t => t.Descripcio.ToLower() == descripcio.ToLower());
+                .AnyAsync(t => t.Descripcio.ToLower() == dto.Descripcio.ToLower());
 
             if (existeix)
                 throw new InvalidOperationException("Ja existeix un tipus de categoria amb aquesta descripció");
 
             var tipus = new TipusCategoria
             {
-                Descripcio = descripcio,
+                Descripcio = dto.Descripcio,
                 Actiu = true
             };
 
@@ -47,13 +60,20 @@ namespace KarmaWebAPI.Serveis
             return tipus;
         }
 
-        public async Task<TipusCategoria> EditarAsync(long idTipusCategoria, string descripcio, bool actiu)
+        public async Task<TipusCategoria> EditarAsync(TipusCategoriaEditarDTO dto)
         {
-            var tipus = await _context.TipusCategories.FindAsync(idTipusCategoria)
+            var tipus = await _context.TipusCategories.FindAsync(dto.IdTipusCategoria)
                 ?? throw new InvalidOperationException("Tipus de categoria no trobat");
 
-            tipus.Descripcio = descripcio;
-            tipus.Actiu = actiu;
+            var existeix = await _context.TipusCategories
+                .AnyAsync(t => t.Descripcio.ToLower() == dto.Descripcio.ToLower() && t.IdTipusCategoria != dto.IdTipusCategoria);
+
+            if (existeix)
+                throw new InvalidOperationException("Ja existeix un tipus de categoria amb aquesta descripció");
+
+
+            tipus.Descripcio = dto.Descripcio;
+            tipus.Actiu = dto.Actiu;
 
             await _context.SaveChangesAsync();
             return tipus;
@@ -87,6 +107,12 @@ namespace KarmaWebAPI.Serveis
             _context.TipusCategories.Remove(tipus);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<bool> ExisteixAsync(long idTipusCategoria)
+        {
+            return await _context.TipusCategories
+                .AnyAsync(t => t.IdTipusCategoria == idTipusCategoria);
         }
     }
 }
