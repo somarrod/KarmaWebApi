@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KarmaWebAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20260511175516_UpdateAlumneModelv3")]
-    partial class UpdateAlumneModelv3
+    [Migration("20260513161545_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -222,8 +222,8 @@ namespace KarmaWebAPI.Migrations
                     b.Property<double>("NumPunts")
                         .HasColumnType("float");
 
-                    b.Property<int>("TipusCategoriaIdTipusCategoria")
-                        .HasColumnType("int");
+                    b.Property<long>("TipusCategoriaIdTipusCategoria")
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdCategoria");
 
@@ -586,11 +586,11 @@ namespace KarmaWebAPI.Migrations
 
             modelBuilder.Entity("KarmaWebAPI.Models.TipusCategoria", b =>
                 {
-                    b.Property<int>("IdTipusCategoria")
+                    b.Property<long>("IdTipusCategoria")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTipusCategoria"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdTipusCategoria"));
 
                     b.Property<bool>("Actiu")
                         .HasColumnType("bit");

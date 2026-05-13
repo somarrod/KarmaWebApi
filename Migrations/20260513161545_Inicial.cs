@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KarmaWebAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class ModelInicial : Migration
+    public partial class Inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -102,7 +102,7 @@ namespace KarmaWebAPI.Migrations
                 name: "TipusCategories",
                 columns: table => new
                 {
-                    IdTipusCategoria = table.Column<int>(type: "int", nullable: false)
+                    IdTipusCategoria = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Descripcio = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Actiu = table.Column<bool>(type: "bit", nullable: false)
@@ -321,7 +321,7 @@ namespace KarmaWebAPI.Migrations
                     Comentaris = table.Column<string>(type: "nvarchar(999)", maxLength: 999, nullable: true),
                     Activa = table.Column<bool>(type: "bit", nullable: false),
                     IdTipusCategoria = table.Column<long>(type: "bigint", nullable: false),
-                    TipusCategoriaIdTipusCategoria = table.Column<int>(type: "int", nullable: false)
+                    TipusCategoriaIdTipusCategoria = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -399,10 +399,9 @@ namespace KarmaWebAPI.Migrations
                     Nom = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Cognoms = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Actiu = table.Column<bool>(type: "bit", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     IdAnyEscolar = table.Column<int>(type: "int", nullable: true),
                     IdClasse = table.Column<long>(type: "bigint", nullable: true),
-                    IdGrup = table.Column<long>(type: "bigint", nullable: false)
+                    IdGrup = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -417,8 +416,7 @@ namespace KarmaWebAPI.Migrations
                         name: "FK_Alumnes_Grups_IdGrup",
                         column: x => x.IdGrup,
                         principalTable: "Grups",
-                        principalColumn: "IdGrup",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdGrup");
                 });
 
             migrationBuilder.CreateTable(
