@@ -69,6 +69,12 @@ namespace KarmaWebAPI.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
 
+            //modelBuilder.Entity<Privilegi>()
+            //    .HasOne(p => p.AnyEscolar)
+            //    .WithMany(a => a.Privilegis)
+            //    .HasForeignKey(p => p.IdAnyEscolar)
+            //    .OnDelete(DeleteBehavior.Restrict);
+
             // Configuración de la entidad ProfessorDeClasse
             modelBuilder.Entity<ProfessorDeClasse>()
                 .HasKey(p => p.IdProfessorDeClasse);

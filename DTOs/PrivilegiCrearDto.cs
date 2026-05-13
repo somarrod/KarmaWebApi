@@ -17,7 +17,7 @@ namespace KarmaWebAPI.DTOs
 
         // Depén del curs escolar
         [Required]
-        public long IdAnyEscolar { get; set; }
+        public int IdAnyEscolar { get; set; }
 
         // nivell mínim de karma necessari
         [Required]

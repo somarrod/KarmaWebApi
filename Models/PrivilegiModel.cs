@@ -17,7 +17,7 @@ namespace KarmaWebAPI.Models
 
         // Depén del curs escolar
         [Required]
-        public long IdAnyEscolar { get; set; }
+        public int IdAnyEscolar { get; set; }
         public AnyEscolar AnyEscolar { get; set; } = null!;
 
         // nivell mínim de karma necessari
