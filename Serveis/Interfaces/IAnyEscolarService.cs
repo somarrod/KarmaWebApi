@@ -9,12 +9,14 @@ namespace KarmaWebAPI.Serveis.Interfaces
         public Task<AnyEscolar> CrearAnyEscolarAsync(AnyEscolarCrearDTO anyEscolarDto);
         public Task<AnyEscolar> EditarAnyEscolarAsync(AnyEscolarEditarDTO anyEscolarDto);
 
+        Task<bool> EliminarAnyEscolarAsync(int  idAnyEscolar);
+
         Task<bool> ExistsAsync(int idAnyEscolar);
         
         Task<List<AnyEscolar>> GetLlistaAsync();
 
 
-        //public Task<IActionResult> ActualitzaKarmaAsync(int anyEscolar);
+     
     }
 
 }

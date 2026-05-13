@@ -134,6 +134,45 @@ namespace KarmaWebAPI.Serveis
             return anyEscolar;
         }
 
+        public async Task<bool> EliminarAnyEscolarAsync(int idAnyEscolar)
+        {
+            // ===============================
+            // Buscar any escolar
+            // ===============================
+            var any = await _context.AnyEscolars
+                .FirstOrDefaultAsync(a => a.IdAnyEscolar == idAnyEscolar);
+
+            if (any == null)
+                throw new InvalidOperationException("Any escolar no trobat");
+
+            // ===============================
+            // Validar que NO hi ha classes
+            // ===============================
+            bool teClasses = await _context.Classes
+                .AnyAsync(c => c.IdAnyEscolar == idAnyEscolar);
+
+            if (teClasses)
+                throw new InvalidOperationException(
+                    "No es pot eliminar l'any escolar perquè té classes associades");
+
+            // ===============================
+            // Validar que NO hi ha avaluacions
+            // ===============================
+            bool teAvaluacions = await _context.Avaluacions
+                .AnyAsync(a => a.IdAnyEscolar == idAnyEscolar);
+
+            if (teAvaluacions)
+                throw new InvalidOperationException(
+                    "No es pot eliminar l'any escolar perquè té avaluacions associades");
+
+            // ===============================
+            // Eliminar
+            // ===============================
+            _context.AnyEscolars.Remove(any);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
 
         public async Task<bool> ExistsAsync(int idAnyEscolar)
         {
@@ -146,6 +185,7 @@ namespace KarmaWebAPI.Serveis
         {
             return await _context.AnyEscolars
                 .AsNoTracking()
+                .OrderByDescending(a => a.DataFiCurs)
                 .ToListAsync();
         }
 

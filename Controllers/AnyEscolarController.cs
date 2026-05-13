@@ -5,6 +5,7 @@ using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis;
 using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 //using Microsoft.EntityFrameworkCore;
 
@@ -86,10 +87,9 @@ namespace KarmaWebAPI.Controllers
             }
         }
 
-       
-              
+
         // DELETE: api/AnyEscolars/5
-        [HttpDelete("eliminar")]
+        [HttpDelete("eliminar/{idAnyEscolar}")]
         [Authorize(Roles = "AG_Admin")]
         public async Task<IActionResult> Eliminar(int idAnyEscolar)
         {
@@ -101,10 +101,9 @@ namespace KarmaWebAPI.Controllers
 
             try
             {
-                _context.AnyEscolars.Remove(anyEscolar);
-                await _context.SaveChangesAsync();
-
-                return Ok($"L'any escolar {idAnyEscolar} ha estat esborrat.");
+                bool ok = await _anyEscolarService.EliminarAnyEscolarAsync(idAnyEscolar);
+                if (!ok) return NotFound();
+                return Ok();
             }
             catch (Exception e)
             {
@@ -150,7 +149,7 @@ namespace KarmaWebAPI.Controllers
 
         #region Auxiliars
 
-        [HttpGet("{idAnyEscolar}/exists")]
+        [HttpGet("exists/{idAnyEscolar}")]
         public async Task<ActionResult<bool>> Exists(int idAnyEscolar)
         {
             var exists = await _anyEscolarService.ExistsAsync(idAnyEscolar);
