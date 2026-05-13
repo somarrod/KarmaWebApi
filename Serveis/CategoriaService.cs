@@ -72,7 +72,7 @@ namespace KarmaWebAPI.Serveis
                 .ToListAsync();
         }
 
-        public async Task<Categoria> CrearAsync(CategoriaCrearDTO dto)
+        public async Task<CategoriaDisplaySet> CrearAsync(CategoriaCrearDTO dto)
         {
             // ===============================
             // Validar TipusCategoria
@@ -85,6 +85,18 @@ namespace KarmaWebAPI.Serveis
 
             if (!tipusCategoria.Actiu)
                 throw new InvalidOperationException("El tipus de categoria no està actiu");
+
+            // ===============================
+            // VALIDAR DUPLICAT
+            // ===============================
+            bool existeixDuplicat = await _context.Categories
+                .AnyAsync(c =>
+                    c.IdTipusCategoria == dto.IdTipusCategoria &&
+                    c.Descripcio == dto.Descripcio);
+
+            if (existeixDuplicat)
+                throw new InvalidOperationException(
+                    "Ja existeix una categoria amb aquesta descripció dins del mateix tipus");
 
             // ===============================
             // Crear categoria
@@ -102,13 +114,52 @@ namespace KarmaWebAPI.Serveis
             _context.Categories.Add(categoria);
             await _context.SaveChangesAsync();
 
-            return categoria;
+
+            // Retornar DTO (no entitat)
+            return await _context.Categories
+                .Where(c => c.IdCategoria == categoria.IdCategoria)
+                .Select(c => new CategoriaDisplaySet
+                {
+                    IdCategoria = c.IdCategoria,
+                    Descripcio = c.Descripcio,
+                    NumPunts = c.NumPunts,
+                    Editable = c.Editable,
+                    Comentaris = c.Comentaris,
+                    Activa = c.Activa,
+                    IdTipusCategoria = c.IdTipusCategoria,
+                    DescripcioTipusCategoria = c.TipusCategoria.Descripcio
+                })
+                .FirstAsync();
+
         }
 
-        public async Task<Categoria> EditarAsync(CategoriaEditarDTO dto)
+        public async Task<CategoriaDisplaySet> EditarAsync(CategoriaEditarDTO dto)
         {
             var categoria = await _context.Categories.FindAsync(dto.IdCategoria)
                 ?? throw new InvalidOperationException("Categoria no trobada");
+
+
+            // ===============================
+            // VALIDAR DUPLICAT
+            // ===============================
+            bool existeixDuplicat = await _context.Categories
+                .AnyAsync(c =>
+                    c.IdCategoria != dto.IdCategoria &&
+                    c.Descripcio == dto.Descripcio);
+
+            if (existeixDuplicat)
+                throw new InvalidOperationException(
+                    "Ja existeix una categoria amb aquesta descripció");
+
+            // ===============================
+            // VALIDAR TipusCategoria
+            // ===============================
+            var tipusCategoria = await _context.TipusCategories
+                .FirstOrDefaultAsync(t => t.IdTipusCategoria == dto.IdTipusCategoria);
+
+            if (tipusCategoria == null || !tipusCategoria.Actiu)
+                throw new InvalidOperationException("El tipus de categoria no és vàlid");
+
 
             categoria.Descripcio = dto.Descripcio;
             categoria.NumPunts = dto.NumPunts;
@@ -118,7 +169,24 @@ namespace KarmaWebAPI.Serveis
             categoria.Activa = dto.Activa;
 
             await _context.SaveChangesAsync();
-            return categoria;
+
+
+            // Retornar DTO
+            return await _context.Categories
+                .Where(c => c.IdCategoria == categoria.IdCategoria)
+                .Select(c => new CategoriaDisplaySet
+                {
+                    IdCategoria = c.IdCategoria,
+                    Descripcio = c.Descripcio,
+                    NumPunts = c.NumPunts,
+                    Editable = c.Editable,
+                    Comentaris = c.Comentaris,
+                    Activa = c.Activa,
+                    IdTipusCategoria = c.IdTipusCategoria,
+                    DescripcioTipusCategoria = c.TipusCategoria.Descripcio
+                })
+                .FirstAsync();
+
         }
 
         public async Task<Categoria> ActivarAsync(long idCategoria)
@@ -143,9 +211,30 @@ namespace KarmaWebAPI.Serveis
 
         public async Task<bool> EliminarAsync(long idCategoria)
         {
-            var categoria = await _context.Categories.FindAsync(idCategoria);
-            if (categoria == null) return false;
 
+            // ===============================
+            // EXISTÈNCIA
+            // ===============================
+            var categoria = await _context.Categories
+                .FirstOrDefaultAsync(c => c.IdCategoria == idCategoria);
+
+            if (categoria == null)
+                throw new InvalidOperationException("Categoria no trobada");
+
+            // ===============================
+            // VALIDAR QUE NO ESTÀ EN ÚS
+            // ===============================
+            bool tePuntuacions = await _context.Puntuacions
+                .AnyAsync(p => p.IdCategoria == idCategoria);
+
+            if (tePuntuacions)
+                throw new InvalidOperationException(
+                    "No es pot eliminar la categoria perquè té puntuacions associades");
+
+
+            // ===============================
+            // ELIMINAR
+            // ===============================
             _context.Categories.Remove(categoria);
             await _context.SaveChangesAsync();
             return true;

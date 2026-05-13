@@ -73,29 +73,29 @@ namespace KarmaWebAPI.Controllers
             // ==================================================
             // PUT: api/categoria/activar
             // ==================================================
-            [HttpPut("activar")]
-            [Authorize(Roles = "AG_Admin")]
-            public async Task<IActionResult> Activar(long idCategoria)
-            {
-                var categoria = await _service.ActivarAsync(idCategoria);
-                return Ok(categoria);
-            }
+            //[HttpPut("activar")]
+            //[Authorize(Roles = "AG_Admin")]
+            //public async Task<IActionResult> Activar(long idCategoria)
+            //{
+            //    var categoria = await _service.ActivarAsync(idCategoria);
+            //    return Ok(categoria);
+            //}
 
             // ==================================================
             // PUT: api/categoria/desactivar
             // ==================================================
-            [HttpPut("desactivar")]
-            [Authorize(Roles = "AG_Admin")]
-            public async Task<IActionResult> Desactivar(long idCategoria)
-            {
-                var categoria = await _service.DesactivarAsync(idCategoria);
-                return Ok(categoria);
-            }
+            //[HttpPut("desactivar")]
+            //[Authorize(Roles = "AG_Admin")]
+            //public async Task<IActionResult> Desactivar(long idCategoria)
+            //{
+            //    var categoria = await _service.DesactivarAsync(idCategoria);
+            //    return Ok(categoria);
+            //}
 
             // ==================================================
             // DELETE: api/categoria/{idCategoria}
             // ==================================================
-            [HttpDelete("{idCategoria:long}")]
+            [HttpDelete("eliminar/{idCategoria:long}")]
             [Authorize(Roles = "AG_Admin")]
             public async Task<IActionResult> Eliminar(long idCategoria)
             {

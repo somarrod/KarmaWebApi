@@ -10,11 +10,11 @@ namespace KarmaWebAPI.Serveis.Interfaces
         Task<CategoriaDisplaySet?> InstanciaAsync(long idCategoria, ClaimsPrincipal user);
         Task<List<CategoriaDisplaySet>> LlistaAsync(ClaimsPrincipal user);
 
-        Task<Categoria> CrearAsync(CategoriaCrearDTO dto);
-        Task<Categoria> EditarAsync(CategoriaEditarDTO dto);
+        Task<CategoriaDisplaySet> CrearAsync(CategoriaCrearDTO dto);
+        Task<CategoriaDisplaySet> EditarAsync(CategoriaEditarDTO dto);
 
-        Task<Categoria> ActivarAsync(long idCategoria);
-        Task<Categoria> DesactivarAsync(long idCategoria);
+        //Task<Categoria> ActivarAsync(long idCategoria);
+        //Task<Categoria> DesactivarAsync(long idCategoria);
 
         Task<bool> EliminarAsync(long idCategoria);
     }
