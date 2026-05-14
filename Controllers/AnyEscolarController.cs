@@ -1,6 +1,7 @@
 ﻿using Humanizer;
 using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
+using KarmaWebAPI.DTOs.DisplaySets;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis;
 using KarmaWebAPI.Serveis.Interfaces;
@@ -29,16 +30,24 @@ namespace KarmaWebAPI.Controllers
         // GET: api/AnyEscolar/2025
         [HttpGet("{idAnyEscolar}")]
         [Authorize]
-        public async Task<ActionResult<AnyEscolar>> Instancia(int idAnyEscolar)
+        public async Task<ActionResult<AnyEscolarDisplaySet>> Instancia(int idAnyEscolar)
         {
+
             var anyEscolar = await _context.AnyEscolars.FindAsync(idAnyEscolar);
 
             if (anyEscolar == null)
-            {
-                return NotFound();
-            }
+                return NotFound(); 
 
-            return Ok(anyEscolar);
+            return Ok (new AnyEscolarDisplaySet
+            {
+                IdAnyEscolar = anyEscolar.IdAnyEscolar,
+                DataIniciCurs = anyEscolar.DataIniciCurs,
+                DataFiCurs = anyEscolar.DataFiCurs,
+                SaldoKarmaInicial = anyEscolar.SaldoKarmaInicial,
+                ReiniciaCadaAvaluacio = anyEscolar.ReiniciaCadaAvaluacio,
+                Actiu = anyEscolar.Actiu
+            });
+
         }
 
         // GET: api/AnyEscolar
@@ -47,7 +56,7 @@ namespace KarmaWebAPI.Controllers
         [HttpGet]
         [Route("llista")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<AnyEscolar>>> Llista()
+        public async Task<ActionResult<IEnumerable<AnyEscolarDisplaySet>>> Llista()
         {
             try
             {
@@ -69,7 +78,7 @@ namespace KarmaWebAPI.Controllers
         [Route("crear")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [Authorize(Roles = "AG_Admin")]
-        public async Task<ActionResult<AnyEscolar>> Crear(AnyEscolarCrearDTO anyEscolarDto)
+        public async Task<ActionResult<AnyEscolarDisplaySet>> Crear(AnyEscolarCrearDTO anyEscolarDto)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -141,6 +150,21 @@ namespace KarmaWebAPI.Controllers
                     error = "S'ha produït un error intern en editar l'any escolar",
                     detail = ex.Message
                 });
+            }
+        }
+
+        [HttpPost("copiar-configuracio")]
+        [Authorize(Roles = "AG_Admin")]
+        public async Task<IActionResult> CopiarConfiguracio(int idOrigen, int idDesti)
+        {
+            try
+            {
+                await _anyEscolarService.CopiarConfiguracioAsync(idOrigen, idDesti);
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
             }
         }
 

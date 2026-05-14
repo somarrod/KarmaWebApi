@@ -22,8 +22,6 @@ namespace KarmaWebAPI.DTOs
         // nivell mínim de karma necessari
         [Required]
         public int NivellPrivilegi { get; set; }
-
-        public bool Actiu { get; set; } = true;
     }
 
 }

@@ -26,7 +26,7 @@ namespace KarmaWebAPI.Serveis
                 .Include(g => g.Classe)
                 .FirstAsync(g => g.IdGrup == idGrup);
 
-            long idAnyEscolar = grup.Classe.IdAnyEscolar;
+            int idAnyEscolar = grup.Classe.IdAnyEscolar;
             DateOnly hui = DateOnly.FromDateTime(DateTime.Now);
 
             // 🔑 Avaluació en curs PER ANY ESCOLAR

@@ -35,7 +35,8 @@ namespace KarmaWebAPI.Models
         [Required]
         public bool Actiu { get; set; } = true;
 
-        //public ICollection<Privilegi> Privilegis { get; set; } = new List<Privilegi>();
+        //RELACIÓ INVERSA
+        public ICollection<Privilegi> Privilegis { get; set; } = new List<Privilegi>();
 
     }
 }

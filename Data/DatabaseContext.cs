@@ -60,7 +60,7 @@ namespace KarmaWebAPI.Data
 
 
             // =========================
-            // GRUP → FK composta (AÇÒ ÉS EL QUE ET FALTAVA)
+            // GRUP → FK composta
             // =========================
             modelBuilder.Entity<Grup>()
                 .HasOne(g => g.Classe)
@@ -69,11 +69,11 @@ namespace KarmaWebAPI.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
 
-            //modelBuilder.Entity<Privilegi>()
-            //    .HasOne(p => p.AnyEscolar)
-            //    .WithMany(a => a.Privilegis)
-            //    .HasForeignKey(p => p.IdAnyEscolar)
-            //    .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Privilegi>()
+                .HasOne(p => p.AnyEscolar)
+                .WithMany(a => a.Privilegis)
+                .HasForeignKey(p => p.IdAnyEscolar)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Configuración de la entidad ProfessorDeClasse
             modelBuilder.Entity<ProfessorDeClasse>()

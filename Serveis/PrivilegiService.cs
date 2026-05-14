@@ -15,6 +15,38 @@ public class PrivilegiService : IPrivilegiService
 
     public async Task<Privilegi> CrearAsync(PrivilegiCrearDTO privilegi)
     {
+        // ===============================
+        // VALIDAR TIPUS
+        // ===============================
+        if (privilegi.Tipus != "I" && privilegi.Tipus != "G")
+            throw new InvalidOperationException(
+                "El tipus de privilegi només pot ser 'I' (individual) o 'G' (grup)");
+
+        // ===============================
+        // VALIDAR AnyEscolar
+        // ===============================
+        bool anyExisteix = await _context.AnyEscolars
+            .AnyAsync(a => a.IdAnyEscolar == privilegi.IdAnyEscolar);
+
+        if (!anyExisteix)
+            throw new InvalidOperationException(
+                "L'any escolar indicat no existeix");
+
+        // ===============================
+        // VALIDAR DUPLICAT (per tipus)
+        // ===============================
+        bool existeixDuplicat = await _context.Privilegis
+            .AnyAsync(p =>
+                p.Tipus == privilegi.Tipus &&
+                p.Descripcio == privilegi.Descripcio);
+
+        if (existeixDuplicat)
+            throw new InvalidOperationException(
+                "Ja existeix un privilegi amb aquesta descripció per al mateix tipus");
+
+        // ===============================
+        // CREAR
+        // ===============================
         var entitat = new Privilegi
         {
             Descripcio = privilegi.Descripcio,
@@ -30,21 +62,50 @@ public class PrivilegiService : IPrivilegiService
         return entitat;
     }
 
-    public async Task<Privilegi> EditarAsync(PrivilegiEditarDTO privilegi)
+    public async Task<Privilegi> EditarAsync(PrivilegiEditarDTO dto)
     {
-        var existent = await _context.Privilegis
-            .FirstOrDefaultAsync(p => p.IdPrivilegi == privilegi.IdPrivilegi)
-            ?? throw new InvalidOperationException("Privilegi no trobat");
+        // ===============================
+        // VALIDAR EXISTÈNCIA
+        // ===============================
+        var entitat = await _context.Privilegis
+            .FirstOrDefaultAsync(p => p.IdPrivilegi == dto.IdPrivilegi);
 
-        existent.Tipus = privilegi.Tipus;
-        existent.Descripcio = privilegi.Descripcio;
-        existent.NivellPrivilegi = privilegi.NivellPrivilegi;
-        existent.Actiu = privilegi.Actiu;
+        if (entitat == null)
+            throw new InvalidOperationException("Privilegi no trobat");
+
+        // ===============================
+        // VALIDAR TIPUS
+        // ===============================
+        if (dto.Tipus != "I" && dto.Tipus != "G")
+            throw new InvalidOperationException(
+                "El tipus de privilegi només pot ser 'I' o 'G'");
+
+        // ===============================
+        // VALIDAR DUPLICAT
+        // ===============================
+        bool existeixDuplicat = await _context.Privilegis
+            .AnyAsync(p =>
+                p.IdPrivilegi != dto.IdPrivilegi &&
+                p.Tipus == dto.Tipus &&
+                p.Descripcio == dto.Descripcio);
+
+        if (existeixDuplicat)
+            throw new InvalidOperationException(
+                "Ja existeix un privilegi amb aquesta descripció per al mateix tipus");
+
+        // ===============================
+        // ACTUALITZAR
+        // ===============================
+        entitat.Descripcio = dto.Descripcio;
+        entitat.Tipus = dto.Tipus;
+        entitat.NivellPrivilegi = dto.NivellPrivilegi;
+        entitat.Actiu = dto.Actiu;
 
         await _context.SaveChangesAsync();
 
-        return existent; // ✅ objecte modificat
+        return entitat;
     }
+
 
     public async Task<bool> EliminarAsync(long idPrivilegi)
     {
@@ -62,7 +123,7 @@ public class PrivilegiService : IPrivilegiService
             .FirstOrDefaultAsync(p => p.IdPrivilegi == idPrivilegi);
     }
 
-    public async Task<List<Privilegi>> LlistaPerAnyEscolarAsync(long idAnyEscolar)
+    public async Task<List<Privilegi>> LlistaPerAnyEscolarAsync(int idAnyEscolar)
     {
         return await _context.Privilegis
             .Where(p => p.IdAnyEscolar == idAnyEscolar)

@@ -1,5 +1,6 @@
 ﻿using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
+using KarmaWebAPI.DTOs.DisplaySets;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -22,10 +23,8 @@ namespace KarmaWebAPI.Serveis
             _karmaAlumneService = karmaAlumneService;
         }
 
-        public async Task<AnyEscolar> CrearAnyEscolarAsync(AnyEscolarCrearDTO anyEscolarDto)
+        public async Task<AnyEscolarDisplaySet> CrearAnyEscolarAsync(AnyEscolarCrearDTO anyEscolarDto)
         {
-
-            // 1. Validació de dates
             if (anyEscolarDto.DataIniciCurs >= anyEscolarDto.DataFiCurs)
                 throw new InvalidOperationException(
                     "La data d'inici del curs ha de ser anterior a la data de finalització.");
@@ -36,7 +35,6 @@ namespace KarmaWebAPI.Serveis
                     (anyEscolarDto.DataFiCurs.Year - 2000).ToString()
                 );
 
-            // 2. Validar que no existisca ja l'any escolar
             bool existeix = await _context.AnyEscolars
                 .AnyAsync(a => a.IdAnyEscolar == idAnyEscolar);
 
@@ -44,8 +42,6 @@ namespace KarmaWebAPI.Serveis
                 throw new InvalidOperationException(
                     $"Ja existeix un any escolar amb l'identificador {idAnyEscolar}.");
 
-
-            // 3. Validació de solapament de dates
             bool solapat = await _context.AnyEscolars.AnyAsync(a =>
                 anyEscolarDto.DataIniciCurs <= a.DataFiCurs &&
                 anyEscolarDto.DataFiCurs >= a.DataIniciCurs);
@@ -53,7 +49,6 @@ namespace KarmaWebAPI.Serveis
             if (solapat)
                 throw new InvalidOperationException(
                     "Les dates de l'any escolar se solapen amb un altre any escolar existent.");
-
 
             var anyEscolar = new AnyEscolar
             {
@@ -68,10 +63,80 @@ namespace KarmaWebAPI.Serveis
             _context.AnyEscolars.Add(anyEscolar);
             await _context.SaveChangesAsync();
 
-            return anyEscolar;
+            return new AnyEscolarDisplaySet
+            {
+                IdAnyEscolar = anyEscolar.IdAnyEscolar,
+                DataIniciCurs = anyEscolar.DataIniciCurs,
+                DataFiCurs = anyEscolar.DataFiCurs,
+                SaldoKarmaInicial = anyEscolar.SaldoKarmaInicial,
+                ReiniciaCadaAvaluacio = anyEscolar.ReiniciaCadaAvaluacio,
+                Actiu = anyEscolar.Actiu
+            };
         }
 
-        public async Task<AnyEscolar> EditarAnyEscolarAsync(AnyEscolarEditarDTO dto)
+        //public async Task<AnyEscolar> EditarAnyEscolarAsync(AnyEscolarEditarDTO dto)
+        //{
+        //    var anyEscolar = await _context.AnyEscolars
+        //        .FirstOrDefaultAsync(a => a.IdAnyEscolar == dto.IdAnyEscolar);
+
+        //    if (anyEscolar == null)
+        //        throw new InvalidOperationException("L'any escolar no existeix.");
+
+        //    // ✅ Guardem valors antics per a comparar
+        //    bool canviSaldo = anyEscolar.SaldoKarmaInicial != dto.SaldoKarmaInicial;
+        //    bool reiniciaCadaAvaluacio = dto.ReiniciaCadaAvaluacio;
+
+        //    // ✅ Actualitzar dades de l'any escolar
+        //    anyEscolar.SaldoKarmaInicial = dto.SaldoKarmaInicial;
+        //    anyEscolar.ReiniciaCadaAvaluacio = dto.ReiniciaCadaAvaluacio;
+        //    anyEscolar.Actiu = dto.Actiu;
+
+        //    // ✅ 3. Actualitzar karma només si cal
+        //    if (canviSaldo && reiniciaCadaAvaluacio)
+        //    {
+        //        DateOnly avui = DateOnly.FromDateTime(DateTime.Today);
+
+
+        //        List<long> avaluacionsFutures = await _context.Avaluacions
+        //            .Where(a =>
+        //                a.IdAnyEscolar == dto.IdAnyEscolar &&
+        //                a.DataInicial > avui)
+        //            .Select(a => a.IdAvaluacio)
+        //            .ToListAsync();
+
+        //        if (avaluacionsFutures.Any())
+        //        {
+        //            List<KarmaAlumne> karmes = await _context.KarmaAlumnes
+        //                .Where(k => avaluacionsFutures.Contains(k.IdAvaluacio))
+        //                .ToListAsync();
+
+        //            foreach (var karma in karmes)
+        //            {
+        //                karma.NumPuntsInicials = dto.SaldoKarmaInicial;
+        //                //PENDENT ACTUALITZAR EL COLOR
+
+        //                // ✅ Recalcular color amb la lògica REAL del sistema
+        //                karma.KarmaInicial = await _karmaAlumneService
+        //                    .ObtenirKarmaPerPuntsAsync(
+        //                        dto.IdAnyEscolar,
+        //                        dto.SaldoKarmaInicial);
+
+        //                karma.NumPuntsActuals = dto.SaldoKarmaInicial;
+        //                //PENDENT ACTUALITZAR EL COLOR
+
+        //                // ✅ Recalcular color amb la lògica REAL del sistema
+        //                karma.KarmaActual = await _karmaAlumneService
+        //                    .ObtenirKarmaPerPuntsAsync(
+        //                        dto.IdAnyEscolar,
+        //                        dto.SaldoKarmaInicial);
+        //            }
+        //        }
+        //    }
+
+        //    await _context.SaveChangesAsync();
+        //    return anyEscolar;
+        //}
+        public async Task<AnyEscolarDisplaySet> EditarAnyEscolarAsync(AnyEscolarEditarDTO dto)
         {
             var anyEscolar = await _context.AnyEscolars
                 .FirstOrDefaultAsync(a => a.IdAnyEscolar == dto.IdAnyEscolar);
@@ -79,20 +144,16 @@ namespace KarmaWebAPI.Serveis
             if (anyEscolar == null)
                 throw new InvalidOperationException("L'any escolar no existeix.");
 
-            // ✅ Guardem valors antics per a comparar
             bool canviSaldo = anyEscolar.SaldoKarmaInicial != dto.SaldoKarmaInicial;
             bool reiniciaCadaAvaluacio = dto.ReiniciaCadaAvaluacio;
 
-            // ✅ Actualitzar dades de l'any escolar
             anyEscolar.SaldoKarmaInicial = dto.SaldoKarmaInicial;
             anyEscolar.ReiniciaCadaAvaluacio = dto.ReiniciaCadaAvaluacio;
             anyEscolar.Actiu = dto.Actiu;
 
-            // ✅ 3. Actualitzar karma només si cal
             if (canviSaldo && reiniciaCadaAvaluacio)
             {
                 DateOnly avui = DateOnly.FromDateTime(DateTime.Today);
-
 
                 List<long> avaluacionsFutures = await _context.Avaluacions
                     .Where(a =>
@@ -110,18 +171,14 @@ namespace KarmaWebAPI.Serveis
                     foreach (var karma in karmes)
                     {
                         karma.NumPuntsInicials = dto.SaldoKarmaInicial;
-                        //PENDENT ACTUALITZAR EL COLOR
 
-                        // ✅ Recalcular color amb la lògica REAL del sistema
                         karma.KarmaInicial = await _karmaAlumneService
                             .ObtenirKarmaPerPuntsAsync(
                                 dto.IdAnyEscolar,
                                 dto.SaldoKarmaInicial);
 
                         karma.NumPuntsActuals = dto.SaldoKarmaInicial;
-                        //PENDENT ACTUALITZAR EL COLOR
 
-                        // ✅ Recalcular color amb la lògica REAL del sistema
                         karma.KarmaActual = await _karmaAlumneService
                             .ObtenirKarmaPerPuntsAsync(
                                 dto.IdAnyEscolar,
@@ -131,7 +188,16 @@ namespace KarmaWebAPI.Serveis
             }
 
             await _context.SaveChangesAsync();
-            return anyEscolar;
+
+            return new AnyEscolarDisplaySet
+            {
+                IdAnyEscolar = anyEscolar.IdAnyEscolar,
+                DataIniciCurs = anyEscolar.DataIniciCurs,
+                DataFiCurs = anyEscolar.DataFiCurs,
+                SaldoKarmaInicial = anyEscolar.SaldoKarmaInicial,
+                ReiniciaCadaAvaluacio = anyEscolar.ReiniciaCadaAvaluacio,
+                Actiu = anyEscolar.Actiu
+            };
         }
 
         public async Task<bool> EliminarAnyEscolarAsync(int idAnyEscolar)
@@ -181,14 +247,126 @@ namespace KarmaWebAPI.Serveis
         }
 
 
-        public async Task<List<AnyEscolar>> GetLlistaAsync()
+        public async Task<List<AnyEscolarDisplaySet>> GetLlistaAsync()
         {
             return await _context.AnyEscolars
                 .AsNoTracking()
                 .OrderByDescending(a => a.DataFiCurs)
+                .Select(a => new AnyEscolarDisplaySet
+                {
+                    IdAnyEscolar = a.IdAnyEscolar,
+                    DataIniciCurs = a.DataIniciCurs,
+                    DataFiCurs = a.DataFiCurs,
+                    SaldoKarmaInicial = a.SaldoKarmaInicial,
+                    ReiniciaCadaAvaluacio = a.ReiniciaCadaAvaluacio,
+                    Actiu = a.Actiu
+                })
                 .ToListAsync();
         }
 
+        public async Task CopiarConfiguracioAsync(int idAnyOrigen, int idAnyDesti)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                // ===============================
+                // VALIDAR ANYS
+                // ===============================
+                bool origenExisteix = await _context.AnyEscolars
+                    .AnyAsync(a => a.IdAnyEscolar == idAnyOrigen);
+
+                bool destiExisteix = await _context.AnyEscolars
+                    .AnyAsync(a => a.IdAnyEscolar == idAnyDesti);
+
+                if (!origenExisteix || !destiExisteix)
+                    throw new InvalidOperationException("Any escolar origen o destí no existeix");
+
+                // ===============================
+                // VALIDAR QUE DESTÍ ESTÀ BUIT
+                // ===============================
+                bool tePrivilegis = await _context.Privilegis
+                    .AnyAsync(p => p.IdAnyEscolar == idAnyDesti);
+
+                bool teClasses = await _context.Classes
+                    .AnyAsync(c => c.IdAnyEscolar == idAnyDesti);
+
+                bool teConfiguracio = await _context.ConfiguracionsKarma
+                    .AnyAsync(c => c.IdAnyEscolar == idAnyDesti);
+
+                if (tePrivilegis || teClasses || teConfiguracio)
+                    throw new InvalidOperationException(
+                        "L'any escolar destí ja té informació i no es pot sobreescriure");
+
+                // ==================================================
+                // 1. COPIAR PRIVILEGIS
+                // ==================================================
+                var privilegisOrigen = await _context.Privilegis
+                    .Where(p => p.IdAnyEscolar == idAnyOrigen)
+                    .ToListAsync();
+
+                foreach (var p in privilegisOrigen)
+                {
+                    _context.Privilegis.Add(new Privilegi
+                    {
+                        Descripcio = p.Descripcio,
+                        Tipus = p.Tipus,
+                        IdAnyEscolar = idAnyDesti,
+                        NivellPrivilegi = p.NivellPrivilegi,
+                        Actiu = p.Actiu
+                    });
+                }
+
+                // ==================================================
+                // 2. COPIAR CONFIGURACIÓ KARMA
+                // ==================================================
+                var configuracionsOrigen = await _context.ConfiguracionsKarma
+                    .Where(c => c.IdAnyEscolar == idAnyOrigen)
+                    .ToListAsync();
+
+                foreach (var c in configuracionsOrigen)
+                {
+                    _context.ConfiguracionsKarma.Add(new ConfiguracioKarma
+                    {
+                        IdAnyEscolar = idAnyDesti,
+                        NumPuntsMinim = c.NumPuntsMinim,
+                        NumPuntsMaxim = c.NumPuntsMaxim,
+                        ColorKarma = c.ColorKarma,
+                        NivellPrivilegis = c.NivellPrivilegis
+                    });
+                }
+
+                // ==================================================
+                // 3. COPIAR CLASSES
+                // ==================================================
+                var classesOrigen = await _context.Classes
+                    .Where(c => c.IdAnyEscolar == idAnyOrigen)
+                    .ToListAsync();
+
+                foreach (var c in classesOrigen)
+                {
+                    _context.Classes.Add(new Classe
+                    {
+                        Nom = c.Nom,
+                        IdAnyEscolar = idAnyDesti
+                    });
+                }
+
+                // ==================================================
+                // GUARDAR + COMMIT
+                // ==================================================
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                // ===============================
+                // ROLLBACK SI ALGUNA COSA FALLA
+                // ===============================
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
 
     }
 

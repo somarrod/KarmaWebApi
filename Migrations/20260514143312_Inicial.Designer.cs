@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KarmaWebAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20260513161545_Inicial")]
+    [Migration("20260514143312_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -222,12 +222,9 @@ namespace KarmaWebAPI.Migrations
                     b.Property<double>("NumPunts")
                         .HasColumnType("float");
 
-                    b.Property<long>("TipusCategoriaIdTipusCategoria")
-                        .HasColumnType("bigint");
-
                     b.HasKey("IdCategoria");
 
-                    b.HasIndex("TipusCategoriaIdTipusCategoria");
+                    b.HasIndex("IdTipusCategoria");
 
                     b.ToTable("Categories");
                 });
@@ -395,15 +392,12 @@ namespace KarmaWebAPI.Migrations
                     b.Property<bool>("Actiu")
                         .HasColumnType("bit");
 
-                    b.Property<int>("AnyEscolarIdAnyEscolar")
-                        .HasColumnType("int");
-
                     b.Property<string>("Descripcio")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("IdAnyEscolar")
-                        .HasColumnType("bigint");
+                    b.Property<int>("IdAnyEscolar")
+                        .HasColumnType("int");
 
                     b.Property<int>("NivellPrivilegi")
                         .HasColumnType("int");
@@ -414,7 +408,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasKey("IdPrivilegi");
 
-                    b.HasIndex("AnyEscolarIdAnyEscolar");
+                    b.HasIndex("IdAnyEscolar");
 
                     b.ToTable("Privilegis");
                 });
@@ -801,8 +795,8 @@ namespace KarmaWebAPI.Migrations
             modelBuilder.Entity("KarmaWebAPI.Models.Categoria", b =>
                 {
                     b.HasOne("KarmaWebAPI.Models.TipusCategoria", "TipusCategoria")
-                        .WithMany()
-                        .HasForeignKey("TipusCategoriaIdTipusCategoria")
+                        .WithMany("Categories")
+                        .HasForeignKey("IdTipusCategoria")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -864,9 +858,9 @@ namespace KarmaWebAPI.Migrations
             modelBuilder.Entity("KarmaWebAPI.Models.Privilegi", b =>
                 {
                     b.HasOne("KarmaWebAPI.Models.AnyEscolar", "AnyEscolar")
-                        .WithMany()
-                        .HasForeignKey("AnyEscolarIdAnyEscolar")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("Privilegis")
+                        .HasForeignKey("IdAnyEscolar")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("AnyEscolar");
@@ -1000,6 +994,11 @@ namespace KarmaWebAPI.Migrations
                     b.Navigation("Professor");
                 });
 
+            modelBuilder.Entity("KarmaWebAPI.Models.AnyEscolar", b =>
+                {
+                    b.Navigation("Privilegis");
+                });
+
             modelBuilder.Entity("KarmaWebAPI.Models.Classe", b =>
                 {
                     b.Navigation("Alumnes");
@@ -1007,6 +1006,11 @@ namespace KarmaWebAPI.Migrations
                     b.Navigation("Grups");
 
                     b.Navigation("ProfessorsDeClasse");
+                });
+
+            modelBuilder.Entity("KarmaWebAPI.Models.TipusCategoria", b =>
+                {
+                    b.Navigation("Categories");
                 });
 #pragma warning restore 612, 618
         }

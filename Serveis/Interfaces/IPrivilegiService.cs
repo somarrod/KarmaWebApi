@@ -11,7 +11,7 @@ namespace KarmaWebAPI.Serveis.Interfaces
         Task<bool> EliminarAsync(long idPrivilegi);
 
         Task<Privilegi?> InstanciaAsync(long idPrivilegi);
-        Task<List<Privilegi>> LlistaPerAnyEscolarAsync(long idAnyEscolar);
+        Task<List<Privilegi>> LlistaPerAnyEscolarAsync(int idAnyEscolar);
 
 
     }
