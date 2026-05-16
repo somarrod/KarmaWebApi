@@ -20,8 +20,7 @@ namespace KarmaWebAPI.Models
 
         public AnyEscolar AnyEscolar { get; set; } = null!;
 
-
-        // Navegacions NECESSÀRIES, a classes que tenen referències a Classe (clau primària composta)
+        //Navegacions(NO les usarem en serveis de consulta)
         public ICollection<Alumne> Alumnes { get; set; } = new List<Alumne>();
 
         public ICollection<ProfessorDeClasse> ProfessorsDeClasse { get; set; }
@@ -29,7 +28,6 @@ namespace KarmaWebAPI.Models
 
         public ICollection<Grup> Grups { get; set; } 
                = new List<Grup>();
-
 
     }
 }
