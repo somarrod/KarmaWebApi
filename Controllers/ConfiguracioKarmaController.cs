@@ -22,7 +22,7 @@ namespace KarmaWebAPI.Controllers
         // GET: api/configuracio-karma/anyescolar/2024
         // -------------------------------------------------
         [HttpGet("anyescolar/{idAnyEscolar:int}")]
-        [Authorize(Roles = "AG_Professor,AG_Admin")]
+        [Authorize(Roles = "AG_Professor,AG_Admin,AG_Alumne")]
         public async Task<ActionResult<IEnumerable<ConfiguracioKarma>>> GetPerAnyEscolar(
             int idAnyEscolar)
         {

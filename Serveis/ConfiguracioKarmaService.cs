@@ -20,7 +20,7 @@ public class ConfiguracioKarmaService : IConfiguracioKarmaService
     {
         return await _context.ConfiguracionsKarma
             .Where(c => c.IdAnyEscolar == idAnyEscolar)
-            .OrderBy(c => c.NumPuntsMinim)
+            .OrderByDescending(c => c.NumPuntsMaxim)
             .AsNoTracking()
             .ToListAsync();
     }
