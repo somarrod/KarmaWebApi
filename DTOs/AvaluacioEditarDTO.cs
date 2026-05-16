@@ -2,8 +2,11 @@
 
 namespace KarmaWebAPI.DTOs.Avaluacio
 {
-    public class AvaluacioTCrearDTO
+    public class AvaluacioEditarDTO
     {
+        [Required]
+        public long IdAvaluacio { get; set; }
+
         [Required]
         public string Nom { get; set; } = string.Empty;
 
@@ -18,8 +21,5 @@ namespace KarmaWebAPI.DTOs.Avaluacio
 
         [Required]
         public double NotaMaximaKarma { get; set; }
-
-        [Required]
-        public int IdAnyEscolar { get; set; }
     }
 }

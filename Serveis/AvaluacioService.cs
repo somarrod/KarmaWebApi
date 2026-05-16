@@ -1,5 +1,6 @@
 ﻿using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs.Avaluacio;
+using KarmaWebAPI.DTOs.DisplaySets;
 using KarmaWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,67 +21,126 @@ public class AvaluacioService : IAvaluacioService
     // CONSULTES
     // =====================================================
 
-    public async Task<List<Avaluacio>> GetLlistaAsync(bool isAdmin)
+    public async Task<List<AvaluacioDisplaySet>> GetLlistaAsync(bool isAdmin)
     {
-        if (isAdmin)
-        {
-            return await _context.Avaluacions
-                .AsNoTracking()
-                .ToListAsync();
-        }
+        var query = _context.Avaluacions.AsQueryable();
 
-        return await _context.Avaluacions
-            .Include(a => a.AnyEscolar)
-            .Where(a => a.AnyEscolar.Actiu)
+        if (!isAdmin)
+            query = query.Where(a => a.AnyEscolar.Actiu);
+
+        return await query
+            .OrderBy(a => a.Nom)
+            .Select(a => new AvaluacioDisplaySet
+            {
+                IdAvaluacio = a.IdAvaluacio,
+                Nom = a.Nom,
+                DataInicial = a.DataInicial,
+                DataFinal = a.DataFinal,
+                NotaMinimaKarma = a.NotaMinimaKarma,
+                NotaMaximaKarma = a.NotaMaximaKarma,
+                IdAnyEscolar = a.IdAnyEscolar
+            })
             .AsNoTracking()
             .ToListAsync();
     }
 
-    public async Task<List<Avaluacio>> GetLlistaPerAnyEscolarAsync(
+    public async Task<List<AvaluacioDisplaySet>> GetLlistaPerAnyEscolarAsync(
         int idAnyEscolar,
         bool isAdmin)
     {
-        if (isAdmin)
-        {
-            return await _context.Avaluacions
-                .Where(a => a.IdAnyEscolar == idAnyEscolar)
-                .AsNoTracking()
-                .ToListAsync();
-        }
+        var query = _context.Avaluacions
+            .Where(a => a.IdAnyEscolar == idAnyEscolar);
 
-        return await _context.Avaluacions
-            .Include(a => a.AnyEscolar)
-            .Where(a =>
-                a.IdAnyEscolar == idAnyEscolar &&
-                a.AnyEscolar.Actiu)
+        if (!isAdmin)
+            query = query.Where(a => a.AnyEscolar.Actiu);
+
+        return await query
+            .OrderBy(a => a.Nom)
+            .Select(a => new AvaluacioDisplaySet
+            {
+                IdAnyEscolar = a.IdAnyEscolar,
+                IdAvaluacio = a.IdAvaluacio,
+                Nom = a.Nom,
+                DataInicial = a.DataInicial,
+                DataFinal = a.DataFinal,
+                NotaMinimaKarma = a.NotaMinimaKarma,
+                NotaMaximaKarma = a.NotaMaximaKarma
+                
+            })
             .AsNoTracking()
             .ToListAsync();
     }
 
-    public async Task<Avaluacio?> GetByIdAsync(long idAvaluacio)
+    public async Task<AvaluacioDisplaySet> GetByIdAsync(long idAvaluacio)
     {
-        return await _context.Avaluacions
-            .Include(a => a.AnyEscolar)
+        var result = await _context.Avaluacions
+            .Where(a => a.IdAvaluacio == idAvaluacio)
+            .Select(a => new AvaluacioDisplaySet
+            {
+                IdAnyEscolar = a.IdAnyEscolar,
+                IdAvaluacio = a.IdAvaluacio,
+                Nom = a.Nom,
+                DataInicial = a.DataInicial,
+                DataFinal = a.DataFinal,
+                NotaMinimaKarma = a.NotaMinimaKarma,
+                NotaMaximaKarma = a.NotaMaximaKarma
+                
+            })
             .AsNoTracking()
-            .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio);
+            .FirstOrDefaultAsync();
+
+        if (result == null)
+            throw new InvalidOperationException("L'avaluació no existeix");
+
+        return result;
     }
 
     // =====================================================
     // TCREAR
     // =====================================================
 
-    public async Task<Avaluacio> TCrearAsync(AvaluacioTCrearDTO dto)
+    public async Task<AvaluacioDisplaySet> CrearAsync(AvaluacioCrearDTO dto)
     {
         using var tx = await _context.Database.BeginTransactionAsync();
 
-        // 🔎 comprovar solapaments
         bool solapa = await _context.Avaluacions.AnyAsync(a =>
             a.IdAnyEscolar == dto.IdAnyEscolar &&
             dto.DataInicial <= a.DataFinal &&
             dto.DataFinal >= a.DataInicial);
 
+
+        if (dto.DataFinal <= dto.DataInicial)
+            throw new InvalidOperationException(
+                "La data final ha de ser posterior a la data inicial");
+
         if (solapa)
             throw new InvalidOperationException("Hi ha solapament d'avaluacions");
+
+        var anyEscolar = await _context.AnyEscolars
+            .FirstOrDefaultAsync(a => a.IdAnyEscolar == dto.IdAnyEscolar);
+
+        if (anyEscolar == null)
+            throw new InvalidOperationException("L'any escolar no existeix");
+
+        // ===============================
+        // VALIDAR DATES DINS DE L'ANY ESCOLAR
+        // ===============================
+        if (dto.DataInicial < anyEscolar.DataIniciCurs ||
+            dto.DataFinal > anyEscolar.DataFiCurs)
+        {
+            throw new InvalidOperationException(
+                "Les dates de l'avaluació han d'estar dins de les dates de l'any escolar");
+        }
+
+
+        bool existeixMateixNom = await _context.Avaluacions
+            .AnyAsync(a =>
+                a.IdAnyEscolar == dto.IdAnyEscolar &&
+                a.Nom == dto.Nom);
+
+        if (existeixMateixNom)
+            throw new InvalidOperationException(
+                "Ja existeix una avaluació amb aquest nom dins del mateix any escolar");
 
         var avaluacio = new Avaluacio
         {
@@ -94,54 +154,81 @@ public class AvaluacioService : IAvaluacioService
 
         _context.Avaluacions.Add(avaluacio);
         await _context.SaveChangesAsync();
-
-        // ❗ NO inicialitzem Karma ací
-        // La inicialització real es fa en TINICIAR_AVALUACIO
-
         await tx.CommitAsync();
-        return avaluacio;
+
+        return await GetByIdAsync(avaluacio.IdAvaluacio);
     }
 
     // =====================================================
     // TEDITAR
     // =====================================================
-
-    public async Task<Avaluacio?> TEditarAsync(AvaluacioTEditarDTO dto)
+    public async Task<AvaluacioDisplaySet> EditarAsync(AvaluacioEditarDTO dto)
     {
         using var tx = await _context.Database.BeginTransactionAsync();
 
+        //Validacions de les dades
         var avaluacio = await _context.Avaluacions
             .FirstOrDefaultAsync(a => a.IdAvaluacio == dto.IdAvaluacio);
-
         if (avaluacio == null)
-            return null;
+            throw new InvalidOperationException("L'avaluació no existeix");
+
+        if (dto.DataFinal <= dto.DataInicial)
+            throw new InvalidOperationException(
+                "La data final ha de ser posterior a la data inicial");
 
         bool solapa = await _context.Avaluacions.AnyAsync(a =>
             a.IdAnyEscolar == avaluacio.IdAnyEscolar &&
             a.IdAvaluacio != dto.IdAvaluacio &&
             dto.DataInicial <= a.DataFinal &&
             dto.DataFinal >= a.DataInicial);
-
         if (solapa)
             throw new InvalidOperationException("Hi ha solapament d'avaluacions");
 
+
+        var anyEscolar = await _context.AnyEscolars
+            .FirstOrDefaultAsync(a => a.IdAnyEscolar == avaluacio.IdAnyEscolar);
+        if (anyEscolar == null)
+            throw new InvalidOperationException("L'any escolar no existeix");
+
+        // ===============================
+        // VALIDAR DATES DINS DE L'ANY ESCOLAR
+        // ===============================
+        if (dto.DataInicial < anyEscolar.DataIniciCurs ||
+            dto.DataFinal > anyEscolar.DataFiCurs)
+        {
+            throw new InvalidOperationException(
+                "Les dates de l'avaluació han d'estar dins de les dates de l'any escolar");
+        }
+
+         bool existeixMateixNom = await _context.Avaluacions
+                .AnyAsync(a =>
+                    a.IdAnyEscolar == avaluacio.IdAnyEscolar &&
+                    a.IdAvaluacio != dto.IdAvaluacio &&
+                    a.Nom == dto.Nom);
+        if (existeixMateixNom)
+            throw new InvalidOperationException(
+                "Ja existeix una altra avaluació amb aquest nom dins del mateix any escolar");
+
+        //Fi - Validacions de les dades
+
+        // Actualització de les dades
         avaluacio.Nom = dto.Nom;
         avaluacio.DataInicial = dto.DataInicial;
         avaluacio.DataFinal = dto.DataFinal;
         avaluacio.NotaMinimaKarma = dto.NotaMinimaKarma;
         avaluacio.NotaMaximaKarma = dto.NotaMaximaKarma;
-
+        // Actualització de les dades
         await _context.SaveChangesAsync();
         await tx.CommitAsync();
 
-        return avaluacio;
+        return await GetByIdAsync(avaluacio.IdAvaluacio);
     }
 
     // =====================================================
-    // TINICIAR_AVALUACIO
+    // TINICIAR / FINALITZAR
     // =====================================================
 
-    public async Task<Avaluacio?> TIniciarAsync(long idAvaluacio)
+    public async Task<AvaluacioDisplaySet> IniciarAsync(long idAvaluacio)
     {
         using var tx = await _context.Database.BeginTransactionAsync();
 
@@ -150,7 +237,7 @@ public class AvaluacioService : IAvaluacioService
             .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio);
 
         if (avaluacio == null)
-            return null;
+            throw new InvalidOperationException("L'avaluació no existeix");
 
         var anyEscolar = avaluacio.AnyEscolar;
 
@@ -161,48 +248,34 @@ public class AvaluacioService : IAvaluacioService
             .OrderByDescending(a => a.DataFinal)
             .FirstOrDefaultAsync();
 
-        if (avaluacioAnterior == null)
+        if (avaluacioAnterior == null || anyEscolar.ReiniciaCadaAvaluacio)
         {
-            // primera avaluació del curs
             await _karmaAlumneService.CrearPerAvaluacioAsync(
                 avaluacio.IdAvaluacio,
                 anyEscolar.SaldoKarmaInicial);
         }
         else
         {
-            if (anyEscolar.ReiniciaCadaAvaluacio)
-            {
-                await _karmaAlumneService.CrearPerAvaluacioAsync(
-                    avaluacio.IdAvaluacio,
-                    anyEscolar.SaldoKarmaInicial);
-            }
-            else
-            {
-                await _karmaAlumneService.CopiarPerAvaluacioAsync(
-                    avaluacio.IdAvaluacio,
-                    avaluacioAnterior.IdAvaluacio);
-            }
+            await _karmaAlumneService.CopiarPerAvaluacioAsync(
+                avaluacio.IdAvaluacio,
+                avaluacioAnterior.IdAvaluacio);
         }
 
         await tx.CommitAsync();
-        return avaluacio;
+        return await GetByIdAsync(idAvaluacio);
     }
 
-    // =====================================================
-    // TFINALITZAR_AVALUACIO
-    // =====================================================
-
-    public async Task<Avaluacio?> TFinalitzarAsync(long idAvaluacio)
+    public async Task<AvaluacioDisplaySet> FinalitzarAsync(long idAvaluacio)
     {
-        var avaluacio = await _context.Avaluacions
-            .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio);
+        var existeix = await _context.Avaluacions
+            .AnyAsync(a => a.IdAvaluacio == idAvaluacio);
 
-        if (avaluacio == null)
-            return null;
+        if (!existeix)
+            throw new InvalidOperationException("L'avaluació no existeix");
 
         await _karmaAlumneService.CalcularNotaFinalAsync(idAvaluacio);
 
-        return avaluacio;
+        return await GetByIdAsync(idAvaluacio);
     }
 
     // =====================================================
@@ -215,10 +288,11 @@ public class AvaluacioService : IAvaluacioService
             .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio);
 
         if (avaluacio == null)
-            return false;
+            throw new InvalidOperationException("L'avaluació no existeix");
 
         _context.Avaluacions.Remove(avaluacio);
         await _context.SaveChangesAsync();
+
         return true;
     }
 }

@@ -24,27 +24,41 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Professor,AG_Alumne,AG_Admin")]
         public async Task<ActionResult<IEnumerable<Avaluacio>>> Llista()
         {
-            var result = await _avaluacioService.GetLlistaAsync(
-                isAdmin: User.IsInRole("AG_Admin")
-            );
+            try
+            {
+                var result = await _avaluacioService.GetLlistaAsync(
+                    isAdmin: User.IsInRole("AG_Admin")
+                );
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         // -------------------------------------------------
-        // GET: api/avaluacio/llista-per-anyescolar?idAnyEscolar=2024
+        // GET: api/avaluacio/per-anyescolar/{idAnyEscolar}
         // -------------------------------------------------
-        [HttpGet("llista-per-anyescolar")]
+        [HttpGet("per-anyescolar/{idAnyEscolar:int}")]
         [Authorize(Roles = "AG_Professor,AG_Alumne,AG_Admin")]
         public async Task<ActionResult<IEnumerable<Avaluacio>>> LlistaPerAnyEscolar(
-            [FromQuery] int idAnyEscolar)
+            int idAnyEscolar)
         {
-            var result = await _avaluacioService.GetLlistaPerAnyEscolarAsync(
-                idAnyEscolar,
-                isAdmin: User.IsInRole("AG_Admin")
-            );
+            try
+            {
+                var result = await _avaluacioService.GetLlistaPerAnyEscolarAsync(
+                    idAnyEscolar,
+                    isAdmin: User.IsInRole("AG_Admin")
+                );
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         // -------------------------------------------------
@@ -52,100 +66,107 @@ namespace KarmaWebAPI.Controllers
         // -------------------------------------------------
         [HttpGet("{idAvaluacio:long}")]
         [Authorize(Roles = "AG_Professor,AG_Alumne,AG_Admin")]
-        public async Task<ActionResult<Avaluacio>> Instancia(int idAvaluacio)
+        public async Task<ActionResult<Avaluacio>> Instancia(long idAvaluacio)
         {
-            var avaluacio = await _avaluacioService.GetByIdAsync(idAvaluacio);
-
-            if (avaluacio == null)
-                return NotFound();
-
-            return Ok(avaluacio);
+            try
+            {
+                var avaluacio = await _avaluacioService.GetByIdAsync(idAvaluacio);
+                return Ok(avaluacio);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         // -------------------------------------------------
-        // POST: api/avaluacio/crear  
+        // POST: api/avaluacio/crear
         // -------------------------------------------------
         [HttpPost("crear")]
         [Authorize(Roles = "AG_Professor,AG_Admin")]
-        public async Task<ActionResult<Avaluacio>> Crear(AvaluacioTCrearDTO dto)
+        public async Task<ActionResult<Avaluacio>> Crear(AvaluacioCrearDTO dto)
         {
             try
             {
-                var result = await _avaluacioService.TCrearAsync(dto);
-                return Ok(result); // torna l'objecte creat
+                var result = await _avaluacioService.CrearAsync(dto);
+                return Ok(result);
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { error = ex.Message });
             }
         }
 
         // -------------------------------------------------
-        // PUT: api/avaluacio/editar  
+        // PUT: api/avaluacio/editar
         // -------------------------------------------------
         [HttpPut("editar")]
         [Authorize(Roles = "AG_Professor,AG_Admin")]
-        public async Task<ActionResult<Avaluacio>> Editar(AvaluacioTEditarDTO dto)
+        public async Task<ActionResult<Avaluacio>> Editar(AvaluacioEditarDTO dto)
         {
             try
             {
-                var result = await _avaluacioService.TEditarAsync(dto);
-
-                if (result == null)
-                    return NotFound();
-
-                return Ok(result); // torna l'objecte actualitzat
+                var result = await _avaluacioService.EditarAsync(dto);
+                return Ok(result);
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { error = ex.Message });
             }
         }
 
         // -------------------------------------------------
-        // POST: api/avaluacio/{id}/iniciar  
+        // POST: api/avaluacio/{id}/iniciar
         // -------------------------------------------------
         [HttpPost("{idAvaluacio:long}/iniciar")]
         [Authorize(Roles = "AG_Professor,AG_Admin")]
-        public async Task<ActionResult<Avaluacio>> TIniciar(int idAvaluacio)
+        public async Task<ActionResult<Avaluacio>> Iniciar(long idAvaluacio)
         {
-            var avaluacio = await _avaluacioService.TIniciarAsync(idAvaluacio);
-
-            if (avaluacio == null)
-                return NotFound();
-
-            return Ok(avaluacio); // retorna l’objecte
+            try
+            {
+                var avaluacio = await _avaluacioService.IniciarAsync(idAvaluacio);
+                return Ok(avaluacio);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         // -------------------------------------------------
-        // POST: api/avaluacio/{id}/finalitzar  
+        // POST: api/avaluacio/{id}/finalitzar
         // -------------------------------------------------
         [HttpPost("{idAvaluacio:long}/finalitzar")]
         [Authorize(Roles = "AG_Professor,AG_Admin")]
-        public async Task<ActionResult<Avaluacio>> Finalitzar(int idAvaluacio)
+        public async Task<ActionResult<Avaluacio>> Finalitzar(long idAvaluacio)
         {
-            var avaluacio = await _avaluacioService.TFinalitzarAsync(idAvaluacio);
-
-            if (avaluacio == null)
-                return NotFound();
-
-            return Ok(avaluacio); // retorna l’objecte
+            try
+            {
+                var avaluacio = await _avaluacioService.FinalitzarAsync(idAvaluacio);
+                return Ok(avaluacio);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
-
         // -------------------------------------------------
-        // DELETE: api/avaluacio/{id}   (ESBORRAR)
+        // DELETE: api/avaluacio/{id}
         // -------------------------------------------------
-        [HttpDelete("{idAvaluacio}")]
+        [HttpDelete("{idAvaluacio:long}")]
         [Authorize(Roles = "AG_Admin")]
-        public async Task<IActionResult> Eliminar(int idAvaluacio)
+        public async Task<IActionResult> Eliminar(long idAvaluacio)
         {
-            var esborrat = await _avaluacioService.EsborrarAsync(idAvaluacio);
-
-            if (!esborrat)
-                return NotFound(); // no existia
-
-            return Ok(); // esborrat correctament (sense cos)
+            try
+            {
+                await _avaluacioService.EsborrarAsync(idAvaluacio);
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
     }
 }

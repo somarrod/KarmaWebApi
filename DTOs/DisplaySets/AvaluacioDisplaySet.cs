@@ -1,25 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace KarmaWebAPI.DTOs.Avaluacio
+﻿namespace KarmaWebAPI.DTOs.DisplaySets
 {
-    public class AvaluacioTEditarDTO
+    public class AvaluacioDisplaySet
     {
-        [Required]
+        public int IdAnyEscolar { get; set; }
         public long IdAvaluacio { get; set; }
-
-        [Required]
         public string Nom { get; set; } = string.Empty;
-
-        [Required]
         public DateOnly DataInicial { get; set; }
-
-        [Required]
         public DateOnly DataFinal { get; set; }
-
-        [Required]
         public double NotaMinimaKarma { get; set; }
-
-        [Required]
         public double NotaMaximaKarma { get; set; }
+       
     }
 }
