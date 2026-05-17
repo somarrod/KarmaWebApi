@@ -7,6 +7,6 @@ namespace KarmaWebAPI.DTOs
         [Required]
         public int IdAnyEscolar { get; set; }
         [Required]
-        public string Nom { get; set; } = string.Empty;
+        public string Nom { get; set; } 
     }
 }

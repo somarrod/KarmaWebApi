@@ -99,6 +99,7 @@ namespace KarmaWebAPI.Serveis
             if (classe == null)
                 throw new InvalidOperationException("La classe no existeix");
 
+            // ✅ Validar duplicat dins del mateix any escolar
             bool existeixDuplicat = await _context.Classes
                 .AnyAsync(c =>
                     c.IdClasse != dto.IdClasse &&
@@ -109,6 +110,7 @@ namespace KarmaWebAPI.Serveis
                 throw new InvalidOperationException(
                     "Ja existeix una altra classe amb aquest nom dins del mateix any escolar");
 
+            // ✅ Només modifiquem el nom
             classe.Nom = dto.Nom;
 
             await _context.SaveChangesAsync();
@@ -138,6 +140,65 @@ namespace KarmaWebAPI.Serveis
 
             _context.Classes.Remove(classe);
             await _context.SaveChangesAsync();
+        }
+
+
+        // =====================================================
+        // ASSIGNAR ALUMNES A UNA CLASSE
+        // =====================================================
+
+        public async Task AssignarAlumnesAsync(long idClasse, List<string> NIAs)
+        {
+            using var tx = await _context.Database.BeginTransactionAsync();
+
+            var classe = await _context.Classes
+                .FirstOrDefaultAsync(c => c.IdClasse == idClasse);
+
+            if (classe == null)
+                throw new InvalidOperationException("La classe no existeix");
+
+            foreach (var nia in NIAs)
+            {
+                var alumne = await _context.Alumnes
+                    .FirstOrDefaultAsync(a => a.NIA == nia);
+
+                if (alumne == null)
+                    throw new InvalidOperationException($"L'alumne {nia} no existeix");
+
+                // Si estava en una altra classe → es canvia directament
+                alumne.IdClasse = idClasse;
+
+                // Si estava en un grup → es lleva
+                if (alumne.IdGrup != null)
+                    alumne.IdGrup = null;
+            }
+
+            await _context.SaveChangesAsync();
+            await tx.CommitAsync();
+        }
+
+
+        // =====================================================
+        // LLEVAR ALUMNES DE LA CLASSE ON ESTÀ ASSIGNAT
+        // =====================================================
+        public async Task DesassignarAlumnesAsync(List<string> NIAs)
+        {
+            using var tx = await _context.Database.BeginTransactionAsync();
+
+            foreach (var nia in NIAs)
+            {
+                var alumne = await _context.Alumnes
+                    .FirstOrDefaultAsync(a => a.NIA == nia);
+
+                if (alumne == null)
+                    throw new InvalidOperationException($"L'alumne {nia} no existeix");
+
+                alumne.IdClasse = null;
+                alumne.IdGrup = null;
+            }
+
+            await _context.SaveChangesAsync();
+            await tx.CommitAsync();
         }
     }
 }

@@ -7,8 +7,7 @@ namespace KarmaWebAPI.Controllers
 {
     [ApiController]
     [Route("api/classe")]
-    [Authorize(Roles = "AG_Admin,AG_Professor")]
-    public class ClasseController : ControllerBase
+     public class ClasseController : ControllerBase
     {
         private readonly IClasseService _service;
 
@@ -17,7 +16,8 @@ namespace KarmaWebAPI.Controllers
             _service = service;
         }
 
-        [HttpGet("per-any/{idAnyEscolar:int}")]
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
+        [HttpGet("per-anyescolar/{idAnyEscolar:int}")]
         public async Task<IActionResult> Llista(int idAnyEscolar)
         {
             try
@@ -30,6 +30,7 @@ namespace KarmaWebAPI.Controllers
             }
         }
 
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_Alumne")]
         [HttpGet("{idClasse:long}")]
         public async Task<IActionResult> Instancia(long idClasse)
         {
@@ -43,6 +44,7 @@ namespace KarmaWebAPI.Controllers
             }
         }
 
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
         [HttpPost("crear")]
         public async Task<IActionResult> Crear(ClasseCrearDTO dto)
         {
@@ -56,6 +58,7 @@ namespace KarmaWebAPI.Controllers
             }
         }
 
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
         [HttpPut("editar")]
         public async Task<IActionResult> Editar(ClasseEditarDTO dto)
         {
@@ -69,7 +72,8 @@ namespace KarmaWebAPI.Controllers
             }
         }
 
-        [HttpDelete("{idClasse:long}")]
+        [Authorize(Roles = "AG_Admin")]
+        [HttpDelete("eliminar/{idClasse:long}")]
         public async Task<IActionResult> Eliminar(long idClasse)
         {
             try
@@ -82,6 +86,38 @@ namespace KarmaWebAPI.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
+
+        [Authorize(Roles = "AG_Admin, AG_Professor")]
+        [HttpPost("assignar-alumnes")]
+        public async Task<IActionResult> AssignarAlumnes(
+                    [FromBody] AssignarAlumnesAClasseDTO dto)
+        {
+            try
+            {
+                await _service.AssignarAlumnesAsync(dto.IdClasse, dto.NIAs);
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpPost("desassignar-alumnes")]
+        public async Task<IActionResult> DesassignarAlumnes(
+            [FromBody] DesassignarAlumnesDeClasseDTO dto)
+        {
+            try
+            {
+                await _service.DesassignarAlumnesAsync(dto.NIAs);
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
     }
-   
+
 }

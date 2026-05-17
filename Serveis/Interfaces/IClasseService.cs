@@ -12,5 +12,10 @@ namespace KarmaWebAPI.Serveis.Interfaces
         Task<ClasseDisplaySet> EditarAsync(ClasseEditarDTO dto);
 
         Task EsborrarAsync(long idClasse);
+
+        
+        Task AssignarAlumnesAsync(long idClasse, List<string> NIAs);
+
+        Task DesassignarAlumnesAsync(List<string> NIAs);
     }
 }

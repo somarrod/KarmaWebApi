@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KarmaWebAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20260514143312_Inicial")]
+    [Migration("20260516144823_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />

@@ -12,16 +12,15 @@ namespace KarmaWebAPI.DTOs.DisplaySets
         [StringLength(50)]
         public string IdProfessor { get; set; } //identificar únic de tamany màxim 50 que assigna gva
 
+        public string NomICognomsProfessor { get; set; } //nom del professor
         public long IdMateria { get; set; } //identificar únic de la materia
 
-        [StringLength(5)]
-        public long IdClasse { get; set; } //identificar únic del grup
-
-        public string NomICognomsProfessor { get; set; } //nom del professor
-
         public string NomMateria { get; set; } //nom de la materia  
-
-        public string NomClasse { get; set; } //nom del grup
+                
+        public long IdClasse { get; set; } //identificar únic de la classe
+          
+       
+        public string NomClasse { get; set; } //nom de la classe
     }
 
 

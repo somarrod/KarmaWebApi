@@ -53,6 +53,7 @@ namespace KarmaWebAPI.Configurations
                                   .AddScoped<IAnyEscolarService, AnyEscolarService>()
                                   .AddScoped<IAvaluacioService, AvaluacioService>()
                                   .AddScoped<ICategoriaService, CategoriaService>()
+                                  .AddScoped<IClasseService, ClasseService>()
                                   .AddScoped<IConfiguracioKarmaService, ConfiguracioKarmaService>()
                                   .AddScoped<IGrupService, GrupService>()
                                   .AddScoped<IKarmaAlumneService, KarmaAlumneService>()
