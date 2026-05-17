@@ -52,21 +52,21 @@ namespace KarmaWebAPI.Data
             // =========================
             // PROFESSORDECLASSE → FK composta cap a CLASSE
             // =========================
-            modelBuilder.Entity<ProfessorDeClasse>()
-                .HasOne(pc => pc.Classe)
-                .WithMany(c => c.ProfessorsDeClasse)
-                .HasForeignKey(pc => new { pc.IdAnyEscolar, pc.IdClasse })
-                .OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<ProfessorDeClasse>()
+            //    .HasOne(pc => pc.Classe)
+            //    .WithMany(c => c.ProfessorsDeClasse)
+            //    .HasForeignKey(pc => new { pc.IdAnyEscolar, pc.IdClasse })
+            //    .OnDelete(DeleteBehavior.Restrict);
 
 
             // =========================
             // GRUP → FK composta
             // =========================
-            modelBuilder.Entity<Grup>()
-                .HasOne(g => g.Classe)
-                .WithMany(c => c.Grups)   // o .WithMany() si no vols navegació
-                .HasForeignKey(g => new { g.IdAnyEscolar, g.IdClasse })
-                .OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<Grup>()
+            //    .HasOne(g => g.Classe)
+            //    .WithMany(c => c.Grups)   // o .WithMany() si no vols navegació
+            //    .HasForeignKey(g => new { g.IdAnyEscolar, g.IdClasse })
+            //    .OnDelete(DeleteBehavior.Restrict);
 
 
             modelBuilder.Entity<Privilegi>()

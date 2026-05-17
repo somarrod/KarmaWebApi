@@ -59,7 +59,7 @@ namespace KarmaWebAPI.Controllers
         // POST: api/professordeclasse
         // Assignar professor a classe i matèria
         // ==================================================
-        [HttpPost]
+        [HttpPost("assignar")]
         [Authorize(Roles = "AG_Admin,AG_EquipDirectiu")]
         public async Task<ActionResult<ProfessorDeClasseDisplaySet>> Assignar(ProfessorDeClasseCrearDTO dto)
         {

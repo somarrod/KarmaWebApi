@@ -13,8 +13,6 @@ public class ProfessorDeClasse
     public string IdProfessor { get; set; }
     public Professor Professor { get; set; } = null!;
 
-    [Required]
-    public int IdAnyEscolar { get; set; }
     public long IdClasse { get; set; }
     public Classe Classe { get; set; } = null!;
 

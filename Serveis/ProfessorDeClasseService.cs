@@ -34,10 +34,18 @@ namespace KarmaWebAPI.Serveis
                 throw new InvalidOperationException(
                     $"El professor amb Id {dto.IdProfessor} ja està assignat a la classe i matèria.");
 
-            // Professor existeix?
-            if (!await _context.Professors.AnyAsync(p => p.IdProfessor == dto.IdProfessor))
+            // Professor existeix i està actiu
+            var professor = await _context.Professors
+                .FirstOrDefaultAsync(p => p.IdProfessor == dto.IdProfessor);
+
+            if (professor == null)
                 throw new InvalidOperationException(
                     $"El professor amb Id {dto.IdProfessor} no existeix.");
+
+            if (!professor.Actiu)
+                throw new InvalidOperationException(
+                    "No es pot assignar un professor inactiu");
+
 
             // Classe existeix?
             if (!await _context.Classes.AnyAsync(c => c.IdClasse == dto.IdClasse))
@@ -58,7 +66,19 @@ namespace KarmaWebAPI.Serveis
             };
 
             _context.ProfessorsDeClasse.Add(relacio);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                _context.ProfessorsDeClasse.Add(relacio);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+
+                throw new InvalidOperationException(
+                    ex.InnerException?.Message ?? ex.Message);
+            
+            }
 
             return await InstanciaAsync(relacio.IdProfessorDeClasse);
         }
