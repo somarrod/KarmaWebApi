@@ -24,7 +24,7 @@ namespace KarmaWebAPI.Controllers
         // ==================================================
         [Authorize(Roles = "AG_Admin,AG_Professor,AG_EquipDirectiu,AG_Alumne")]
 
-        [HttpGet("per-anyescolar/{idAnyEscolar:int}")]
+        [HttpGet("anyescolar/{idAnyEscolar:int}")]
         public async Task<IActionResult> GetPerAnyEscolar(int idAnyEscolar)
         {
             try

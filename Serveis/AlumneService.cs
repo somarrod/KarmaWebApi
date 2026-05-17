@@ -40,7 +40,7 @@ namespace KarmaWebAPI.Serveis
 
             
 
-                using var tx = await _context.Database.BeginTransactionAsync();
+           using var tx = await _context.Database.BeginTransactionAsync();
 
             var alumne = new Alumne
             {
@@ -190,11 +190,10 @@ namespace KarmaWebAPI.Serveis
                 throw new InvalidOperationException("La classe no existeix");
 
             // Si no canvia, retornem igualment l’objecte
-            if (alumne.IdClasse == dto.IdClasse && alumne.IdAnyEscolar == dto.IdAnyEscolar)
+            if (alumne.IdClasse == dto.IdClasse )
                 return alumne;
 
             // Assignar nova classe
-            alumne.IdAnyEscolar = dto.IdAnyEscolar;
             alumne.IdClasse = dto.IdClasse;
             
 

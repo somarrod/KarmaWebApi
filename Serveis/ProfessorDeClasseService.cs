@@ -106,25 +106,25 @@ namespace KarmaWebAPI.Serveis
         public async Task<ProfessorDeClasseDisplaySet?> InstanciaAsync(long idProfessorDeClasse)
         {
             return await _context.ProfessorsDeClasse
-                .Include(p => p.Professor)
-                .Include(p => p.Classe)
-                .Include(p => p.Materia)
-                .Where(p => p.IdProfessorDeClasse == idProfessorDeClasse)
-                .Select(p => new ProfessorDeClasseDisplaySet
-                {
-                    IdProfessorDeClasse = p.IdProfessorDeClasse,
+                    .Where(p => p.IdProfessorDeClasse == idProfessorDeClasse)
+                    .Select(p => new ProfessorDeClasseDisplaySet
+                    {
+                        IdProfessorDeClasse = p.IdProfessorDeClasse,
 
-                    IdProfessor = p.IdProfessor,
-                    NomICognomsProfessor =
-                        (p.Professor.Nom ?? "") + " " + (p.Professor.Cognoms ?? ""),
+                        IdProfessor = p.IdProfessor,
+                        NomICognomsProfessor =
+                            (p.Professor.Nom ?? "") + " " + (p.Professor.Cognoms ?? ""),
 
-                    IdClasse = p.IdClasse,
-                    NomClasse = p.Classe.Nom,
+                        IdClasse = p.IdClasse,
+                        NomClasse = p.Classe.Nom,
 
-                    IdMateria = p.IdMateria,
-                    NomMateria = p.Materia.Nom
-                })
-                .FirstOrDefaultAsync();
+                        IdAnyEscolar = p.Classe.IdAnyEscolar,   
+
+                        IdMateria = p.IdMateria,
+                        NomMateria = p.Materia.Nom
+                    })
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
         }
 
         // ================================
@@ -144,6 +144,8 @@ namespace KarmaWebAPI.Serveis
 
                     IdClasse = p.IdClasse,
                     NomClasse = p.Classe.Nom,
+
+                    IdAnyEscolar = p.Classe.IdAnyEscolar,   
 
                     IdMateria = p.IdMateria,
                     NomMateria = p.Materia.Nom

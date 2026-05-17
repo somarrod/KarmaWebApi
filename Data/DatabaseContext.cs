@@ -33,10 +33,10 @@ namespace KarmaWebAPI.Data
             // =========================
             // ALUMNE → FK a CLASSE
             // =========================
-            modelBuilder.Entity<Alumne>()
-                    .HasOne(a => a.Classe)
-                    .WithMany()
-                    .HasForeignKey(a => a.IdClasse);
+            //modelBuilder.Entity<Alumne>()
+            //        .HasOne(a => a.Classe)
+            //        .WithMany()
+            //        .HasForeignKey(a => a.IdClasse);
 
             // Configuración de la entidad AnyEscolar
             modelBuilder.Entity<AnyEscolar>()
@@ -48,20 +48,10 @@ namespace KarmaWebAPI.Data
             modelBuilder.Entity<Classe>()
                 .HasKey(c => new { c.IdClasse });
 
-            modelBuilder.Entity<Grup>()
-                .HasOne(g => g.Classe)
-                .WithMany()
-                .HasForeignKey(g => g.IdClasse);
-
-
             // Configuración de la entidad ProfessorDeClasse
             modelBuilder.Entity<ProfessorDeClasse>()
                 .HasKey(p => p.IdProfessorDeClasse);
 
-            modelBuilder.Entity<ProfessorDeClasse>()
-                .HasOne(p => p.Classe)
-                .WithMany()
-                .HasForeignKey(p => p.IdClasse);
             
             modelBuilder.Entity<ProfessorDeClasse>()
                 .HasIndex(p => new { p.IdProfessor, p.IdClasse, p.IdMateria })

@@ -11,8 +11,6 @@ namespace KarmaWebAPI.Models
 
         [StringLength(20)]
         public string Nom { get; set; } = string.Empty;
-
-
         
         [Required]
         public long IdClasse { get; set; }
