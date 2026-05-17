@@ -12,10 +12,8 @@ namespace KarmaWebAPI.DTOs
 
         [Required]
         [StringLength(20)] // Corregido: Se usa paréntesis en lugar de '=' y se pasa el argumento requerido.  
-        public String Nom { get; set; }
+        public string Nom { get; set; }
 
-        [StringLength(50)]
-        public String? IdProfessorTutor { get; set; } //tutor o tutora del grup  
     }
 
 }

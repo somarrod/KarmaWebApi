@@ -1,11 +1,12 @@
-﻿using System;
-using KarmaWebAPI.Data;
+﻿using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System;
+using System.Security.Cryptography;
 
 namespace KarmaWebAPI.Serveis
 {
@@ -19,7 +20,6 @@ namespace KarmaWebAPI.Serveis
             _context = context;
         }
 
-
         public async Task<string?> RecalcularKarmaBaseAsync(long idGrup)
         {
             var grup = await _context.Grups
@@ -29,7 +29,7 @@ namespace KarmaWebAPI.Serveis
             int idAnyEscolar = grup.Classe.IdAnyEscolar;
             DateOnly hui = DateOnly.FromDateTime(DateTime.Now);
 
-            // 🔑 Avaluació en curs PER ANY ESCOLAR
+            // Avaluació en curs PER ANY ESCOLAR
             var avaluacio = await _context.Avaluacions
                 .Where(a =>
                     a.IdAnyEscolar == idAnyEscolar &&
@@ -66,23 +66,77 @@ namespace KarmaWebAPI.Serveis
             return grup.KarmaBase;
         }
 
-
-        public async Task<Grup> CrearAsync(long idClasse, string nom)
+        public async Task<Grup> CrearAsync(GrupCrearDTO dto)
         {
             var classeExisteix = await _context.Classes
-                .AnyAsync(c => c.IdClasse == idClasse);
+                .AnyAsync(c => c.IdClasse == dto.IdClasse);
 
             if (!classeExisteix)
                 throw new InvalidOperationException("Classe inexistent");
 
+            // ✅ Validar duplicat dins de la mateixa classe
+            bool existeixDuplicat = await _context.Grups
+                .AnyAsync(g =>
+                    g.IdClasse == dto.IdClasse &&
+                    g.Nom == dto.Nom);
+
+            if (existeixDuplicat)
+                throw new InvalidOperationException(
+                    "Ja existeix un grup amb aquest nom dins de la mateixa classe");
+
             var grup = new Grup
             {
-                IdClasse = idClasse,
-                Nom = nom
+                IdClasse = dto.IdClasse,
+                Nom = dto.Nom
             };
 
             _context.Grups.Add(grup);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new InvalidOperationException(
+                    ex.InnerException?.Message ?? ex.Message);
+            }
+
+            return grup;
+        }
+
+        public async Task<Grup> EditarAsync(GrupEditarDTO dto)
+        {
+            var grup = await _context.Grups
+                .FirstOrDefaultAsync(g => g.IdGrup == dto.IdGrup);
+
+            if (grup == null)
+                throw new InvalidOperationException("El grup no existeix");
+
+            // Validar duplicat dins de la mateixa classe
+            bool existeixDuplicat = await _context.Grups
+                .AnyAsync(g =>
+                    g.IdGrup != dto.IdGrup &&
+                    g.IdClasse == grup.IdClasse &&
+                    g.Nom == dto.Nom);
+
+            if (existeixDuplicat)
+                throw new InvalidOperationException(
+                    "Ja existeix un grup amb aquest nom dins de la mateixa classe");
+
+            //  Actualitzar només el nom
+            grup.Nom = dto.Nom;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new InvalidOperationException(
+                    ex.InnerException?.Message ?? ex.Message);
+            }
+
             return grup;
         }
 
@@ -100,18 +154,28 @@ namespace KarmaWebAPI.Serveis
                 a.IdGrup = null;
 
             _context.Grups.Remove(grup);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+
+                throw new InvalidOperationException(
+                    ex.InnerException?.Message ?? ex.Message);
+
+            }
             return true;
         }
 
-        public async Task<Alumne> AfegirAlumneAsync(long idGrup, string nia)
+        public async Task<Alumne> AfegirAlumneAsync(AssignarAlumneAGrupDTO dto)
         {
             var alumne = await _context.Alumnes
-                .FirstOrDefaultAsync(a => a.NIA == nia)
+                .FirstOrDefaultAsync(a => a.NIA == dto.NIA)
                 ?? throw new InvalidOperationException("Alumne no trobat");
 
             var grup = await _context.Grups
-                .FirstOrDefaultAsync(g => g.IdGrup == idGrup)
+                .FirstOrDefaultAsync(g => g.IdGrup == dto.IdGrup)
                 ?? throw new InvalidOperationException("Grup no trobat");
 
             // coherència Classe
@@ -119,10 +183,22 @@ namespace KarmaWebAPI.Serveis
                 throw new InvalidOperationException(
                     "L'alumne no pertany a la classe del grup");
 
-            alumne.IdGrup = idGrup;
-            await _context.SaveChangesAsync();
+            // assignar (substitueix si estava en un altre grup)
+            alumne.IdGrup = dto.IdGrup;
 
-            await RecalcularKarmaBaseAsync(idGrup);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new InvalidOperationException(
+                    ex.InnerException?.Message ?? ex.Message);
+            }
+
+            // recalcular només aquest grup
+            await RecalcularKarmaBaseAsync(dto.IdGrup);
+
             return alumne;
         }
 
@@ -133,10 +209,21 @@ namespace KarmaWebAPI.Serveis
                 ?? throw new InvalidOperationException("Alumne no trobat");
 
             var idGrupAnterior = alumne.IdGrup;
+
+            // desassignar
             alumne.IdGrup = null;
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new InvalidOperationException(
+                    ex.InnerException?.Message ?? ex.Message);
+            }
 
+            // si tenia grup → recalcular
             if (idGrupAnterior.HasValue)
                 await RecalcularKarmaBaseAsync(idGrupAnterior.Value);
 
@@ -146,24 +233,56 @@ namespace KarmaWebAPI.Serveis
         // ==================================================
         // INSTÀNCIA
         // ==================================================
-        public async Task<Grup?> InstanciaAsync(long idGrup)
+        public async Task<Grup?> InstanciaAsync(long idGrup, string rolUsuari, string? niaUsuari)
         {
-            return await _context.Grups
-                .Include(g => g.Classe)
-                .FirstOrDefaultAsync(g => g.IdGrup == idGrup);
+                    var grup = await _context.Grups
+                        .Include(g => g.Classe)
+                        .FirstOrDefaultAsync(g => g.IdGrup == idGrup);
+
+                    if (grup == null)
+                           return null;
+
+            // Si és alumne → només pot veure el seu grup
+            if (rolUsuari == "AG_Alumne")
+                    {
+                        var alumne = await _context.Alumnes
+                            .FirstOrDefaultAsync(a => a.NIA == niaUsuari);
+
+                        if (alumne == null || alumne.IdGrup != idGrup)
+                           return null;
+                    }
+
+                    return grup;
         }
 
         // ==================================================
         // LLISTA PER CLASSE
         // ==================================================
-        public async Task<List<Grup>> LlistaPerClasseAsync(long idClasse)
+        public async Task<List<Grup>> LlistaPerClasseAsync(long idClasse, string rolUsuari, string? niaUsuari)
         {
-            return await _context.Grups
-                .Where(g => g.IdClasse == idClasse)
-                .OrderBy(g => g.Nom)
-                .ToListAsync();
-        }
 
+            // Si NO és alumne → llista completa
+            if (rolUsuari != "AG_Alumne")
+            {
+                return await _context.Grups
+                    .Where(g => g.IdClasse == idClasse)
+                    .OrderBy(g => g.Nom)
+                    .ToListAsync();
+            }
+
+            // Si és alumne → només el seu grup
+            var alumne = await _context.Alumnes
+                .FirstOrDefaultAsync(a => a.NIA == niaUsuari);
+
+            if (alumne == null || alumne.IdClasse != idClasse || alumne.IdGrup == null)
+                return new List<Grup>(); // buida (no accés)
+
+            var grup = await _context.Grups
+                .Where(g => g.IdGrup == alumne.IdGrup)
+                .ToListAsync();
+
+            return grup;
+        }
     }
 
 }
