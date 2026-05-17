@@ -26,8 +26,9 @@ namespace KarmaWebAPI.Models
 
         // Relació (navegació només ací, com marca el model)
         [Required]
-        [ForeignKey("AnyEscolar")]
+        
         public int IdAnyEscolar { get; set; }
+        [ForeignKey("IdAnyEscolar")]
         public AnyEscolar AnyEscolar { get; set; } = null!;
     }
 }

@@ -23,13 +23,17 @@ namespace KarmaWebAPI.Models
         
         // FKs cap a Classe (clau composta) 
         public int? IdAnyEscolar { get; set; }
+
+        
         public long? IdClasse { get; set; }
+        [ForeignKey(nameof(IdClasse))]
         public Classe? Classe { get; set; } 
 
 
         // Grup (pot canviar)
-        [ForeignKey(nameof(Grup))]
+        
         public long? IdGrup { get; set; }
+        [ForeignKey(nameof(IdGrup))]
         public Grup? Grup { get; set; }
 
 

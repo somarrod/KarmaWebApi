@@ -23,9 +23,9 @@ namespace KarmaWebAPI.Models
 
         // Relació amb AnyEscolar
         [Required]
-        [ForeignKey(nameof(AnyEscolar))]
+        
         public int IdAnyEscolar { get; set; }
-
+        [ForeignKey(nameof(IdAnyEscolar))]
         public AnyEscolar AnyEscolar { get; set; } = null!;
     }
 }

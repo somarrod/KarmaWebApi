@@ -15,13 +15,15 @@ namespace KarmaWebAPI.Models
 
         // Relació amb AnyEscolar
         [Required]
-        [ForeignKey(nameof(AnyEscolar))]
+        
         public int IdAnyEscolar { get; set; }
 
+        [ForeignKey(nameof(IdAnyEscolar))]
         public AnyEscolar AnyEscolar { get; set; } = null!;
 
         //Navegacions(NO les usarem en serveis de consulta)
-        public ICollection<Alumne> Alumnes { get; set; } = new List<Alumne>();
+        public ICollection<Alumne> Alumnes { get; set; } 
+            = new List<Alumne>();
 
         public ICollection<ProfessorDeClasse> ProfessorsDeClasse { get; set; }
                = new List<ProfessorDeClasse>();

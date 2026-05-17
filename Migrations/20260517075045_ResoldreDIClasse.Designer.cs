@@ -4,6 +4,7 @@ using KarmaWebAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KarmaWebAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260517075045_ResoldreDIClasse")]
+    partial class ResoldreDIClasse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,9 +33,6 @@ namespace KarmaWebAPI.Migrations
 
                     b.Property<bool>("Actiu")
                         .HasColumnType("bit");
-
-                    b.Property<long?>("ClasseIdClasse")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Cognoms")
                         .IsRequired()
@@ -55,11 +55,9 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasKey("NIA");
 
-                    b.HasIndex("ClasseIdClasse");
-
-                    b.HasIndex("IdClasse");
-
                     b.HasIndex("IdGrup");
+
+                    b.HasIndex("IdAnyEscolar", "IdClasse");
 
                     b.ToTable("Alumnes");
                 });
@@ -233,23 +231,21 @@ namespace KarmaWebAPI.Migrations
 
             modelBuilder.Entity("KarmaWebAPI.Models.Classe", b =>
                 {
+                    b.Property<int>("IdAnyEscolar")
+                        .HasColumnType("int");
+
                     b.Property<long>("IdClasse")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdClasse"));
 
-                    b.Property<int>("IdAnyEscolar")
-                        .HasColumnType("int");
-
                     b.Property<string>("Nom")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.HasKey("IdClasse");
-
-                    b.HasIndex("IdAnyEscolar");
+                    b.HasKey("IdAnyEscolar", "IdClasse");
 
                     b.ToTable("Classes");
                 });
@@ -293,7 +289,10 @@ namespace KarmaWebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdGrup"));
 
-                    b.Property<long?>("ClasseIdClasse")
+                    b.Property<int>("ClasseIdAnyEscolar")
+                        .HasColumnType("int");
+
+                    b.Property<long>("ClasseIdClasse")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("DataUltimaActualitzacioKarma")
@@ -313,9 +312,7 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasKey("IdGrup");
 
-                    b.HasIndex("ClasseIdClasse");
-
-                    b.HasIndex("IdClasse");
+                    b.HasIndex("ClasseIdAnyEscolar", "ClasseIdClasse");
 
                     b.ToTable("Grups");
                 });
@@ -746,7 +743,10 @@ namespace KarmaWebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdProfessorDeClasse"));
 
-                    b.Property<long?>("ClasseIdClasse")
+                    b.Property<int>("ClasseIdAnyEscolar")
+                        .HasColumnType("int");
+
+                    b.Property<long>("ClasseIdClasse")
                         .HasColumnType("bigint");
 
                     b.Property<long>("IdClasse")
@@ -761,11 +761,9 @@ namespace KarmaWebAPI.Migrations
 
                     b.HasKey("IdProfessorDeClasse");
 
-                    b.HasIndex("ClasseIdClasse");
-
-                    b.HasIndex("IdClasse");
-
                     b.HasIndex("IdMateria");
+
+                    b.HasIndex("ClasseIdAnyEscolar", "ClasseIdClasse");
 
                     b.HasIndex("IdProfessor", "IdClasse", "IdMateria")
                         .IsUnique();
@@ -775,17 +773,14 @@ namespace KarmaWebAPI.Migrations
 
             modelBuilder.Entity("KarmaWebAPI.Models.Alumne", b =>
                 {
-                    b.HasOne("KarmaWebAPI.Models.Classe", null)
-                        .WithMany("Alumnes")
-                        .HasForeignKey("ClasseIdClasse");
-
-                    b.HasOne("KarmaWebAPI.Models.Classe", "Classe")
-                        .WithMany()
-                        .HasForeignKey("IdClasse");
-
                     b.HasOne("KarmaWebAPI.Models.Grup", "Grup")
                         .WithMany()
                         .HasForeignKey("IdGrup");
+
+                    b.HasOne("KarmaWebAPI.Models.Classe", "Classe")
+                        .WithMany("Alumnes")
+                        .HasForeignKey("IdAnyEscolar", "IdClasse")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Classe");
 
@@ -838,13 +833,9 @@ namespace KarmaWebAPI.Migrations
 
             modelBuilder.Entity("KarmaWebAPI.Models.Grup", b =>
                 {
-                    b.HasOne("KarmaWebAPI.Models.Classe", null)
-                        .WithMany("Grups")
-                        .HasForeignKey("ClasseIdClasse");
-
                     b.HasOne("KarmaWebAPI.Models.Classe", "Classe")
-                        .WithMany()
-                        .HasForeignKey("IdClasse")
+                        .WithMany("Grups")
+                        .HasForeignKey("ClasseIdAnyEscolar", "ClasseIdClasse")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -984,16 +975,6 @@ namespace KarmaWebAPI.Migrations
 
             modelBuilder.Entity("ProfessorDeClasse", b =>
                 {
-                    b.HasOne("KarmaWebAPI.Models.Classe", null)
-                        .WithMany("ProfessorsDeClasse")
-                        .HasForeignKey("ClasseIdClasse");
-
-                    b.HasOne("KarmaWebAPI.Models.Classe", "Classe")
-                        .WithMany()
-                        .HasForeignKey("IdClasse")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("KarmaWebAPI.Models.Materia", "Materia")
                         .WithMany()
                         .HasForeignKey("IdMateria")
@@ -1003,6 +984,12 @@ namespace KarmaWebAPI.Migrations
                     b.HasOne("KarmaWebAPI.Models.Professor", "Professor")
                         .WithMany()
                         .HasForeignKey("IdProfessor")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KarmaWebAPI.Models.Classe", "Classe")
+                        .WithMany("ProfessorsDeClasse")
+                        .HasForeignKey("ClasseIdAnyEscolar", "ClasseIdClasse")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

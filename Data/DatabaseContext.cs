@@ -30,43 +30,42 @@ namespace KarmaWebAPI.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
+            // =========================
+            // ALUMNE → FK a CLASSE
+            // =========================
+            modelBuilder.Entity<Alumne>()
+                    .HasOne(a => a.Classe)
+                    .WithMany()
+                    .HasForeignKey(a => a.IdClasse);
+
             // Configuración de la entidad AnyEscolar
             modelBuilder.Entity<AnyEscolar>()
                 .HasKey(a => a.IdAnyEscolar);
 
             // =========================
-            // CLASSE → clau composta
+            // CLASSE → clau 
             // =========================
             modelBuilder.Entity<Classe>()
-                .HasKey(c => new { c.IdAnyEscolar, c.IdClasse });
+                .HasKey(c => new { c.IdClasse });
 
-            // =========================
-            // ALUMNE → FK composta cap a CLASSE
-            // =========================
-            modelBuilder.Entity<Alumne>()
-                .HasOne(a => a.Classe)
-                .WithMany(c => c.Alumnes)
-                .HasForeignKey(a => new { a.IdAnyEscolar, a.IdClasse })
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // =========================
-            // PROFESSORDECLASSE → FK composta cap a CLASSE
-            // =========================
-            //modelBuilder.Entity<ProfessorDeClasse>()
-            //    .HasOne(pc => pc.Classe)
-            //    .WithMany(c => c.ProfessorsDeClasse)
-            //    .HasForeignKey(pc => new { pc.IdAnyEscolar, pc.IdClasse })
-            //    .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Grup>()
+                .HasOne(g => g.Classe)
+                .WithMany()
+                .HasForeignKey(g => g.IdClasse);
 
 
-            // =========================
-            // GRUP → FK composta
-            // =========================
-            //modelBuilder.Entity<Grup>()
-            //    .HasOne(g => g.Classe)
-            //    .WithMany(c => c.Grups)   // o .WithMany() si no vols navegació
-            //    .HasForeignKey(g => new { g.IdAnyEscolar, g.IdClasse })
-            //    .OnDelete(DeleteBehavior.Restrict);
+            // Configuración de la entidad ProfessorDeClasse
+            modelBuilder.Entity<ProfessorDeClasse>()
+                .HasKey(p => p.IdProfessorDeClasse);
+
+            modelBuilder.Entity<ProfessorDeClasse>()
+                .HasOne(p => p.Classe)
+                .WithMany()
+                .HasForeignKey(p => p.IdClasse);
+            
+            modelBuilder.Entity<ProfessorDeClasse>()
+                .HasIndex(p => new { p.IdProfessor, p.IdClasse, p.IdMateria })
+                .IsUnique();
 
 
             modelBuilder.Entity<Privilegi>()
@@ -74,10 +73,6 @@ namespace KarmaWebAPI.Data
                 .WithMany(a => a.Privilegis)
                 .HasForeignKey(p => p.IdAnyEscolar)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // Configuración de la entidad ProfessorDeClasse
-            modelBuilder.Entity<ProfessorDeClasse>()
-                .HasKey(p => p.IdProfessorDeClasse);
 
 
             modelBuilder.Entity<Puntuacio>()
@@ -93,10 +88,6 @@ namespace KarmaWebAPI.Data
 
             modelBuilder.Entity<KarmaAlumne>()
                 .HasIndex(k => new { k.NIA, k.IdAvaluacio });
-
-            modelBuilder.Entity<ProfessorDeClasse>()
-                .HasIndex(p => new { p.IdProfessor, p.IdClasse, p.IdMateria })
-                .IsUnique();
 
 
             modelBuilder.Entity<Categoria>()

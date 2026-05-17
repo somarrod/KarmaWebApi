@@ -21,6 +21,8 @@ namespace KarmaWebAPI.DTOs.DisplaySets
           
        
         public string NomClasse { get; set; } //nom de la classe
+
+        public int IdAnyEscolar { get; set; } 
     }
 
 

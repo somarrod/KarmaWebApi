@@ -12,10 +12,11 @@ namespace KarmaWebAPI.Models
         [StringLength(20)]
         public string Nom { get; set; } = string.Empty;
 
-        [Required]
-        public int IdAnyEscolar { get; set; }
+
+        
         [Required]
         public long IdClasse { get; set; }
+        [ForeignKey(nameof(IdClasse))]
         public Classe Classe { get; set; } = null!;
 
         // DERIVAT / CACHE

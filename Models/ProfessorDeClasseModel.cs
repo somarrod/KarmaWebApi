@@ -9,15 +9,19 @@ public class ProfessorDeClasse
     public long IdProfessorDeClasse { get; set; }
 
     [Required]
-    [ForeignKey(nameof(Professor))]
+    
     public string IdProfessor { get; set; }
+    [ForeignKey(nameof(IdProfessor))]
     public Professor Professor { get; set; } = null!;
 
+    
     public long IdClasse { get; set; }
+    [ForeignKey(nameof(IdClasse))]
     public Classe Classe { get; set; } = null!;
 
     [Required]
-    [ForeignKey(nameof(Materia))]
+    
     public long IdMateria { get; set; }
+    [ForeignKey(nameof(IdMateria))]
     public Materia Materia { get; set; } = null!;
 }

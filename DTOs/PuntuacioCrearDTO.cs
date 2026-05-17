@@ -7,14 +7,11 @@ namespace KarmaWebAPI.DTOs
 
     public class PuntuacioCrearDTO
     {
-        [ForeignKey("Alumne")]
         public string NIA { get; set; } //identificar únic
 
-        [ForeignKey("Avaluacio")]
         [Required]
         public int IdAvaluacio { get; set; }
 
-        [ForeignKey("Categoria")]
         public long IdCategoria { get; set; } //identificar únic
 
         public int NumPunts { get; set; } = 0; //Activa, per defecte true
