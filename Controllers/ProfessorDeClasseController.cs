@@ -1,4 +1,5 @@
-﻿using KarmaWebAPI.DTOs.DisplaySets;
+﻿using KarmaWebAPI.DTOs;
+using KarmaWebAPI.DTOs.DisplaySets;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -18,23 +19,31 @@ namespace KarmaWebAPI.Controllers
         }
 
         // ==================================================
-        // GET: api/professordeclasse
+        // GET: api/professordeclasse/per-anyescolar/2627
         // Llista completa
         // ==================================================
-        [HttpGet]
-        [Authorize(Roles = "AG_Admin,AG_Professor,AG_EquipDirectiu")]
-        public async Task<ActionResult<IEnumerable<ProfessorDeClasseDisplaySet>>> Llista()
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_EquipDirectiu,AG_Alumne")]
+
+        [HttpGet("per-anyescolar/{idAnyEscolar:int}")]
+        public async Task<IActionResult> GetPerAnyEscolar(int idAnyEscolar)
         {
-            var llista = await _service.GetLlistaAsync();
-            return Ok(llista);
+            try
+            {
+                return Ok(await _service.GetLlistaAsync(idAnyEscolar));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
+
 
         // ==================================================
         // GET: api/professordeclasse/{id}
         // Instància (DisplaySet)
         // ==================================================
         [HttpGet("{idProfessorDeClasse:long}")]
-        [Authorize(Roles = "AG_Admin,AG_Professor,AG_EquipDirectiu")]
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_EquipDirectiu,AG_Alumne")]
         public async Task<ActionResult<ProfessorDeClasseDisplaySet>> Instancia(
             long idProfessorDeClasse)
         {
@@ -52,17 +61,13 @@ namespace KarmaWebAPI.Controllers
         // ==================================================
         [HttpPost]
         [Authorize(Roles = "AG_Admin,AG_EquipDirectiu")]
-        public async Task<ActionResult<ProfessorDeClasse>> Assignar(
-            [FromQuery] string idProfessor,
-            [FromQuery] long idClasse,
-            [FromQuery] long idMateria)
+        public async Task<ActionResult<ProfessorDeClasseDisplaySet>> Assignar(ProfessorDeClasseCrearDTO dto)
         {
             try
             {
-                var relacio = await _service.AssignarAsync(
-                    idProfessor, idClasse, idMateria);
+                var relacio = await _service.AssignarProfessorAClasseAsync(dto);
 
-                return Ok(relacio); // ✅ retorna objecte creat
+                return Ok(relacio); // retorna objecte creat
             }
             catch (InvalidOperationException ex)
             {
@@ -74,15 +79,11 @@ namespace KarmaWebAPI.Controllers
         // DELETE: api/professordeclasse
         // Esborrar relació
         // ==================================================
-        [HttpDelete]
+        [HttpDelete("eliminar/{idProfessorDeClasse:long}")]
         [Authorize(Roles = "AG_Admin,AG_EquipDirectiu")]
-        public async Task<IActionResult> Esborrar(
-            [FromQuery] string idProfessor,
-            [FromQuery] long idClasse,
-            [FromQuery] long idMateria)
+        public async Task<IActionResult> Esborrar(long idProfessorDeClasse)
         {
-            var esborrat = await _service.EsborrarAsync(
-                idProfessor, idClasse, idMateria);
+            var esborrat = await _service.EsborrarAsync(idProfessorDeClasse);
 
             if (!esborrat)
                 return NotFound();

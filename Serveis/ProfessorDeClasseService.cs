@@ -1,4 +1,5 @@
 ﻿using KarmaWebAPI.Data;
+using KarmaWebAPI.DTOs;
 using KarmaWebAPI.DTOs.DisplaySets;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
@@ -21,56 +22,55 @@ namespace KarmaWebAPI.Serveis
         // ============================
         // CREAR (ASSIGNAR)
         // ============================
-        public async Task<ProfessorDeClasse> AssignarAsync(string idProfessor, long idClasse, long idMateria)
+        public async Task<ProfessorDeClasseDisplaySet> AssignarProfessorAClasseAsync(ProfessorDeClasseCrearDTO dto)
         {
             // Ja existeix?
             var jaExisteix = await _context.ProfessorsDeClasse.AnyAsync(p =>
-                p.IdProfessor == idProfessor &&
-                p.IdClasse == idClasse &&
-                p.IdMateria == idMateria);
+                p.IdProfessor == dto.IdProfessor &&
+                p.IdClasse == dto.IdClasse &&
+                p.IdMateria == dto.IdMateria);
 
             if (jaExisteix)
                 throw new InvalidOperationException(
-                    $"El professor amb Id {idProfessor} ja està assignat a la classe i matèria.");
+                    $"El professor amb Id {dto.IdProfessor} ja està assignat a la classe i matèria.");
 
             // Professor existeix?
-            if (!await _context.Professors.AnyAsync(p => p.IdProfessor == idProfessor))
+            if (!await _context.Professors.AnyAsync(p => p.IdProfessor == dto.IdProfessor))
                 throw new InvalidOperationException(
-                    $"El professor amb Id {idProfessor} no existeix.");
+                    $"El professor amb Id {dto.IdProfessor} no existeix.");
 
             // Classe existeix?
-            if (!await _context.Classes.AnyAsync(c => c.IdClasse == idClasse))
+            if (!await _context.Classes.AnyAsync(c => c.IdClasse == dto.IdClasse))
                 throw new InvalidOperationException(
-                    $"La classe amb Id {idClasse} no existeix.");
+                    $"La classe amb Id {dto.IdClasse} no existeix.");
 
             // Matèria existeix?
-            if (!await _context.Materies.AnyAsync(m => m.IdMateria == idMateria))
+            if (!await _context.Materies.AnyAsync(m => m.IdMateria == dto.IdMateria))
                 throw new InvalidOperationException(
-                    $"La matèria amb Id {idMateria} no existeix.");
+                    $"La matèria amb Id {dto.IdMateria} no existeix.");
+            
 
             var relacio = new ProfessorDeClasse
             {
-                IdProfessor = idProfessor,
-                IdClasse = idClasse,
-                IdMateria = idMateria
+                IdProfessor = dto.IdProfessor,
+                IdClasse = dto.IdClasse,
+                IdMateria = dto.IdMateria
             };
 
             _context.ProfessorsDeClasse.Add(relacio);
             await _context.SaveChangesAsync();
 
-            return relacio;
+            return await InstanciaAsync(relacio.IdProfessorDeClasse);
         }
 
         // ============================
         // ESBORRAR
         // ============================
-        public async Task<bool> EsborrarAsync(string idProfessor, long idClasse, long idMateria)
+        public async Task<bool> EsborrarAsync(long idProfessorDeClasse)
         {
             var relacio = await _context.ProfessorsDeClasse
                 .FirstOrDefaultAsync(p =>
-                    p.IdProfessor == idProfessor &&
-                    p.IdClasse == idClasse &&
-                    p.IdMateria == idMateria);
+                    p.IdProfessorDeClasse == idProfessorDeClasse);
 
             if (relacio == null)
                 return false;
@@ -107,15 +107,13 @@ namespace KarmaWebAPI.Serveis
                 .FirstOrDefaultAsync();
         }
 
-        // ============================
-        // LLISTA COMPLETA
-        // ============================
-        public async Task<List<ProfessorDeClasseDisplaySet>> GetLlistaAsync()
+        // ================================
+        // LLISTA COMPLETA per AnyEscolar
+        // ================================
+        public async Task<List<ProfessorDeClasseDisplaySet>> GetLlistaAsync(int idAnyEscolar)
         {
             return await _context.ProfessorsDeClasse
-                .Include(p => p.Professor)
-                .Include(p => p.Classe)
-                .Include(p => p.Materia)
+                .Where(p => p.Classe.IdAnyEscolar == idAnyEscolar)
                 .Select(p => new ProfessorDeClasseDisplaySet
                 {
                     IdProfessorDeClasse = p.IdProfessorDeClasse,
@@ -133,9 +131,10 @@ namespace KarmaWebAPI.Serveis
                 .OrderBy(p => p.NomClasse)
                 .ThenBy(p => p.NomMateria)
                 .ThenBy(p => p.NomICognomsProfessor)
+                .AsNoTracking()
                 .ToListAsync();
         }
-        
+
         // ============================
         // VERIFICACIONS
         // ============================

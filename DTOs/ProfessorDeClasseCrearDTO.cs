@@ -7,11 +7,10 @@ namespace KarmaWebAPI.DTOs
     {
         [StringLength(50)]
         public String IdProfessor { get; set; } //identificar únic de tamany màxim 50 que assigna gva
+     
+        public long IdClasse { get; set; } //identificar únic de classe
 
-        public int IdMateria { get; set; } //identificar únic de la materia
-
-        [StringLength(50)]
-        public String IdClasse { get; set; } //identificar únic del grup
+        public long IdMateria { get; set; } //identificar únic de la materia
     }
 }
 
