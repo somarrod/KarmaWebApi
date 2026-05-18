@@ -102,7 +102,7 @@ namespace KarmaWebAPI.Serveis
                     ex.InnerException?.Message ?? ex.Message);
             }
 
-            return grup;
+            return await InstanciaAsync(grup.IdGrup,"AG_Admin", null);
         }
 
         public async Task<Grup> EditarAsync(GrupEditarDTO dto)
@@ -252,7 +252,7 @@ namespace KarmaWebAPI.Serveis
                            return null;
                     }
 
-                    return grup;
+            return grup;
         }
 
         // ==================================================
