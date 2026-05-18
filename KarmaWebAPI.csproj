@@ -20,6 +20,8 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="docker\" />
+    <Folder Include="backup\" />
     <Folder Include="Scripts\" />
   </ItemGroup>
 
