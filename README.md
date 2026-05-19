@@ -1,4 +1,4 @@
-# Arquitectura i criteris de disseny del projecte
+# Arquitectura i criteris de disseny del projecte KarmaWebApi
 
 ## 1. Visió general
 
@@ -47,7 +47,7 @@ Aquesta separació permet reutilització, testabilitat i una evolució més segu
 
 ## 3. Models i fidelitat al domini
 
-Els models reflecteixen estrictament el model orientat a objectes de Karma.
+Els models reflecteixen estrictament el model orientat a objectes de Karma que ha guiat aquest disseny.
 
 Principis seguits:
 - Tot atribut del model orientat a objectes existeix en el model
@@ -56,18 +56,14 @@ Principis seguits:
 
 ---
 
-## 4. Claus primàries i claus compostes
+## 4. Claus primàries 
 
-Només s’utilitzen claus compostes quan el domini ho exigeix explícitament.
-
-Cas destacat:
-- `Classe` utilitza una clau composta `(IdAnyEscolar, IdClasse)`
-
-Quan una entitat referencia una clau composta:
-- Ha d’incloure tots els camps de la clau
-- La relació s’ha de definir explícitament en `OnModelCreating`
-
-EF Core no pot deduir aquestes relacions automàticament.
+Totes les claus primàries utilitzades son claus simples. 
+Habitualment es tracta de camps de tipus long. 
+Excepte en:
+- Profesor que utilitza el seu codi de professor assignat per la GVA
+- Alumne que utilitza el NIA
+- AnyEscolar que utilitza un int, ja que composa el seu id utilitzant l'anyescolar: exemple 2526 o 2627.
 
 ---
 
