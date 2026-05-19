@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -11,6 +9,8 @@ services:
       - "1433:1433"
     volumes:
       - ./backup:/var/opt/mssql/backup
+      - sql_data:/var/opt/mssql
+    command: /bin/bash -c "/opt/mssql/bin/sqlservr & /bin/bash /var/opt/mssql/backup/init.sh"
 
   api:
     build:
@@ -21,3 +21,7 @@ services:
       - "5000:5100"
     depends_on:
       - db
+            
+volumes:
+  sql_data:
+ 
