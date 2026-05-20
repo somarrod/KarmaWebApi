@@ -22,7 +22,9 @@ builder.Services.AddCors(options =>
 
 
 builder.Services.AddDbContext<DatabaseContext>(opt => {
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+                     sql => sql.EnableRetryOnFailure()
+     );
 });
 
 //builder.Services.AddAuthentication();

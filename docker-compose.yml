@@ -10,7 +10,6 @@ services:
     volumes:
       - ./backup:/var/opt/mssql/backup
       - sql_data:/var/opt/mssql
-    command: /bin/bash -c "/opt/mssql/bin/sqlservr & /bin/bash /var/opt/mssql/backup/init.sh"
 
   api:
     build:
