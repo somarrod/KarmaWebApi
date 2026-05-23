@@ -21,7 +21,34 @@ namespace KarmaWebAPI.Serveis
             _context = context;
         }
 
+        // ==================================================
+        // CALCULAR KARMA BASE 
+        // ==================================================
+        //Wrapper Orquestrador de transaccions
         public async Task<string?> CalcularKarmaBaseAsync(long idGrup)
+        {
+            var strategy = _context.Database.CreateExecutionStrategy();
+
+            return await strategy.ExecuteAsync(async () =>
+            {
+                using var tx = await _context.Database.BeginTransactionAsync();
+
+                try
+                {
+                    var res = await CalcularKarmaBaseCoreAsync(idGrup);
+
+                    await tx.CommitAsync();
+                    return res;
+                }
+                catch
+                {
+                    await tx.RollbackAsync();
+                    throw;
+                }
+            });
+        }
+        //Core
+        public async Task<string?> CalcularKarmaBaseCoreAsync(long idGrup)
         {
             var grup = await _context.Grups
                 .Include(g => g.Classe)
@@ -30,18 +57,16 @@ namespace KarmaWebAPI.Serveis
             int idAnyEscolar = grup.Classe.IdAnyEscolar;
             DateOnly hui = DateOnly.FromDateTime(DateTime.Now);
 
-            // Avaluació en curs PER ANY ESCOLAR
             var avaluacio = await _context.Avaluacions
                 .Where(a =>
                     a.IdAnyEscolar == idAnyEscolar &&
                     a.DataInicial <= hui &&
-                     a.DataFinal >= hui)
+                    a.DataFinal >= hui)
                 .FirstOrDefaultAsync();
 
             if (avaluacio == null)
                 return null;
 
-            // alumnes del grup
             var puntsMinims = await _context.KarmaAlumnes
                 .Where(k =>
                     k.IdAvaluacio == avaluacio.IdAvaluacio &&
@@ -64,6 +89,7 @@ namespace KarmaWebAPI.Serveis
             grup.DataUltimaActualitzacioKarma = DateTime.Now;
 
             await _context.SaveChangesAsync();
+
             return grup.KarmaBase;
         }
 

@@ -1,6 +1,7 @@
 ﻿//using KarmaWebAPI.Controllers;
 using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
+using KarmaWebAPI.DTOs.DisplaySets;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -38,187 +39,273 @@ namespace KarmaWebAPI.Serveis
         // ==================================================
         // CREAR ALUMNE (+ usuari Identity)
         // ==================================================
-        public async Task<Alumne> CrearAsync(AlumneDTO dto)
+        public async Task<AlumneDisplaySet> CrearAsync(AlumneDTO dto)
         {
-            using var tx = await _context.Database.BeginTransactionAsync();
+            var strategy = _context.Database.CreateExecutionStrategy();
 
-            var alumne = new Alumne
+            return await strategy.ExecuteAsync(async () =>
             {
-                NIA = dto.NIA,
-                Nom = dto.Nom,
-                Cognoms = dto.Cognoms,
-                Actiu = true,
-                IdClasse = null,   // ✅ NO assignar ací
-                IdGrup = null      // ✅ NO assignar ací
-            };
+                using var tx = await _context.Database.BeginTransactionAsync();
 
-            try
-            {
-                _context.Alumnes.Add(alumne);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                await tx.RollbackAsync();
-                throw new InvalidOperationException(
-                    "Ja existeix un alumne amb aquest NIA o les dades no són vàlides.");
-            }
-
-            // ✅ Crear usuari
-            var password = FuncionsAuxiliars.ConstruirPasswordAlumne(dto);
-
-            var identityResult = await _accountService.CreateUserAsync(
-                dto.NIA, null, "AG_Alumne", password);
-
-            if (!identityResult.Succeeded)
-            {
-                await tx.RollbackAsync();
-                throw new InvalidOperationException(
-                    identityResult.Errors.First().Description);
-            }
-
-            try
-            {
-                // Si ve classe i grup → usar el servei que ja tens
-                if (dto.IdClasse.HasValue)
+                var alumne = new Alumne
                 {
-                    await AssignarClasseIGrupAsync(new AlumneAssignarClasseIGrupDTO
-                    {
-                        NIA = dto.NIA,
-                        IdClasse = dto.IdClasse.Value,
-                        IdGrup = dto.IdGrup
-                    });
+                    NIA = dto.NIA,
+                    Nom = dto.Nom,
+                    Cognoms = dto.Cognoms,
+                    Actiu = true,
+                    IdClasse = null,
+                    IdGrup = null
+                };
+
+                try
+                {
+                    _context.Alumnes.Add(alumne);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException)
+                {
+                    await tx.RollbackAsync();
+                    throw new InvalidOperationException(
+                        "Ja existeix un alumne amb aquest NIA o les dades no són vàlides.");
                 }
 
-                await tx.CommitAsync();
-            }
-            catch (Exception ex)
-            {
-                await tx.RollbackAsync();
-                throw new InvalidOperationException(
-                    ex.InnerException?.Message ?? ex.Message);
-            }
+                // Crear usuari Identity
+                var password = FuncionsAuxiliars.ConstruirPasswordAlumne(dto);
 
-            return alumne;
+                var identityResult = await _accountService.CreateUserAsync(
+                    dto.NIA, null, "AG_Alumne", password);
+
+                if (!identityResult.Succeeded)
+                {
+                    await tx.RollbackAsync();
+                    throw new InvalidOperationException(
+                        identityResult.Errors.First().Description);
+                }
+
+                try
+                {
+                    // Assignació de classe i grup via CORE (sense nova transacció)
+                    if (dto.IdClasse.HasValue)
+                    {
+                        alumne = await AssignarClasseIGrupCoreAsync(new AlumneAssignarClasseIGrupDTO
+                        {
+                            NIA = dto.NIA,
+                            IdClasse = dto.IdClasse.Value,
+                            IdGrup = dto.IdGrup   // pot ser null 
+                        });
+                    }
+
+                    await tx.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await tx.RollbackAsync();
+                    throw new InvalidOperationException(
+                        ex.InnerException?.Message ?? ex.Message);
+                }
+
+                return await InstanciaCoreAsync(dto.NIA);
+            });
         }
+
 
         // ==================================================
         // EDITAR
         // ==================================================
-        public async Task<Alumne> EditarAsync(AlumneDTO dto)
+        public async Task<AlumneDisplaySet> EditarAsync(AlumneDTO dto)
         {
-            using var tx = await _context.Database.BeginTransactionAsync();
+            var strategy = _context.Database.CreateExecutionStrategy();
 
-            var alumne = await _context.Alumnes
-                .FirstOrDefaultAsync(a => a.NIA == dto.NIA);
-
-            if (alumne == null)
-                throw new InvalidOperationException("Alumne no trobat");
-
-            // Actualitzar dades bàsiques
-            alumne.Nom = dto.Nom;
-            alumne.Cognoms = dto.Cognoms;
-
-            try
+            return await strategy.ExecuteAsync(async () =>
             {
-                await _context.SaveChangesAsync();
+                using var tx = await _context.Database.BeginTransactionAsync();
 
-                // Si canvia classe o grup → reutilitzar servei
-                if (dto.IdClasse.HasValue &&
-                    (alumne.IdClasse != dto.IdClasse || alumne.IdGrup != dto.IdGrup))
+                var alumne = await _context.Alumnes
+                    .FirstOrDefaultAsync(a => a.NIA == dto.NIA)
+                    ?? throw new InvalidOperationException("Alumne no trobat");
+
+                // ✅ Guardem estat anterior per comparar
+                var idClasseAnterior = alumne.IdClasse;
+                var idGrupAnterior = alumne.IdGrup;
+
+                // ✅ Actualitzar dades bàsiques
+                alumne.Nom = dto.Nom;
+                alumne.Cognoms = dto.Cognoms;
+
+                try
                 {
-                    alumne = await AssignarClasseIGrupAsync(new AlumneAssignarClasseIGrupDTO
+                    await _context.SaveChangesAsync();
+
+                    // ✅ Si canvia classe o grup → usar CORE (sense transacció nova)
+                    if (dto.IdClasse.HasValue &&
+                        (idClasseAnterior != dto.IdClasse || idGrupAnterior != dto.IdGrup))
                     {
-                        NIA = dto.NIA,
-                        IdClasse = dto.IdClasse.Value,
-                        IdGrup = dto.IdGrup
-                    });
+                        alumne = await AssignarClasseIGrupCoreAsync(new AlumneAssignarClasseIGrupDTO
+                        {
+                            NIA = dto.NIA,
+                            IdClasse = dto.IdClasse.Value,
+                            IdGrup = dto.IdGrup
+                        });
+                    }
+
+                    await tx.CommitAsync();
+
+                    return await InstanciaCoreAsync(dto.NIA);
                 }
-
-                await tx.CommitAsync();
-            }
-            catch (Exception ex)
-            {
-                await tx.RollbackAsync();
-                throw new InvalidOperationException(
-                    ex.InnerException?.Message ?? ex.Message);
-            }
-
-            return alumne;
+                catch (Exception ex)
+                {
+                    await tx.RollbackAsync();
+                    throw new InvalidOperationException(
+                        ex.InnerException?.Message ?? ex.Message);
+                }
+            });
         }
-
 
 
         // ==================================================
         // ACTIVAR / DESACTIVAR
         // ==================================================
-        public async Task<Alumne> ActivarAsync(string nia)
+        public async Task<AlumneDisplaySet> ActivarAsync(string nia)
         {
             var alumne = await _context.Alumnes.FindAsync(nia)
                 ?? throw new InvalidOperationException("Alumne no trobat");
 
             alumne.Actiu = true;
             await _context.SaveChangesAsync();
-            return alumne;
+            return await InstanciaCoreAsync(nia);
         }
 
-        public async Task<Alumne> DesactivarAsync(string nia)
+        public async Task<AlumneDisplaySet> DesactivarAsync(string nia)
         {
             var alumne = await _context.Alumnes.FindAsync(nia)
                 ?? throw new InvalidOperationException("Alumne no trobat");
 
             alumne.Actiu = false;
             await _context.SaveChangesAsync();
-            return alumne;
+            return await InstanciaCoreAsync(nia);
         }
 
         // ==================================================
         // INSTÀNCIA
         // ==================================================
-        public async Task<Alumne> InstanciaAsync(string nia, ClaimsPrincipal user)
+        //wrapper
+        public async Task<AlumneDisplaySet> InstanciaAsync(string nia, ClaimsPrincipal user)
         {
             if (user.IsInRole("AG_Alumne") && user.Identity!.Name != nia)
                 throw new UnauthorizedAccessException();
 
-            var alumne = await _context.Alumnes
-                .Include(a => a.Classe)
-                .Include(a => a.Grup)
-                .FirstOrDefaultAsync(a => a.NIA == nia);
+            return await InstanciaCoreAsync(nia);
+        }
 
-            return alumne ?? throw new InvalidOperationException("Alumne no trobat");
+        //Core
+        public async Task<AlumneDisplaySet> InstanciaCoreAsync(string nia)
+        {
+            var result = await _context.Alumnes
+                .Where(a => a.NIA == nia)
+                .Select(a => new AlumneDisplaySet
+                {
+                    NIA = a.NIA,
+                    Nom = a.Nom,
+                    Cognoms = a.Cognoms,
+
+                    IdAnyEscolar = a.Classe != null ? a.Classe.IdAnyEscolar : 0,
+
+                    IdClasse = a.IdClasse != null ? a.IdClasse.ToString() : null,
+                    NomClasse = a.Classe != null ? a.Classe.Nom : null,
+
+                    IdGrup = a.IdGrup != null ? a.IdGrup.ToString() : null,
+                    NomGrup = a.Grup != null ? a.Grup.Nom : null,
+
+                    AlumnesEnGrup = a.IdGrup != null
+                        ? _context.Alumnes
+                            .Where(x => x.IdGrup == a.IdGrup)
+                            .Select(x => x.Nom + " " + x.Cognoms)
+                            .ToList()
+                        : new List<string>()
+                })
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            return result ?? throw new InvalidOperationException("Alumne no trobat");
         }
 
         // ==================================================
         // LLISTA
         // ==================================================
-        public async Task<List<Alumne>> LlistaAsync(ClaimsPrincipal user)
+        public async Task<List<AlumneDisplaySet>> LlistaAsync(ClaimsPrincipal user)
         {
+            var query = _context.Alumnes.AsQueryable();
+
             if (user.IsInRole("AG_Alumne"))
             {
                 var nia = user.Identity!.Name;
-                return await _context.Alumnes
-                    .Where(a => a.NIA == nia)
-                    .ToListAsync();
+                query = query.Where(a => a.NIA == nia);
             }
 
-            return await _context.Alumnes.ToListAsync();
+            return await query
+                .Select(a => new AlumneDisplaySet
+                {
+                    NIA = a.NIA,
+                    Nom = a.Nom,
+                    Cognoms = a.Cognoms,
+
+                    IdAnyEscolar = a.Classe != null ? a.Classe.IdAnyEscolar : 0,
+
+                    IdClasse = a.IdClasse != null ? a.IdClasse.ToString() : null,
+                    NomClasse = a.Classe != null ? a.Classe.Nom : null,
+
+                    IdGrup = a.IdGrup != null ? a.IdGrup.ToString() : null,
+                    NomGrup = a.Grup != null ? a.Grup.Nom : null,
+
+                    AlumnesEnGrup = a.IdGrup != null
+                        ? _context.Alumnes
+                            .Where(x => x.IdGrup == a.IdGrup)
+                            .Select(x => x.Nom + " " + x.Cognoms)
+                            .ToList()
+                        : new List<string>()
+                })
+                .AsNoTracking()
+                .ToListAsync();
         }
 
-        public async Task<List<Alumne>> LlistaPerClasseAsync(long idClasse, ClaimsPrincipal user)
+        public async Task<List<AlumneDisplaySet>> LlistaPerClasseAsync(
+            long idClasse,
+            ClaimsPrincipal user)
         {
-            // Si és alumne → només es veu a si mateix (i només si pertany a eixa classe)
+            var query = _context.Alumnes
+                .Where(a => a.IdClasse == idClasse)
+                .AsQueryable();
+
+            // ✅ Si és alumne → només ell mateix
             if (user.IsInRole("AG_Alumne"))
             {
                 var nia = user.Identity!.Name;
-
-                return await _context.Alumnes
-                    .Where(a => a.NIA == nia && a.IdClasse == idClasse)
-                    .ToListAsync();
+                query = query.Where(a => a.NIA == nia);
             }
 
-            // Resta d’usuaris → tots els alumnes de la classe
-            return await _context.Alumnes
-                .Where(a => a.IdClasse == idClasse)
+            return await query
+                .Select(a => new AlumneDisplaySet
+                {
+                    NIA = a.NIA,
+                    Nom = a.Nom,
+                    Cognoms = a.Cognoms,
+
+                    IdAnyEscolar = a.Classe != null ? a.Classe.IdAnyEscolar : 0,
+
+                    IdClasse = a.IdClasse != null ? a.IdClasse.ToString() : null,
+                    NomClasse = a.Classe != null ? a.Classe.Nom : null,
+
+                    IdGrup = a.IdGrup != null ? a.IdGrup.ToString() : null,
+                    NomGrup = a.Grup != null ? a.Grup.Nom : null,
+
+                    AlumnesEnGrup = a.IdGrup != null
+                        ? _context.Alumnes
+                            .Where(x => x.IdGrup == a.IdGrup)
+                            .Select(x => x.Nom + " " + x.Cognoms)
+                            .ToList()
+                        : new List<string>()
+                })
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -227,10 +314,32 @@ namespace KarmaWebAPI.Serveis
         // ==================================================
         // ASSIGNAR CLASSE I ASSIGNAR GRUP
         // ==================================================
-        public async Task<Alumne> AssignarClasseIGrupAsync(AlumneAssignarClasseIGrupDTO dto)
+        //Orquestrador
+        public async Task<AlumneDisplaySet> AssignarClasseIGrupAsync(AlumneAssignarClasseIGrupDTO dto)
         {
-            using var tx = await _context.Database.BeginTransactionAsync();
+            var strategy = _context.Database.CreateExecutionStrategy();
 
+            return await strategy.ExecuteAsync(async () =>
+            {
+                using var tx = await _context.Database.BeginTransactionAsync();
+
+                try
+                {
+                    var alumne = await AssignarClasseIGrupCoreAsync(dto);
+
+                    await tx.CommitAsync();
+                    return await InstanciaCoreAsync(dto.NIA);
+                }
+                catch
+                {
+                    await tx.RollbackAsync();
+                    throw;
+                }
+            });
+        }
+        //Core
+        public async Task<Alumne> AssignarClasseIGrupCoreAsync(AlumneAssignarClasseIGrupDTO dto)
+        {
             var alumne = await _context.Alumnes
                 .FirstOrDefaultAsync(a => a.NIA == dto.NIA)
                 ?? throw new InvalidOperationException("Alumne no trobat");
@@ -241,82 +350,34 @@ namespace KarmaWebAPI.Serveis
 
             Grup? grup = null;
 
-            // Només validar grup si ve informat
             if (dto.IdGrup.HasValue)
             {
                 grup = await _context.Grups
                     .FirstOrDefaultAsync(g => g.IdGrup == dto.IdGrup)
                     ?? throw new InvalidOperationException("El grup no existeix");
 
-                // Validació coherència classe-grup
                 if (grup.IdClasse != dto.IdClasse)
-                    throw new InvalidOperationException(
-                        "El grup no pertany a la classe indicada");
+                    throw new InvalidOperationException("El grup no pertany a la classe indicada");
             }
-
-            // Si no hi ha canvi real
-            if (alumne.IdClasse == dto.IdClasse && alumne.IdGrup == dto.IdGrup)
-                return alumne;
 
             var idGrupAnterior = alumne.IdGrup;
 
-            // Assignació
             alumne.IdClasse = dto.IdClasse;
-            alumne.IdGrup = dto.IdGrup; // pot ser null 
-            try
-            {
-                await _context.SaveChangesAsync();
+            alumne.IdGrup = dto.IdGrup;
 
-                // Recalcular grup anterior si existia i canvia
-                if (idGrupAnterior.HasValue && idGrupAnterior != dto.IdGrup)
-                {
-                    await _grupService.CalcularKarmaBaseAsync(idGrupAnterior.Value);
-                }
+            await _context.SaveChangesAsync();
 
-                // Recalcular nou grup només si existeix
-                if (dto.IdGrup.HasValue)
-                {
-                    await _grupService.CalcularKarmaBaseAsync(dto.IdGrup.Value);
-                }
+            // 🔥 també sense transacció
+            if (idGrupAnterior.HasValue && idGrupAnterior != dto.IdGrup)
+                await _grupService.CalcularKarmaBaseCoreAsync(idGrupAnterior.Value);
 
-                await tx.CommitAsync();
-            }
-            catch (Exception ex)
-            {
-                await tx.RollbackAsync();
-                throw new InvalidOperationException(
-                    ex.InnerException?.Message ?? ex.Message);
-            }
+            if (dto.IdGrup.HasValue)
+                await _grupService.CalcularKarmaBaseCoreAsync(dto.IdGrup.Value);
 
             return alumne;
         }
 
-        //public async Task<Alumne> AssignarGrupAsync(string nia, long idGrup)
-        //{
-        //    // 1. Alumne
-        //    var alumne = await _context.Alumnes
-        //        .FirstOrDefaultAsync(a => a.NIA == nia)
-        //        ?? throw new InvalidOperationException("Alumne no trobat");
 
-        //    if (!alumne.IdClasse.HasValue)
-        //        throw new InvalidOperationException("L'alumne no té cap classe assignada");
-
-        //    // 2. Grup
-        //    var grup = await _context.Grups
-        //        .FirstOrDefaultAsync(g => g.IdGrup == idGrup)
-        //        ?? throw new InvalidOperationException("Grup no trobat");
-
-        //    // 3. Validar que el grup pertany a la mateixa classe
-        //    if (grup.IdClasse != alumne.IdClasse)
-        //        throw new InvalidOperationException(
-        //            "El grup no pertany a la mateixa classe que l'alumne");
-
-        //    // 4. Desvincular grup actual i assignar el nou
-        //    alumne.IdGrup = idGrup;
-
-        //    await _context.SaveChangesAsync();
-        //    return alumne;
-        //}
 
 
         // Servei que sincronitza tots els alumnes de la BD amb Identity.
