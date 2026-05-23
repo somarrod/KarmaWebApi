@@ -5,15 +5,15 @@ using System.ComponentModel.DataAnnotations;
 namespace KarmaWebAPI.DTOs
 {
 
-    public class AlumneAssignarClasseDTO
+    public class AlumneAssignarClasseIGrupDTO
     {
         [Required]
         [StringLength(10)] 
         public string NIA { get; set; }
 
-        public int IdAnyEscolar { get; set; } //opcional i ha de coincidir en la classe
+        public long IdClasse { get; set; } 
 
-        public long IdClasse { get; set; } //classe --> opcional
+        public long? IdGrup { get; set; } //grup --> ha de pertanyer a la classe
     }
 
 }

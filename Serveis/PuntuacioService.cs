@@ -208,7 +208,7 @@
             // KARMA BASE DEL GRUP
             // ===============================
             if (alumne.IdGrup.HasValue)
-                await _grupService.RecalcularKarmaBaseAsync(alumne.IdGrup.Value);
+                await _grupService.CalcularKarmaBaseAsync(alumne.IdGrup.Value);
 
             return puntuacio;
         }

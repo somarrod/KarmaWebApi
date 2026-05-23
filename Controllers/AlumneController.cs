@@ -48,6 +48,18 @@ namespace KarmaWebAPI.Controllers
             return Ok(alumnes);
         }
 
+
+        // ==================================================
+        // GET: api/alumne/per-classe/{idClasse}
+        // ==================================================
+        [HttpGet("per-classe/{idClasse}")]
+        [Authorize(Roles = "AG_Admin,AG_Professor,AG_Alumne,AG_EquipDirectiu")]
+        public async Task<IActionResult> LlistaPerClasse(long idClasse)
+        {
+            var alumnes = await _alumneService.LlistaPerClasseAsync(idClasse, User);
+            return Ok(alumnes);
+        }
+
         // ==================================================
         // POST: api/alumne/crear
         // ==================================================
@@ -150,12 +162,12 @@ namespace KarmaWebAPI.Controllers
         // PUT: api/alumne/assignar-classe
         // (gestiona IdAnyEscolar + IdClasse dins del service)
         // ==================================================
-        [HttpPut("assignar-classe")]
+        [HttpPut("assignar-classe-grup")]
         [Authorize(Roles = "AG_Admin,AG_Professor,AG_EquipDirectiu")]
-        public async Task<IActionResult> AssignarClasse(
-            AlumneAssignarClasseDTO dto)
+        public async Task<IActionResult> AssignarClasseIGrup(
+            AlumneAssignarClasseIGrupDTO dto)
         {
-            var alumne = await _alumneService.AssignarClasseAsync(dto);
+            var alumne = await _alumneService.AssignarClasseIGrupAsync(dto);
             return Ok(alumne);
         }
 
@@ -165,30 +177,30 @@ namespace KarmaWebAPI.Controllers
         // - Desvincula el grup anterior (si en tenia)
         // - El nou grup ha de pertànyer a la mateixa classe
         // ==================================================
-        [HttpPut("assignar-grup")]
-        [Authorize(Roles = "AG_Admin,AG_Professor,AG_EquipDirectiu")]
-        public async Task<IActionResult> AssignarGrup(
-            [FromQuery] string nia,
-            [FromQuery] long idGrup)
-        {
-            try
-            {
-                var alumne = await _alumneService.AssignarGrupAsync(nia, idGrup);
-                return Ok(alumne);
-            }
-            catch (InvalidOperationException ex)
-            {
-                // Errors funcionals (classe incorrecta, alumne/grup inexistent, etc.)
-                return BadRequest(new { error = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new
-                {
-                    error = "S'ha produït un error assignant el grup a l'alumne"
-                });
-            }
-        }
+        //[HttpPut("assignar-grup")]
+        //[Authorize(Roles = "AG_Admin,AG_Professor,AG_EquipDirectiu")]
+        //public async Task<IActionResult> AssignarGrup(
+        //    [FromQuery] string nia,
+        //    [FromQuery] long idGrup)
+        //{
+        //    try
+        //    {
+        //        var alumne = await _alumneService.AssignarGrupAsync(nia, idGrup);
+        //        return Ok(alumne);
+        //    }
+        //    catch (InvalidOperationException ex)
+        //    {
+        //        // Errors funcionals (classe incorrecta, alumne/grup inexistent, etc.)
+        //        return BadRequest(new { error = ex.Message });
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return StatusCode(500, new
+        //        {
+        //            error = "S'ha produït un error assignant el grup a l'alumne"
+        //        });
+        //    }
+        //}
 
 
         [HttpPost("sincronitzar-identity")]

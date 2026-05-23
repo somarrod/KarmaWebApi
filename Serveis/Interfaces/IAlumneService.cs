@@ -11,8 +11,8 @@ namespace KarmaWebAPI.Serveis.Interfaces
         Task<Alumne> EditarAsync(AlumneDTO dto);
         Task<Alumne> ActivarAsync(string nia);
         Task<Alumne> DesactivarAsync(string nia);
-        Task<Alumne> AssignarClasseAsync(AlumneAssignarClasseDTO dto);
-        Task<Alumne> AssignarGrupAsync(string nia, long idGrup);
+        Task<Alumne> AssignarClasseIGrupAsync(AlumneAssignarClasseIGrupDTO dto);
+        //Task<Alumne> AssignarGrupAsync(string nia, long idGrup);
 
         //Actualitza en BD tots els identity dels alumnes (si no estaven creats)
         Task SincronitzarIdentityAsync();
@@ -20,6 +20,8 @@ namespace KarmaWebAPI.Serveis.Interfaces
         //CONSULTES   
         Task<Alumne> InstanciaAsync(string nia, ClaimsPrincipal user);
         Task<List<Alumne>> LlistaAsync(ClaimsPrincipal user);
+
+        Task<List<Alumne>> LlistaPerClasseAsync(long idClasse, ClaimsPrincipal user);
     }
 
 }

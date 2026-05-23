@@ -1,5 +1,6 @@
 ﻿using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
+using KarmaWebAPI.DTOs.DisplaySets;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace KarmaWebAPI.Serveis
             _context = context;
         }
 
-        public async Task<string?> RecalcularKarmaBaseAsync(long idGrup)
+        public async Task<string?> CalcularKarmaBaseAsync(long idGrup)
         {
             var grup = await _context.Grups
                 .Include(g => g.Classe)
@@ -66,12 +67,12 @@ namespace KarmaWebAPI.Serveis
             return grup.KarmaBase;
         }
 
-        public async Task<Grup> CrearAsync(GrupCrearDTO dto)
+        public async Task<GrupDisplaySet> CrearAsync(GrupCrearDTO dto)
         {
-            var classeExisteix = await _context.Classes
-                .AnyAsync(c => c.IdClasse == dto.IdClasse);
+            var classe = await _context.Classes
+                .FirstOrDefaultAsync(c => c.IdClasse == dto.IdClasse);
 
-            if (!classeExisteix)
+            if (classe==null)
                 throw new InvalidOperationException("Classe inexistent");
 
             // ✅ Validar duplicat dins de la mateixa classe
@@ -90,6 +91,7 @@ namespace KarmaWebAPI.Serveis
                 Nom = dto.Nom
             };
 
+
             _context.Grups.Add(grup);
 
             try
@@ -105,7 +107,7 @@ namespace KarmaWebAPI.Serveis
             return await InstanciaAsync(grup.IdGrup,"AG_Admin", null);
         }
 
-        public async Task<Grup> EditarAsync(GrupEditarDTO dto)
+        public async Task<GrupDisplaySet> EditarAsync(GrupEditarDTO dto)
         {
             var grup = await _context.Grups
                 .FirstOrDefaultAsync(g => g.IdGrup == dto.IdGrup);
@@ -137,7 +139,7 @@ namespace KarmaWebAPI.Serveis
                     ex.InnerException?.Message ?? ex.Message);
             }
 
-            return grup;
+            return await InstanciaAsync(grup.IdGrup, "AG_Admin", null);
         }
 
         public async Task<bool> EsborrarAsync(long idGrup)
@@ -168,13 +170,14 @@ namespace KarmaWebAPI.Serveis
             return true;
         }
 
-        public async Task<Alumne> AfegirAlumneAsync(AssignarAlumneAGrupDTO dto)
+        public async Task<GrupDisplaySet> AfegirAlumneAsync(AssignarAlumneAGrupDTO dto)
         {
             var alumne = await _context.Alumnes
                 .FirstOrDefaultAsync(a => a.NIA == dto.NIA)
                 ?? throw new InvalidOperationException("Alumne no trobat");
 
             var grup = await _context.Grups
+                .Include(g => g.Classe)
                 .FirstOrDefaultAsync(g => g.IdGrup == dto.IdGrup)
                 ?? throw new InvalidOperationException("Grup no trobat");
 
@@ -196,10 +199,33 @@ namespace KarmaWebAPI.Serveis
                     ex.InnerException?.Message ?? ex.Message);
             }
 
-            // recalcular només aquest grup
-            await RecalcularKarmaBaseAsync(dto.IdGrup);
+            // recalcular karma del grup
+            await CalcularKarmaBaseAsync(dto.IdGrup);
 
-            return alumne;
+            // tornar a carregar grup actualitzat
+            grup = await _context.Grups
+                .Include(g => g.Classe)
+                .FirstAsync(g => g.IdGrup == dto.IdGrup);
+
+            // ✅ obtenir alumnes del grup
+            List<string> alumnes = await _context.Alumnes
+                .Where(a => a.IdGrup == dto.IdGrup)
+                .Select(a => a.Nom + " " + a.Cognoms)
+                .ToListAsync();
+
+            // ✅ construir display
+            GrupDisplaySet result = new GrupDisplaySet
+            {
+                IdGrup = grup.IdGrup,
+                Nom = grup.Nom,
+                IdClasse = grup.IdClasse,
+                NomClasse = grup.Classe.Nom,
+                IdAnyEscolar = grup.Classe.IdAnyEscolar,
+                Alumnes = alumnes,
+                KarmaBase = grup.KarmaBase ?? "No definit"
+            };
+
+            return result;
         }
 
         public async Task<Alumne> LlevarAlumneAsync(string nia)
@@ -225,7 +251,7 @@ namespace KarmaWebAPI.Serveis
 
             // si tenia grup → recalcular
             if (idGrupAnterior.HasValue)
-                await RecalcularKarmaBaseAsync(idGrupAnterior.Value);
+                await CalcularKarmaBaseAsync(idGrupAnterior.Value);
 
             return alumne;
         }
@@ -233,55 +259,107 @@ namespace KarmaWebAPI.Serveis
         // ==================================================
         // INSTÀNCIA
         // ==================================================
-        public async Task<Grup?> InstanciaAsync(long idGrup, string rolUsuari, string? niaUsuari)
+        public async Task<GrupDisplaySet?> InstanciaAsync(
+            long idGrup,
+            string rolUsuari,
+            string? niaUsuari)
         {
-                    var grup = await _context.Grups
-                        .Include(g => g.Classe)
-                        .FirstOrDefaultAsync(g => g.IdGrup == idGrup);
+            var grup = await _context.Grups
+                .Include(g => g.Classe)
+                .FirstOrDefaultAsync(g => g.IdGrup == idGrup);
 
-                    if (grup == null)
-                           return null;
+            if (grup == null)
+                return null;
 
             // Si és alumne → només pot veure el seu grup
             if (rolUsuari == "AG_Alumne")
-                    {
-                        var alumne = await _context.Alumnes
-                            .FirstOrDefaultAsync(a => a.NIA == niaUsuari);
+            {
+                var alumne = await _context.Alumnes
+                    .FirstOrDefaultAsync(a => a.NIA == niaUsuari);
 
-                        if (alumne == null || alumne.IdGrup != idGrup)
-                           return null;
-                    }
+                if (alumne == null || alumne.IdGrup != idGrup)
+                    return null;
+            }
 
-            return grup;
+            // Obtenir alumnes del grup
+            List<string> alumnes = await _context.Alumnes
+                .Where(a => a.IdGrup == idGrup)
+                .Select(a => a.Nom + " " + a.Cognoms) 
+                .ToListAsync();
+
+            // Construir el DisplaySet
+            GrupDisplaySet result = new GrupDisplaySet
+            {
+                IdGrup = grup.IdGrup,
+                Nom = grup.Nom,
+                IdClasse = grup.IdClasse,
+                NomClasse = grup.Classe.Nom,
+                IdAnyEscolar = grup.Classe.IdAnyEscolar,
+                Alumnes = alumnes,
+                KarmaBase = grup.KarmaBase ?? "No definit"
+            };
+
+            return result;
         }
+
 
         // ==================================================
         // LLISTA PER CLASSE
         // ==================================================
-        public async Task<List<Grup>> LlistaPerClasseAsync(long idClasse, string rolUsuari, string? niaUsuari)
+        public async Task<List<GrupDisplaySet>> LlistaPerClasseAsync(
+            long idClasse,
+            string rolUsuari,
+            string? niaUsuari)
         {
+            List<Grup> grups;
 
-            // Si NO és alumne → llista completa
-            if (rolUsuari != "AG_Alumne")
+            // Si és alumne → només el seu grup
+            if (rolUsuari == "AG_Alumne")
             {
-                return await _context.Grups
+                var alumne = await _context.Alumnes
+                    .FirstOrDefaultAsync(a => a.NIA == niaUsuari);
+
+                if (alumne == null || alumne.IdClasse != idClasse || alumne.IdGrup == null)
+                    return new List<GrupDisplaySet>();
+
+                grups = await _context.Grups
+                    .Include(g => g.Classe)
+                    .Where(g => g.IdGrup == alumne.IdGrup)
+                    .ToListAsync();
+            }
+            else
+            {
+                // No és alumne → tots els grups de la classe
+                grups = await _context.Grups
+                    .Include(g => g.Classe)
                     .Where(g => g.IdClasse == idClasse)
                     .OrderBy(g => g.Nom)
                     .ToListAsync();
             }
 
-            // Si és alumne → només el seu grup
-            var alumne = await _context.Alumnes
-                .FirstOrDefaultAsync(a => a.NIA == niaUsuari);
+            //  Construir DisplaySet per a cada grup
+            List<GrupDisplaySet> result = new List<GrupDisplaySet>();
 
-            if (alumne == null || alumne.IdClasse != idClasse || alumne.IdGrup == null)
-                return new List<Grup>(); // buida (no accés)
+            foreach (Grup grup in grups)
+            {
+                List<string> alumnes = await _context.Alumnes
+                    .Where(a => a.IdGrup == grup.IdGrup)
+                    .Select(a => a.Nom + " " + a.Cognoms)
+                    .ToListAsync();
 
-            var grup = await _context.Grups
-                .Where(g => g.IdGrup == alumne.IdGrup)
-                .ToListAsync();
+                result.Add(new GrupDisplaySet
+                {
+                    IdGrup = grup.IdGrup,
+                    Nom = grup.Nom,
+                    IdClasse = grup.IdClasse,
+                    NomClasse = grup.Classe.Nom,
+                    IdAnyEscolar = grup.Classe.IdAnyEscolar,
+                    Alumnes = alumnes,
+                    KarmaBase = grup.KarmaBase ?? "No definit"
+                });
+            }
 
-            return grup;
+            return result;
         }
     }
 

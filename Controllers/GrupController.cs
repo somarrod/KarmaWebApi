@@ -128,7 +128,7 @@ namespace KarmaWebAPI.Controllers
         [Authorize(Roles = "AG_Admin,AG_Professor")]
         public async Task<IActionResult> RecalcularKarmaBase(long idGrup)
         {
-            var karma = await _grupService.RecalcularKarmaBaseAsync(idGrup);
+            var karma = await _grupService.CalcularKarmaBaseAsync(idGrup);
             return Ok(karma);
         }
     }
