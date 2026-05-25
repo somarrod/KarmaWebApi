@@ -19,7 +19,7 @@ namespace KarmaWebAPI.Models
 
         // DERIVAT / CACHE
         [StringLength(20)]
-        public string? KarmaBase { get; set; }
+        public string? KarmaBase { get; set; } = "No definit";
         public DateTime? DataUltimaActualitzacioKarma { get; set; }
     }
 }

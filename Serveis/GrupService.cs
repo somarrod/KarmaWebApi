@@ -233,13 +233,13 @@ namespace KarmaWebAPI.Serveis
                 .Include(g => g.Classe)
                 .FirstAsync(g => g.IdGrup == dto.IdGrup);
 
-            // ✅ obtenir alumnes del grup
+            // obtenir alumnes del grup
             List<string> alumnes = await _context.Alumnes
                 .Where(a => a.IdGrup == dto.IdGrup)
                 .Select(a => a.Nom + " " + a.Cognoms)
                 .ToListAsync();
 
-            // ✅ construir display
+            // construir display
             GrupDisplaySet result = new GrupDisplaySet
             {
                 IdGrup = grup.IdGrup,
@@ -252,34 +252,6 @@ namespace KarmaWebAPI.Serveis
             };
 
             return result;
-        }
-
-        public async Task<Alumne> LlevarAlumneAsync(string nia)
-        {
-            var alumne = await _context.Alumnes
-                .FirstOrDefaultAsync(a => a.NIA == nia)
-                ?? throw new InvalidOperationException("Alumne no trobat");
-
-            var idGrupAnterior = alumne.IdGrup;
-
-            // desassignar
-            alumne.IdGrup = null;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                throw new InvalidOperationException(
-                    ex.InnerException?.Message ?? ex.Message);
-            }
-
-            // si tenia grup → recalcular
-            if (idGrupAnterior.HasValue)
-                await CalcularKarmaBaseAsync(idGrupAnterior.Value);
-
-            return alumne;
         }
 
         // ==================================================

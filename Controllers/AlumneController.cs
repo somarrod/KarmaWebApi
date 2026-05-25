@@ -1,7 +1,8 @@
-﻿using KarmaWebAPI.DTOs;
+﻿using KarmaWebAPI.Data;
+using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
+using KarmaWebAPI.Serveis;
 using KarmaWebAPI.Serveis.Interfaces;
-using KarmaWebAPI.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -170,6 +171,26 @@ namespace KarmaWebAPI.Controllers
             var alumne = await _alumneService.AssignarClasseIGrupAsync(dto);
             return Ok(alumne);
         }
+
+
+        // ==================================================
+        // POST: api/grup/llevar-alumne
+        // ==================================================
+        [HttpPost("llevar-alumne-de-grup")]
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
+        public async Task<IActionResult> LlevarAlumne([FromBody] string nia)
+        {
+            try
+            {
+                var result = await _alumneService.LlevarAlumneDeGrupAsync(nia);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
 
         // ==================================================
         // PUT: api/alumne/assignar-grup

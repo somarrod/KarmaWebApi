@@ -72,6 +72,17 @@ namespace KarmaWebAPI.Controllers
         }
 
         // ==================================================
+        // PUT: api/grup/editar
+        // ==================================================
+        [HttpPut("editar")]
+        [Authorize(Roles = "AG_Admin,AG_Professor")]
+        public async Task<IActionResult> Editar(GrupEditarDTO dto)
+        {
+            var grup = await _grupService.EditarAsync(dto);
+            return Ok(grup);
+        }
+
+        // ==================================================
         // DELETE: api/grup/{idGrup}
         // ==================================================
         [HttpDelete("eliminar/{idGrup:long}")]
@@ -103,23 +114,6 @@ namespace KarmaWebAPI.Controllers
         }
 
 
-        // ==================================================
-        // POST: api/grup/llevar-alumne
-        // ==================================================
-        [HttpPost("llevar-alumne")]
-        [Authorize(Roles = "AG_Admin,AG_Professor")]
-        public async Task<IActionResult> LlevarAlumne([FromBody] string nia)
-        {
-            try
-            {
-                var result = await _grupService.LlevarAlumneAsync(nia);
-                return Ok(result);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
-        }
 
         // ==================================================
         // POST: api/grup/recalcular-karma/{idGrup}

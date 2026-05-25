@@ -20,6 +20,8 @@ namespace KarmaWebAPI.DTOs.DisplaySets
         public string? IdGrup { get; set; }
         public string? NomGrup { get; set; }
 
+        public string? KarmaBaseGrup { get; set; }
+
         public List<string> AlumnesEnGrup{ get; set; }
     }
 

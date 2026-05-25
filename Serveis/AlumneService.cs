@@ -1,4 +1,5 @@
 ﻿//using KarmaWebAPI.Controllers;
+using Humanizer;
 using KarmaWebAPI.Data;
 using KarmaWebAPI.DTOs;
 using KarmaWebAPI.DTOs.DisplaySets;
@@ -215,11 +216,12 @@ namespace KarmaWebAPI.Serveis
 
                     IdGrup = a.IdGrup != null ? a.IdGrup.ToString() : null,
                     NomGrup = a.Grup != null ? a.Grup.Nom : null,
+                    KarmaBaseGrup = a.Grup != null ? a.Grup.KarmaBase : null,
 
                     AlumnesEnGrup = a.IdGrup != null
                         ? _context.Alumnes
                             .Where(x => x.IdGrup == a.IdGrup)
-                            .Select(x => x.Nom + " " + x.Cognoms)
+                            .Select(x => x.Nom + " " + x.Cognoms)                        
                             .ToList()
                         : new List<string>()
                 })
@@ -256,6 +258,7 @@ namespace KarmaWebAPI.Serveis
 
                     IdGrup = a.IdGrup != null ? a.IdGrup.ToString() : null,
                     NomGrup = a.Grup != null ? a.Grup.Nom : null,
+                    KarmaBaseGrup = a.Grup != null ? a.Grup.KarmaBase : null,
 
                     AlumnesEnGrup = a.IdGrup != null
                         ? _context.Alumnes
@@ -294,6 +297,7 @@ namespace KarmaWebAPI.Serveis
 
                     IdClasse = a.IdClasse != null ? a.IdClasse.ToString() : null,
                     NomClasse = a.Classe != null ? a.Classe.Nom : null,
+                    KarmaBaseGrup = a.Grup != null ? a.Grup.KarmaBase : null,
 
                     IdGrup = a.IdGrup != null ? a.IdGrup.ToString() : null,
                     NomGrup = a.Grup != null ? a.Grup.Nom : null,
@@ -367,7 +371,7 @@ namespace KarmaWebAPI.Serveis
 
             await _context.SaveChangesAsync();
 
-            // 🔥 també sense transacció
+            // també sense transacció
             if (idGrupAnterior.HasValue && idGrupAnterior != dto.IdGrup)
                 await _grupService.CalcularKarmaBaseCoreAsync(idGrupAnterior.Value);
 
@@ -378,6 +382,33 @@ namespace KarmaWebAPI.Serveis
         }
 
 
+        public async Task<AlumneDisplaySet> LlevarAlumneDeGrupAsync(string nia)
+        {
+            var alumne = await _context.Alumnes
+                .FirstOrDefaultAsync(a => a.NIA == nia)
+                ?? throw new InvalidOperationException("Alumne no trobat");
+
+            var idGrupAnterior = alumne.IdGrup;
+
+            // desassignar
+            alumne.IdGrup = null;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new InvalidOperationException(
+                    ex.InnerException?.Message ?? ex.Message);
+            }
+
+            // si tenia grup → recalcular
+            if (idGrupAnterior.HasValue)
+                await _grupService.CalcularKarmaBaseAsync(idGrupAnterior.Value);
+
+            return await InstanciaCoreAsync(alumne.NIA);
+        }
 
 
         // Servei que sincronitza tots els alumnes de la BD amb Identity.

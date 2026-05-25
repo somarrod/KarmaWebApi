@@ -14,7 +14,7 @@ namespace KarmaWebAPI.Serveis.Interfaces
         Task<bool> EsborrarAsync(long idGrup);
 
         Task<GrupDisplaySet> AfegirAlumneAsync(AssignarAlumneAGrupDTO dto);
-        Task<Alumne> LlevarAlumneAsync(string nia);
+        
 
         Task<string?> CalcularKarmaBaseAsync(long idGrup);
         Task<string?> CalcularKarmaBaseCoreAsync(long idGrup);

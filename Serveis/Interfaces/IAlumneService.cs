@@ -14,6 +14,8 @@ namespace KarmaWebAPI.Serveis.Interfaces
         Task<AlumneDisplaySet> DesactivarAsync(string nia);
         Task<AlumneDisplaySet> AssignarClasseIGrupAsync(AlumneAssignarClasseIGrupDTO dto);
 
+        Task<AlumneDisplaySet> LlevarAlumneDeGrupAsync(string nia); 
+
 
         //CONSULTES   
         Task<AlumneDisplaySet> InstanciaAsync(string nia, ClaimsPrincipal user);
