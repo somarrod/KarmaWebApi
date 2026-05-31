@@ -1,4 +1,5 @@
 ﻿using KarmaWebAPI.DTOs;
+using KarmaWebAPI.DTOs.DisplaySets;
 using KarmaWebAPI.Models;
 using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -29,13 +30,14 @@ namespace KarmaWebAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            Puntuacio p = await _puntuacioService.AssignarPuntsAsync(
+            PuntuacioDisplaySet p = await _puntuacioService.AssignarPuntsAsync(
                 dto.NIA,
                 dto.IdAvaluacio,
                 dto.IdCategoria,
                 dto.NumPunts,
                 dto.Motiu,
                 dto.DescripcioAdicional,
+                dto.DataEvent,
                 User);
 
             return Ok(p);
@@ -51,13 +53,14 @@ namespace KarmaWebAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            Puntuacio p = await _puntuacioService.ReiniciarPuntsAsync(
+            PuntuacioDisplaySet p = await _puntuacioService.ReiniciarPuntsAsync(
                 dto.NIA,
                 dto.IdAvaluacio,
                 dto.IdCategoria,
                 dto.NumPunts,
                 dto.Motiu,
                 dto.DescripcioAdicional,
+                dto.DataEvent,
                 User);
 
             return Ok(p);
@@ -69,7 +72,7 @@ namespace KarmaWebAPI.Controllers
         [HttpGet("{idPuntuacio:long}")]
         public async Task<IActionResult> Instancia(long idPuntuacio)
         {
-            Puntuacio? p = await _puntuacioService.InstanciaAsync(idPuntuacio);
+            PuntuacioDisplaySet? p = await _puntuacioService.InstanciaAsync(idPuntuacio);
 
             if (p == null)
                 return NotFound();

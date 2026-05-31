@@ -13,7 +13,10 @@ namespace KarmaWebAPI.Models
         // Alumne
         // =========================
         [Required]
+        
         public string NIA { get; set; } = string.Empty;
+        
+        [ForeignKey(nameof(NIA))]
         public Alumne Alumne { get; set; } = null!;
 
         // =========================
@@ -21,13 +24,17 @@ namespace KarmaWebAPI.Models
         // =========================
         [Required]
         public string IdProfessor { get; set; } = string.Empty;
+
+        [ForeignKey(nameof(IdProfessor))]
         public Professor Professor { get; set; } = null!;
 
         // =========================
-        // Categoria (XMI)
+        // Categoria
         // =========================
         [Required]
         public long IdCategoria { get; set; }
+
+        [ForeignKey(nameof(IdCategoria))]
         public Categoria Categoria { get; set; } = null!;
 
         // =========================
@@ -76,6 +83,8 @@ namespace KarmaWebAPI.Models
         // =========================
         [Required]
         public long IdAvaluacio { get; set; }
+
+        [ForeignKey(nameof(IdAvaluacio))]
         public Avaluacio Avaluacio { get; set; } = null!;
     }
 }

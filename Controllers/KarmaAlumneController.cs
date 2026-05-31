@@ -43,7 +43,7 @@ namespace KarmaWebAPI.Controllers
             [FromQuery] double puntsInicials)
         {
             await _karmaAlumneService
-                .CrearPerAlumneIAvaluacioAsync(nia, idAvaluacio, puntsInicials);
+                .CrearPerAlumneAsync(nia, idAvaluacio, puntsInicials);
 
             return Ok();
         }

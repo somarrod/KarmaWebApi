@@ -1,4 +1,6 @@
 ﻿
+using KarmaWebAPI.Models;
+
 public interface IKarmaAlumneService
 {
     // -------------------------------------------------
@@ -23,19 +25,17 @@ public interface IKarmaAlumneService
     // B) Operacions PER ALUMNE
     // -------------------------------------------------
 
-    Task CrearPerAlumneIAvaluacioAsync(
-        string nia,
-        long idAvaluacio,
-        double puntsInicials);
+    Task CrearPerAlumneCoreAsync(string nia, long idAvaluacio,double puntsInicials);
 
+    Task CrearPerAlumneAsync(string nia, long idAvaluacio, double puntsInicials);
 
     // Alumne nou → crear KarmaAlumne només per a UNA avaluació
-    Task CrearPerAlumneDesdeAvaluacioEnCursAsync(
-        string nia,
-        int idAnyEscolar);
+    Task CrearPerAlumneDesdeAvaluacioEnCursAsync(string nia, int idAnyEscolar);
 
-    Task<string> ObtenirKarmaPerPuntsAsync(
-    int idAnyEscolar,
-    double punts);
+    Task<string> ObtenirKarmaPerPuntsAsync(int idAnyEscolar, double punts);
+
+    //Recupera el karma d'un alumne en un data
+    Task<KarmaAlumne?> ObtenirKarmaAlumnePerDataAsync(string nia, DateOnly data);
+
 
 }

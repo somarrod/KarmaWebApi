@@ -17,6 +17,7 @@ public class KarmaAlumneService : IKarmaAlumneService
     }
 
 
+
     // =====================================================
     // A) OPERACIONS PER AVALUACIÓ
     // =====================================================
@@ -134,18 +135,53 @@ public class KarmaAlumneService : IKarmaAlumneService
     // B) OPERACIONS PER ALUMNE
     // =====================================================
 
-    // Alumne nou → UNA avaluació concreta
-    public async Task CrearPerAlumneIAvaluacioAsync(
-        string nia,
-        long idAvaluacio,
-        double puntsInicials)
+    public async Task CrearPerAlumneAsync(
+    string nia,
+    long idAvaluacio,
+    double puntsInicials)
     {
-        bool existeix = await _context.KarmaAlumnes.AnyAsync(k =>
-            k.NIA == nia  &&
-            k.IdAvaluacio == idAvaluacio);
+        var strategy = _context.Database.CreateExecutionStrategy();
 
-        if (existeix)
-            return;
+        await strategy.ExecuteAsync(async () =>
+        {
+            using var tx = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                await CrearPerAlumneCoreAsync(nia, idAvaluacio, puntsInicials);
+                await _context.SaveChangesAsync();
+
+                await tx.CommitAsync();
+            }
+            catch
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
+        });
+    }
+    public async Task CrearPerAlumneCoreAsync(
+                string nia,
+                long idAvaluacio,
+                double puntsInicials)
+    {
+        var alumne = await _context.Alumnes
+            .FirstOrDefaultAsync(a => a.NIA == nia && a.Actiu)
+            ?? throw new InvalidOperationException("Alumne no trobat o no actiu");
+
+        var existeix = await _context.KarmaAlumnes
+            .AnyAsync(k => k.NIA == nia && k.IdAvaluacio == idAvaluacio);
+
+        if (existeix) return;
+
+        var avaluacio = await _context.Avaluacions
+            .Include(a => a.AnyEscolar)
+            .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio)
+            ?? throw new InvalidOperationException("Avaluació no trobada");
+
+        var karma = await ObtenirKarmaPerPuntsAsync(
+            avaluacio.IdAnyEscolar,
+            puntsInicials);
 
         _context.KarmaAlumnes.Add(new KarmaAlumne
         {
@@ -153,12 +189,30 @@ public class KarmaAlumneService : IKarmaAlumneService
             IdAvaluacio = idAvaluacio,
             NumPuntsInicials = puntsInicials,
             NumPuntsActuals = puntsInicials,
-            KarmaInicial = "",
-            KarmaActual = ""
+            KarmaInicial = karma,
+            KarmaActual = karma
         });
-
-        await _context.SaveChangesAsync();
     }
+
+    public async Task<KarmaAlumne?> ObtenirKarmaAlumnePerDataAsync(string nia, DateOnly data)
+    {
+        // ✅ 1. Trobar avaluació en curs en eixa data
+        var avaluacio = await _context.Avaluacions
+            .Where(a =>
+                a.DataInicial <= data &&
+                a.DataFinal >= data)
+            .FirstOrDefaultAsync();
+
+        if (avaluacio == null)
+            return null;
+
+        // ✅ 2. Recuperar karma per eixa avaluació
+        return await _context.KarmaAlumnes
+            .FirstOrDefaultAsync(k =>
+                k.NIA == nia &&
+                k.IdAvaluacio == avaluacio.IdAvaluacio);
+    }
+
 
     // Alumne nou → DES DE l’avaluació en curs fins a les futures
     public async Task CrearPerAlumneDesdeAvaluacioEnCursAsync(

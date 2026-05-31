@@ -17,10 +17,13 @@ namespace KarmaWebAPI.DTOs
         public int NumPunts { get; set; } = 0; //Activa, per defecte true
 
         [StringLength(255)]
-        public String Motiu { get; set; }
+        public string Motiu { get; set; }
 
         [StringLength(255)]
-        public String DescripcioAdicional { get; set; }
+        public string? DescripcioAdicional { get; set; }
+
+        [Required]
+        public DateOnly DataEvent { get; set; }
     }
 
 }

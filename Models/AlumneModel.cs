@@ -33,7 +33,6 @@ namespace KarmaWebAPI.Models
         [ForeignKey(nameof(IdGrup))]
         public Grup? Grup { get; set; }
 
-
         public double? KarmaActualPunts;
         [StringLength(20)]
         public string? KarmaActualColor;

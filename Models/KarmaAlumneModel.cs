@@ -22,14 +22,17 @@ namespace KarmaWebAPI.Models
         [ForeignKey(nameof(IdAvaluacio))]
         public Avaluacio Avaluacio { get; set; } = null!;
 
-        // ---------- PUNTS ----------
+        // ---------- PUNTS i KARMA INICIAL ----------
 
         public double NumPuntsInicials { get; set; }
-        public double NumPuntsActuals { get; set; }
+
+        public string KarmaInicial { get; set; } = string.Empty;
+
 
         // ---------- KARMA (color / nivell) ----------
 
-        public string KarmaInicial { get; set; } = string.Empty;
+        public double NumPuntsActuals { get; set; }
+
         public string KarmaActual { get; set; } = string.Empty;
 
         // ---------- NOTA ----------

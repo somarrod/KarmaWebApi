@@ -48,7 +48,7 @@ namespace KarmaWebAPI.Serveis
             });
         }
         //Core
-        public async Task<string?> CalcularKarmaBaseCoreAsync(long idGrup)
+        public async Task<string?> CalcularKarmaBaseCoreAsync(long idGrup, bool saveChanges = true)
         {
             var grup = await _context.Grups
                 .Include(g => g.Classe)
@@ -88,7 +88,8 @@ namespace KarmaWebAPI.Serveis
             grup.KarmaBase = configuracio.ColorKarma;
             grup.DataUltimaActualitzacioKarma = DateTime.Now;
 
-            await _context.SaveChangesAsync();
+            if (saveChanges)
+                await _context.SaveChangesAsync();
 
             return grup.KarmaBase;
         }

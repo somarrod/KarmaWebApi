@@ -1,34 +1,37 @@
-﻿using KarmaWebAPI.Models;
+﻿using KarmaWebAPI.DTOs.DisplaySets;
+using KarmaWebAPI.Models;
 using System.Security.Claims;
 
 public interface IPuntuacioService
 {
     // Crear / Assignar punts (S)
-    Task<Puntuacio> AssignarPuntsAsync(
+    Task<PuntuacioDisplaySet> AssignarPuntsAsync(
         string nia,
         long idAvaluacio,
         long idCategoria,
         double numPunts,
         string motiu,
         string? descripcioAdicional,
+        DateOnly dataEvent,
         ClaimsPrincipal user);
 
     // Reiniciar punts (I)
-    Task<Puntuacio> ReiniciarPuntsAsync(
+    Task<PuntuacioDisplaySet> ReiniciarPuntsAsync(
         string nia,
         long idAvaluacio,
         long idCategoria,
         double nouValor,
         string motiu,
         string? descripcioAdicional,
+        DateOnly dataEvent,
         ClaimsPrincipal user);
 
     // Consultes
-    Task<Puntuacio?> InstanciaAsync(long idPuntuacio);
+    Task<PuntuacioDisplaySet?> InstanciaAsync(long idPuntuacio);
 
-    Task<List<Puntuacio>> LlistaPerAlumneAsync(string nia, long? idAvaluacio = null);
+    Task<List<PuntuacioDisplaySet>> LlistaPerAlumneAsync(string nia, long? idAvaluacio = null);
 
-    Task<List<Puntuacio>> LlistaPerClasseAsync(long idClasse, long? idAvaluacio = null);
+    Task<List<PuntuacioDisplaySet>> LlistaPerClasseAsync(long idClasse, long? idAvaluacio = null);
 
-    Task<List<Puntuacio>> LlistaPerGrupAsync(long idGrup, long? idAvaluacio = null);
+    Task<List<PuntuacioDisplaySet>> LlistaPerGrupAsync(long idGrup, long? idAvaluacio = null);
 }

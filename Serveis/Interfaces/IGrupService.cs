@@ -17,7 +17,7 @@ namespace KarmaWebAPI.Serveis.Interfaces
         
 
         Task<string?> CalcularKarmaBaseAsync(long idGrup);
-        Task<string?> CalcularKarmaBaseCoreAsync(long idGrup);
+        Task<string?> CalcularKarmaBaseCoreAsync(long idGrup, bool saveChanges = true);
 
         //consultes
         Task<GrupDisplaySet?> InstanciaAsync(long idGrup, string rolUsuari, string? niaUsuari);
