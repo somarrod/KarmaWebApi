@@ -8,14 +8,12 @@ public interface IKarmaAlumneService
     // -------------------------------------------------
 
     // Crear KarmaAlumne per a tots els alumnes en una avaluació
-    Task CrearPerAvaluacioAsync(
-        long idAvaluacio,
-        double puntsInicials);
+    Task CrearPerAvaluacioAsync(long idAvaluacio, double puntsInicials);
+    Task CrearPerAvaluacioCoreAsync(long idAvaluacio, double puntsInicials);
 
     // Crear KarmaAlumne copiant des de una avaluació anterior
-    Task CopiarPerAvaluacioAsync(
-        long idAvaluacioActual,
-        long idAvaluacioAnterior);
+    Task CopiarPerAvaluacioAsync(long idAvaluacioActual,long idAvaluacioAnterior);
+    Task CopiarPerAvaluacioCoreAsync(long idAvaluacioActual, long idAvaluacioAnterior);
 
     // Calcular nota final per a una avaluació
     Task CalcularNotaFinalAsync(long idAvaluacio);

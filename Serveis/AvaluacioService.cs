@@ -228,41 +228,55 @@ public class AvaluacioService : IAvaluacioService
     // TINICIAR / FINALITZAR
     // =====================================================
 
+
     public async Task<AvaluacioDisplaySet> IniciarAsync(long idAvaluacio)
     {
-        using var tx = await _context.Database.BeginTransactionAsync();
+        var strategy = _context.Database.CreateExecutionStrategy();
 
-        var avaluacio = await _context.Avaluacions
-            .Include(a => a.AnyEscolar)
-            .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio);
-
-        if (avaluacio == null)
-            throw new InvalidOperationException("L'avaluació no existeix");
-
-        var anyEscolar = avaluacio.AnyEscolar;
-
-        var avaluacioAnterior = await _context.Avaluacions
-            .Where(a =>
-                a.IdAnyEscolar == avaluacio.IdAnyEscolar &&
-                a.DataFinal < avaluacio.DataInicial)
-            .OrderByDescending(a => a.DataFinal)
-            .FirstOrDefaultAsync();
-
-        if (avaluacioAnterior == null || anyEscolar.ReiniciaCadaAvaluacio)
+        return await strategy.ExecuteAsync(async () =>
         {
-            await _karmaAlumneService.CrearPerAvaluacioAsync(
-                avaluacio.IdAvaluacio,
-                anyEscolar.SaldoKarmaInicial);
-        }
-        else
-        {
-            await _karmaAlumneService.CopiarPerAvaluacioAsync(
-                avaluacio.IdAvaluacio,
-                avaluacioAnterior.IdAvaluacio);
-        }
+            using var tx = await _context.Database.BeginTransactionAsync();
 
-        await tx.CommitAsync();
-        return await GetByIdAsync(idAvaluacio);
+            try
+            {
+                var avaluacio = await _context.Avaluacions
+                    .Include(a => a.AnyEscolar)
+                    .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio)
+                    ?? throw new InvalidOperationException("L'avaluació no existeix");
+
+                var anyEscolar = avaluacio.AnyEscolar;
+
+                var avaluacioAnterior = await _context.Avaluacions
+                    .Where(a =>
+                        a.IdAnyEscolar == avaluacio.IdAnyEscolar &&
+                        a.DataFinal < avaluacio.DataInicial)
+                    .OrderByDescending(a => a.DataFinal)
+                    .FirstOrDefaultAsync();
+
+                if (avaluacioAnterior == null || anyEscolar.ReiniciaCadaAvaluacio)
+                {
+                    await _karmaAlumneService.CrearPerAvaluacioCoreAsync(avaluacio.IdAvaluacio, anyEscolar.SaldoKarmaInicial);
+                }
+                else
+                {
+                    await _karmaAlumneService.CopiarPerAvaluacioCoreAsync(avaluacio.IdAvaluacio, avaluacioAnterior.IdAvaluacio);
+                }
+
+        
+                await _context.SaveChangesAsync();
+
+                await tx.CommitAsync();
+
+                return await GetByIdAsync(idAvaluacio);
+            }
+            catch (Exception ex)
+            {
+                await tx.RollbackAsync();
+
+                throw new InvalidOperationException(
+                    ex.InnerException?.Message ?? ex.Message);
+            }
+        });
     }
 
     public async Task<AvaluacioDisplaySet> FinalitzarAsync(long idAvaluacio)

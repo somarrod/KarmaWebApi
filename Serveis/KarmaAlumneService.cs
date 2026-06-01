@@ -25,9 +25,43 @@ public class KarmaAlumneService : IKarmaAlumneService
     // Crear KarmaAlumne per a TOTS els alumnes en una avaluació
     public async Task CrearPerAvaluacioAsync(long idAvaluacio, double puntsInicials)
     {
+        var strategy = _context.Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(async () =>
+        {
+            using var tx = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                await CrearPerAvaluacioCoreAsync(idAvaluacio, puntsInicials);
+                await _context.SaveChangesAsync();
+
+                await tx.CommitAsync();
+            }
+            catch
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
+        });
+    }
+    public async Task CrearPerAvaluacioCoreAsync(long idAvaluacio, double puntsInicials)
+    {
+        var avaluacio = await _context.Avaluacions
+            .Include(a => a.AnyEscolar)
+            .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio)
+            ?? throw new InvalidOperationException("Avaluació no trobada");
+
+        // Filtrar alumnes del mateix curs escolar de l'avaluació
         var alumnes = await _context.Alumnes
-            .Where(a => a.Actiu)
+            .Where(a =>
+                a.Actiu &&
+                a.IdClasse != null &&
+                _context.Classes.Any(c =>
+                    c.IdClasse == a.IdClasse &&
+                    c.IdAnyEscolar == avaluacio.IdAnyEscolar))
             .ToListAsync();
+
 
         foreach (var alumne in alumnes)
         {
@@ -37,13 +71,6 @@ public class KarmaAlumneService : IKarmaAlumneService
 
             if (existeix)
                 continue;
-
-            Avaluacio? avaluacio = await _context.Avaluacions
-                .Include(a => a.AnyEscolar)
-                .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio);
-
-            if (avaluacio == null)
-                throw new InvalidOperationException("Avaluació no trobada");
 
             var karma = await ObtenirKarmaPerPuntsAsync(
                 avaluacio.IdAnyEscolar,
@@ -60,13 +87,36 @@ public class KarmaAlumneService : IKarmaAlumneService
             });
         }
 
-        await _context.SaveChangesAsync();
+        // ❌ IMPORTANT: NO SaveChanges
     }
 
-    // Copiar KarmaAlumne des de l'avaluació anterior (NO reinicia)
-    public async Task CopiarPerAvaluacioAsync(
-        long idAvaluacioActual,
-        long idAvaluacioAnterior)
+    public async Task CopiarPerAvaluacioAsync(long idAvaluacioActual, long idAvaluacioAnterior)
+    {
+        var strategy = _context.Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(async () =>
+        {
+            using var tx = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                await CopiarPerAvaluacioCoreAsync(
+                    idAvaluacioActual,
+                    idAvaluacioAnterior);
+
+                await _context.SaveChangesAsync();
+
+                await tx.CommitAsync();
+            }
+            catch
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
+        });
+    }
+
+    public async Task CopiarPerAvaluacioCoreAsync(long idAvaluacioActual,long idAvaluacioAnterior)
     {
         var karmesAnteriors = await _context.KarmaAlumnes
             .Where(k => k.IdAvaluacio == idAvaluacioAnterior)
@@ -83,7 +133,7 @@ public class KarmaAlumneService : IKarmaAlumneService
 
             _context.KarmaAlumnes.Add(new KarmaAlumne
             {
-                NIA  = karmaAnterior.NIA,
+                NIA = karmaAnterior.NIA,
                 IdAvaluacio = idAvaluacioActual,
                 NumPuntsInicials = karmaAnterior.NumPuntsActuals,
                 NumPuntsActuals = karmaAnterior.NumPuntsActuals,
@@ -91,9 +141,37 @@ public class KarmaAlumneService : IKarmaAlumneService
                 KarmaActual = karmaAnterior.KarmaActual
             });
         }
-
-        await _context.SaveChangesAsync();
     }
+
+    // Copiar KarmaAlumne des de l'avaluació anterior (NO reinicia)
+    //public async Task CopiarPerAvaluacioAsync(long idAvaluacioActual, long idAvaluacioAnterior)
+    //{
+    //    var karmesAnteriors = await _context.KarmaAlumnes
+    //        .Where(k => k.IdAvaluacio == idAvaluacioAnterior)
+    //        .ToListAsync();
+
+    //    foreach (var karmaAnterior in karmesAnteriors)
+    //    {
+    //        bool existeix = await _context.KarmaAlumnes.AnyAsync(k =>
+    //            k.NIA == karmaAnterior.NIA &&
+    //            k.IdAvaluacio == idAvaluacioActual);
+
+    //        if (existeix)
+    //            continue;
+
+    //        _context.KarmaAlumnes.Add(new KarmaAlumne
+    //        {
+    //            NIA  = karmaAnterior.NIA,
+    //            IdAvaluacio = idAvaluacioActual,
+    //            NumPuntsInicials = karmaAnterior.NumPuntsActuals,
+    //            NumPuntsActuals = karmaAnterior.NumPuntsActuals,
+    //            KarmaInicial = karmaAnterior.KarmaActual,
+    //            KarmaActual = karmaAnterior.KarmaActual
+    //        });
+    //    }
+
+    //    await _context.SaveChangesAsync();
+    //}
 
     // Calcular nota final de TOTS els alumnes d'una avaluació
     public async Task CalcularNotaFinalAsync(long idAvaluacio)

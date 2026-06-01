@@ -1,0 +1,4099 @@
+{
+  "info": {
+    "_postman_id": "82e46467-e4cb-4045-8b5b-7ef6c2fc1f80",
+    "name": "KarmaWebApi – Pla proves TFM",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "44392423"
+  },
+  "item": [
+    {
+      "name": "_Auth",
+      "item": [
+        {
+          "name": "Llista",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}api/account/agents",
+              "host": [
+                "{{url}}api"
+              ],
+              "path": [
+                "account",
+                "agents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register AG_Admin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"email\": \"admin@institut.com\",\r\n  \"password\": \"P@ssw0rd\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/registeradmin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "registeradmin"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login AG_Admin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"login\": \"somarrod@alumni.upv.es\",\r\n  \"password\": \"P@ssw0rd\",\r\n  \"rememberMe\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login AG_Alumne",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"login\": \"000000005\",\r\n  \"password\": \"Mg000000005!\",\r\n  \"rememberMe\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Login AG_Professor Inactiu",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"login\": \"xmartinez@professor.com\",\r\n  \"password\": \"Xm@1002\",\r\n  \"rememberMe\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Login AG_Professor Actiu",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"login\": \"rlluria@professor.com\",\r\n  \"password\": \"Rl@1003\",\r\n  \"rememberMe\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login AG_EquipDirectiu",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"login\": \"smarti@professor.com\",\r\n  \"password\": \"Sm@1001\",\r\n  \"rememberMe\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "canviapassword",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"passwordActual\": \"P@ssw0rd!\",\r\n  \"nouPassword\": \"P@ssw0rd\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/canviapassword",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "canviapassword"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "resetpassword",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"smarti@professor.com\",\r\n  \"nouPassword\": \"Sm@1000\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/resetpassword",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "resetpassword"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03. Materia",
+      "item": [
+        {
+          "name": "✅ Crear matèria",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "disabled": true
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Muntatge i manteniment de sistemes i components Informàtics\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/materia/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "materia",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Crear matèria duplicada",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "disabled": true
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Muntatge i manteniment de sistemes i components Informàtics\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/materia/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "materia",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Llista",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/materia/llista",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "materia",
+                "llista"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/materia/99999",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/materia/99999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "materia",
+                "99999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/materia/{id} – Admin",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/materia/12",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "materia",
+                "12"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/materia/{id} – Professor",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/materia/{{materiaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "materia",
+                "{{materiaId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ GET /api/materia/{id} – Alumne (NO)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alumneToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/materia/{{materiaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "materia",
+                "{{materiaId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"idmateria\": 2,\n  \"nom\": \"Muntatge i manteniment de sistemes i components Informàtics\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/materia/editar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "materia",
+                "editar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/materia/activar/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "materia",
+                "activar",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desactivar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/materia/desactivar/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "materia",
+                "desactivar",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/materia – Professor NO autoritzat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Sistemes\",\n  \"classeId\": {{classeId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/materia",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "materia"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "11. Professors",
+      "item": [
+        {
+          "name": "✅ Crear professor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"idProfessor\": \"1009\",\r\n  \"nom\": \"Maxim\",\r\n  \"cognoms\": \"Bonet Martí\",\r\n  \"email\": \"mbonet1@professor.com\",\r\n  \"pertanyAEquipDirectiu\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professor/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professor",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Crear professor equip directiu",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"idProfessor\": \"1003\",\r\n  \"nom\": \"Roger\",\r\n  \"cognoms\": \"Llúria\",\r\n  \"email\": \"rlluriai@professor.com\",\r\n  \"pertanyAEquipDirectiu\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professor/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professor",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Crear duplicat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"idProfessor\": \"1005\",\r\n  \"nom\": \"Xavier\",\r\n  \"cognoms\": \"Martínez\",\r\n  \"email\": \"xmartinez@professor.com\",\r\n  \"pertanyAEquipDirectiu\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professor",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professor"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Llistar professors",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/professor/llista",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professor",
+                "llista"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Llistar professors ACTIUS",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/professor/llista/actius",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professor",
+                "llista",
+                "actius"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Consultar professor per ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/professor/{{professorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professor",
+                "{{professorId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Consultar professor inexistent",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/professor/99999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professor",
+                "99999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Crear professor com a professor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/professor",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professor"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "editar",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"idProfessor\": \"1001\",\r\n  \"nom\": \"Sofia\",\r\n  \"cognoms\": \"Martí Rodríguez\",\r\n  \"email\": \"smarti@professor.com\",\r\n  \"pertanyAEquipDirectiu\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professor/editar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professor",
+                "editar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "editar - no pertany a Direcció",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"idProfessor\": \"1003\",\r\n  \"nom\": \"Roger\",\r\n  \"cognoms\": \"Lluria\",\r\n  \"email\": \"rlluria@professor.com\",\r\n  \"pertanyAEquipDirectiu\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professor/editar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professor",
+                "editar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "desactivar",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professor/desactivar/1002",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professor",
+                "desactivar",
+                "1002"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "activar",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professor/activar/1001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professor",
+                "activar",
+                "1001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}api/professor/eliminar?idProfessor=1001",
+              "host": [
+                "{{url}}api"
+              ],
+              "path": [
+                "professor",
+                "eliminar"
+              ],
+              "query": [
+                {
+                  "key": "idProfessor",
+                  "value": "1001"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "13. Alumnes",
+      "item": [
+        {
+          "name": "✅ Crear alumne",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nia\": \"000000009\",\n  \"nom\": \"Xavier\",\n  \"cognoms\": \"Castelló\",\n  \"idclasse\": null,\n  \"idgrup\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Crear alumne en Grup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nia\": \"000000006\",\n  \"nom\": \"Verónica\",\n  \"cognoms\": \"Mieles\",\n  \"idclasse\": 1,\n  \"idgrup\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Editar alumne",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nia\": \"000000006\",\n  \"nom\": \"Vero\",\n  \"cognoms\": \"Mieles\",\n  \"idclasse\": 1,\n  \"idgrup\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne/editar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne",
+                "editar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Crear alumne duplicat (mateix NIA)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nia\": \"000000002\",\n  \"nom\": \"Rocío\",\n  \"cognoms\": \"Peiró García\",\n  \"idanyescolar\": null, \n  \"idclasse\": null,\n  \"idgrup\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Llistar alumnes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne/llista",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne",
+                "llista"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Llistar alumnes Per classe",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne/per-classe/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne",
+                "per-classe",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Consultar alumne per ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne/000000005",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne",
+                "000000005"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Consultar alumne inexistent",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne/99999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne",
+                "99999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Llistar alumnes com a alumne",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alumneToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne/llista",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne",
+                "llista"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Assignar_a_classe_i_grup",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nia\": \"000000002\",\n  \"idClasse\": 1,\n  \"idGrup\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne/assignar-classe-grup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne",
+                "assignar-classe-grup"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Desactivar alumne",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne/desactivar/000000001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne",
+                "desactivar",
+                "000000001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Activar alumne",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne/activar/000000001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne",
+                "activar",
+                "000000001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ GET – Alumne intentant veure altres alumnes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alumneToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ PUT – Canviar NIA a un existent",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nia\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne/{{alumneId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne",
+                "{{alumneId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Sincronitzar Identity",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne/sincronitzar-identity",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne",
+                "sincronitzar-identity"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04. Any Escolar",
+      "item": [
+        {
+          "name": "✅ Crear any escolar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"dataIniciCurs\": \"2024-09-01\",\r\n  \"dataFiCurs\": \"2025-08-31\",\r\n  \"saldoKarmaInicial\": 20,\r\n  \"reiniciaCadaAvaluacio\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/any-escolar/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "any-escolar",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Crear any escolar duplicat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"dataIniciCurs\": \"2025-09-01\",\r\n  \"dataFiCurs\": \"2026-08-31\",\r\n  \"saldoKarmaInicial\": 20,\r\n  \"reiniciaCadaAvaluacio\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/any-escolar/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "any-escolar",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Llistar anys escolars",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/any-escolar/llista",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "any-escolar",
+                "llista"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Consultar any escolar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/any-escolar/2425",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "any-escolar",
+                "2425"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Editar",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"idAnyescolar\": 2526,\r\n  \"saldoKarmaInicial\": 10,\r\n  \"reiniciaCadaAvaluacio\": true,\r\n  \"actiu\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/any-escolar/editar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "any-escolar",
+                "editar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/any-escolar/eliminar/2425",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "any-escolar",
+                "eliminar",
+                "2425"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "07. Tipus de Categoria",
+      "item": [
+        {
+          "name": "✅ Crear tipus de categoria",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"descripcio\": \"Disciplina\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tipus-categoria/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tipus-categoria",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Crear tipus duplicat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tipus-categoria",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tipus-categoria"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Llistar tipus de categoria",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tipus-categoria/llista",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tipus-categoria",
+                "llista"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Llistar sols actius",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tipus-categoria/llista-actius",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tipus-categoria",
+                "llista-actius"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Consultar tipus per ID",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tipus-categoria/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tipus-categoria",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar tipus de categoria",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idTipusCategoria\": 9,\r\n    \"descripcio\": \"Altres\",\r\n    \"actiu\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tipus-categoria/editar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tipus-categoria",
+                "editar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Eliminar tipus de categoria",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tipus-categoria/eliminar/8",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tipus-categoria",
+                "eliminar",
+                "8"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "08. Categories",
+      "item": [
+        {
+          "name": "✅ Crear categoria",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idTipusCategoria\": 7,\r\n    \"descripcio\": \"Porta els papers signants XX\",\r\n    \"numpunts\": \"-1\",\r\n    \"editable\": true,\r\n    \"comentaris\": \"Si els porta signats quan toca 1, sino, -1\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categoria/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categoria",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Crear categoria 2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idTipusCategoria\": 10,\r\n    \"descripcio\": \"Expulsió per falta greu\",\r\n    \"numpunts\": \"-4\",\r\n    \"editable\": true,\r\n    \"comentaris\": null\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categoria/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categoria",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Editar categoria",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idCategoria\": 17, \r\n    \"idTipusCategoria\": 10,\r\n    \"descripcio\": \"Expulsió per falta greu 2\",\r\n    \"numpunts\": \"-2\",\r\n    \"editable\": true,\r\n    \"comentaris\": null,\r\n    \"actiu\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categoria/editar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categoria",
+                "editar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Crear categoria no activa",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idTipusCategoria\": 9,\r\n    \"descripcio\": \"Ús de mòbil\",\r\n    \"numpunts\": -2,\r\n    \"editable\": true,\r\n    \"comentaris\": \"Un altra vegada amb el mòbil?\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categoria/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categoria",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Llistar categories",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categoria/llista",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categoria",
+                "llista"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Consultar categoria per ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/categoria/8",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categoria",
+                "8"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅  Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categoria/eliminar/17",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categoria",
+                "eliminar",
+                "17"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05. Privilegis",
+      "item": [
+        {
+          "name": "✅ Crear privilegi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"descripcio\": \"Eixir de classe 5 minuts abans\",\r\n    \"tipus\": \"G\",\r\n    \"idAnyEscolar\": 2526,\r\n    \"NivellPrivilegi\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/privilegi/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "privilegi",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Editar privilegi",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idPrivilegi\": 4,\r\n    \"descripcio\": \"Eixir de classe 5 minuts abans\",\r\n    \"tipus\": \"G\",\r\n    \"idAnyEscolar\": 2526,\r\n    \"NivellPrivilegi\": 1, \r\n    \"actiu\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/privilegi/editar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "privilegi",
+                "editar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Crear privilegi duplicat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"descripcio\": \"Escoltar música en classe\",\r\n    \"tipus\": \"I\",\r\n    \"idAnyEscolar\": 2526,\r\n    \"NivellPrivilegi\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/privilegi/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "privilegi",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Llistar privilegis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/privilegi/per-any-escolar/2526",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "privilegi",
+                "per-any-escolar",
+                "2526"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Consultar privilegi per ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/privilegi/3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "privilegi",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Consultar privilegi inexistent",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/privilegi/99999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "privilegi",
+                "99999"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "06. Configuració de Karma",
+      "item": [
+        {
+          "name": "✅ Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idAnyEscolar\": 2526,\r\n    \"numPuntsMinim\": 0,\r\n    \"numPuntsMaxim\": 6,\r\n    \"nivellPrivilegi\": 1,\r\n    \"colorKarma\": \"Verd\"\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/configuracio-karma/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "configuracio-karma",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Crear configuració solapada",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idAnyEscolar\": 2526,\r\n    \"numPuntsMinim\": -100,\r\n    \"numPuntsMaxim\": -11,\r\n    \"nivellPrivilegi\": 0,\r\n    \"colorKarma\": \"Negre\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/configuracio-karma/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "configuracio-karma",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅  Editar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idConfiguracioKarma\": 5,\r\n    \"idAnyEscolar\": 2526,\r\n    \"numPuntsMinim\": -100,\r\n    \"numPuntsMaxim\": -10,\r\n    \"nivellPrivilegi\": 0,\r\n    \"colorKarma\": \"Negre\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/configuracio-karma/editar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "configuracio-karma",
+                "editar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Consultar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/configuracio-karma/anyescolar/2526",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "configuracio-karma",
+                "anyescolar",
+                "2526"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "09. Avaluacions",
+      "item": [
+        {
+          "name": "✅ Crear avaluació",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idAnyEscolar\": 2526,\r\n    \"nom\": \"3ª avaluació\",\r\n    \"dataInicial\": \"2025-02-24\",\r\n    \"dataFinal\": \"2025-06-15\",\r\n    \"notaMinimaKarma\": 0, \r\n    \"notaMaximaKarma\": 40\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/avaluacio/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "avaluacio",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Editar avaluació",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idAvaluacio\": 1,\r\n    \"idAnyEscolar\": 2526,\r\n    \"nom\": \"1ª avaluació\",\r\n    \"dataInicial\": \"2025-09-08\",\r\n    \"dataFinal\": \"2025-11-24\",\r\n    \"notaMinimaKarma\": 0, \r\n    \"notaMaximaKarma\": 20\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/avaluacio/editar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "avaluacio",
+                "editar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Editar 2ª avaluació",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idAvaluacio\": 2,\r\n    \"idAnyEscolar\": 2526,\r\n    \"nom\": \"2ª avaluació\",\r\n    \"dataInicial\": \"2025-11-25\",\r\n    \"dataFinal\": \"2026-02-23\",\r\n    \"notaMinimaKarma\": 0, \r\n    \"notaMaximaKarma\": 30\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/avaluacio/editar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "avaluacio",
+                "editar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Editar 3ª avaluació",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idAvaluacio\": 3,\r\n    \"idAnyEscolar\": 2526,\r\n    \"nom\": \"3ª avaluació\",\r\n    \"dataInicial\": \"2026-02-24\",\r\n    \"dataFinal\": \"2026-06-15\",\r\n    \"notaMinimaKarma\": 0, \r\n    \"notaMaximaKarma\": 40\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/avaluacio/editar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "avaluacio",
+                "editar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Crear avaluació solapada",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idAnyEscolar\": 2526,\r\n    \"nom\": \"3ª avaluació\",\r\n    \"dataInicial\": \"2025-02-24\",\r\n    \"dataFinal\": \"2025-06-15\",\r\n    \"notaMinimaKarma\": 0, \r\n    \"notaMaximaKarma\": 40\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/avaluacio/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "avaluacio",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Llistar per any",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/avaluacio/per-anyescolar/2526",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "avaluacio",
+                "per-anyescolar",
+                "2526"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Llistar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/avaluacio/llista",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "avaluacio",
+                "llista"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Consultar avaluació per ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/avaluacio/3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "avaluacio",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Consultar avaluació inexistent",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/avaluacio/99999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "avaluacio",
+                "99999"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "10. Classes",
+      "item": [
+        {
+          "name": "✅ Crear classe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idAnyEscolar\":2526,\r\n    \"nom\": \"FPB-X\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/classe/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classe",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Editar classe",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idClasse\":3,\r\n    \"nom\": \"FPB-B\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/classe/editar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classe",
+                "editar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idAnyEscolar\":2526,\r\n    \"nom\": \"FPB-B\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/classe/eliminar/4",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classe",
+                "eliminar",
+                "4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Llistar classes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/classe/per-anyescolar/2526",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classe",
+                "per-anyescolar",
+                "2526"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Consultar classe per ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/classe/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classe",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Consultar classe inexistent",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/classe/99999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classe",
+                "99999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Llistar classes com a alumne",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alumneToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/classe/per-anyescolar/2526",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classe",
+                "per-anyescolar",
+                "2526"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "12. ProfessorsDeClasse",
+      "item": [
+        {
+          "name": "✅ Assignar professor a classe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idProfessor\": \"1005\",\r\n    \"idClasse\": 1,\r\n    \"idMateria\": 7\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professordeclasse/assignar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professordeclasse",
+                "assignar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Assignar professor inexistent",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idProfessor\": \"x1005\",\r\n    \"idClasse\": 1,\r\n    \"idMateria\": 7\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professordeclasse/assignar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professordeclasse",
+                "assignar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Consultar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/professordeclasse/anyescolar/2526",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professordeclasse",
+                "anyescolar",
+                "2526"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Consultar per ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/professordeclasse/5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "professordeclasse",
+                "5"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "14. Grups",
+      "item": [
+        {
+          "name": "✅ Crear grup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idClasse\":2, \r\n    \"nom\": \"Projecte completat\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/grup/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "grup",
+                "crear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Editar grup",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idGrup\": 2, \r\n    \"nom\": \"+ del 100%\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/grup/editar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "grup",
+                "editar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Eliminar grup",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idGrup\": 2, \r\n    \"nom\": \"+ del 100%\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/grup/eliminar/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "grup",
+                "eliminar",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Crear grup duplicat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/grup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "grup"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Assignar alumne a grup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"nia\": \"000000001\",\r\n    \"idGrup\":1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/grup/assignar-alumne",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "grup",
+                "assignar-alumne"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Llistar grups per classe",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/grup/per-classe/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "grup",
+                "per-classe",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Consulta Grup per ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/grup/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "grup",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "15. Puntuacions",
+      "item": [
+        {
+          "name": "Auxiliars",
+          "item": [
+            {
+              "name": "✅ Login AG_Professor Actiu Copy",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"rpeiro@professor.com\",\r\n  \"password\": \"Rp@1000\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Llistar alumnes",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/alumne/llista",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "alumne",
+                    "llista"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Llistar avaluació",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/avaluacio/per-anyescolar/2526",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "avaluacio",
+                    "per-anyescolar",
+                    "2526"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Llistar categories",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/categoria/llista",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "categoria",
+                    "llista"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Consultar Professor de Classe",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/professordeclasse/anyescolar/2526",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "professordeclasse",
+                    "anyescolar",
+                    "2526"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Login AG_Professor Actiu Copy",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"rpeiro@professor.com\",\r\n  \"password\": \"Rp@1000\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "✅ Crear puntuació correcta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"nia\": \"000000005\",\r\n    \"idAvaluacio\": 1,\r\n    \"idCategoria\": 1,\r\n    \"numPunts\": 1,\r\n    \"motiu\": \"Ha portat els papers signats per a l'eixida de divendres 26\",\r\n    \"descripcioAdicional\": null,\r\n    \"dataEvent\": \"2025-11-02\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/puntuacio/assignar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "puntuacio",
+                "assignar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Crear puntuació correcta POSITIU",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"nia\": \"000000005\",\r\n    \"idAvaluacio\": 2,\r\n    \"idCategoria\": 8,\r\n    \"numPunts\": 1,\r\n    \"motiu\": \"Altres\",\r\n    \"descripcioAdicional\": \"Ha estat atenent. Molt bé\",\r\n    \"dataEvent\": \"2025-11-02\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/puntuacio/assignar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "puntuacio",
+                "assignar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Llistar puntuacions de l’alumne",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/puntuacio/alumne/{{alumneId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "puntuacio",
+                "alumne",
+                "{{alumneId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Crear puntuació com a professor no assignat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professorNoClasseToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/puntuacio",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "puntuacio"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Crear puntuació com a alumne",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alumneToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/puntuacio",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "puntuacio"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Crear puntuació amb avaluació inexistent",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/puntuacio",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "puntuacio"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "16. Karma Alumne",
+      "item": [
+        {
+          "name": "✅ GET – Consultar karma alumne (professor assignat)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/karma/alumne/{{alumneId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "karma",
+                "alumne",
+                "{{alumneId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ GET – Consultar karma alumne (alumne)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alumneToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/karma/alumne/{{alumneId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "karma",
+                "alumne",
+                "{{alumneId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ GET – Consultar karma alumne aliè",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alumneToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/karma/alumne/99999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "karma",
+                "alumne",
+                "99999"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "17. Karma Grup",
+      "item": [
+        {
+          "name": "✅ GET – Consultar karma grup",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/karma/grup/{{grupId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "karma",
+                "grup",
+                "{{grupId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ GET – Consultar karma grup com a alumne",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alumneToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/karma/grup/{{grupId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "karma",
+                "grup",
+                "{{grupId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "18. Assignació de Privilegis",
+      "item": [
+        {
+          "name": "✅ GET – Consultar privilegis disponibles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/privilegi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "privilegi"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ GET – Consultar privilegis de l’alumne",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/privilegi/alumne/{{alumneId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "privilegi",
+                "alumne",
+                "{{alumneId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ POST – Assignar privilegi (karma suficient)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/privilegi/assignacio",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "privilegi",
+                "assignacio"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ POST – Assignar privilegi amb karma insuficient",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/privilegi/assignacio",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "privilegi",
+                "assignacio"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ POST – Assignació duplicada del mateix privilegi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/privilegi/assignacio",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "privilegi",
+                "assignacio"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ POST – Assignar privilegi com a professor (no equip directiu)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/privilegi/assignacio",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "privilegi",
+                "assignacio"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ POST – Assignar privilegi com a alumne",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alumneToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/privilegi/assignacio",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "privilegi",
+                "assignacio"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "19. Proves End‑to‑End",
+      "item": [
+        {
+          "name": "✅ E2E – Consultar estructura bàsica",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/any-escolar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "any-escolar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ E2E – Professor consulta alumnat i categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/alumne",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumne"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ E2E – Crear puntuació i verificar karma",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/puntuacio",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "puntuacio"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ E2E – Consultar karma de l’alumne",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/karma/alumne/{{alumneId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "karma",
+                "alumne",
+                "{{alumneId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ E2E – Assignar privilegi final",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/privilegi/assignacio",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "privilegi",
+                "assignacio"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://localhost:XXXX"
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "professorToken",
+      "value": ""
+    },
+    {
+      "key": "alumneToken",
+      "value": ""
+    },
+    {
+      "key": "anyEscolarId",
+      "value": ""
+    },
+    {
+      "key": "privilegiId",
+      "value": ""
+    }
+  ]
+}

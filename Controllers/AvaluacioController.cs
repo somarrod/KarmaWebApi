@@ -154,7 +154,7 @@ namespace KarmaWebAPI.Controllers
         // -------------------------------------------------
         // DELETE: api/avaluacio/{id}
         // -------------------------------------------------
-        [HttpDelete("{idAvaluacio:long}")]
+        [HttpDelete("{idAvaluacio:long}/eliminar")]
         [Authorize(Roles = "AG_Admin")]
         public async Task<IActionResult> Eliminar(long idAvaluacio)
         {

@@ -26,12 +26,26 @@ public interface IPuntuacioService
         DateOnly dataEvent,
         ClaimsPrincipal user);
 
-    // Consultes
-    Task<PuntuacioDisplaySet?> InstanciaAsync(long idPuntuacio);
 
-    Task<List<PuntuacioDisplaySet>> LlistaPerAlumneAsync(string nia, long? idAvaluacio = null);
+    // ==================================================
+    // CONSULTES
+    // ==================================================
+    Task<PuntuacioDisplaySet?> InstanciaAsync(
+        long idPuntuacio,
+        ClaimsPrincipal user);
 
-    Task<List<PuntuacioDisplaySet>> LlistaPerClasseAsync(long idClasse, long? idAvaluacio = null);
+    Task<List<PuntuacioDisplaySet>> LlistaPerAlumneAsync(
+        string nia,
+        ClaimsPrincipal user,
+        long? idAvaluacio = null);
 
-    Task<List<PuntuacioDisplaySet>> LlistaPerGrupAsync(long idGrup, long? idAvaluacio = null);
+    Task<List<PuntuacioDisplaySet>> LlistaPerClasseAsync(
+        long idClasse,
+        ClaimsPrincipal user,
+        long? idAvaluacio = null);
+
+    Task<List<PuntuacioDisplaySet>> LlistaPerGrupAsync(
+        long idGrup,
+        ClaimsPrincipal user,
+        long? idAvaluacio = null);
 }

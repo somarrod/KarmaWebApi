@@ -113,7 +113,7 @@
 
                     await tx.CommitAsync();
 
-                    // ✅ 🔥 retornar DisplaySet (no entity)
+                    // retornar DisplaySet (no entity)
                     return await QueryPuntuacioDisplaySet()
                         .AsNoTracking()
                         .FirstAsync(p => p.IdPuntuacio == puntuacio.IdPuntuacio);
@@ -149,7 +149,7 @@
 
             var professor = await _context.Professors
                 .FirstOrDefaultAsync(p => p.IdProfessor == idProfessor)
-                ?? throw new InvalidOperationException("El professor no existeix");
+                ?? throw new InvalidOperationException("És necessari que es connecte com a professor");
 
             if (!professor.Actiu)
                 throw new InvalidOperationException("El professor connectat no està actiu");
@@ -214,13 +214,13 @@
 
             if (karma == null)
             {
-                // ✅ crea el karma amb el servei (sense SaveChanges)
+                // crea el karma amb el servei (sense SaveChanges)
                 await _karmaAlumneService.CrearPerAlumneCoreAsync(
                     nia,
                     idAvaluacio,
                     0);
 
-                // ✅ torna a carregar-lo ja creat (tracking actiu)
+                // torna a carregar-lo ja creat (tracking actiu)
                 karma = _context.KarmaAlumnes
                     .Local
                     .First(k => k.NIA == nia && k.IdAvaluacio == idAvaluacio);
@@ -246,8 +246,6 @@
             alumne.KarmaActualColor = configuracio.ColorKarma;
 
 
-            
-
             if (alumne.IdGrup.HasValue)
                 await _grupService.CalcularKarmaBaseCoreAsync(alumne.IdGrup.Value, false);
 
@@ -259,17 +257,39 @@
         // ==================================================
         // CONSULTES
         // ==================================================
-        public async Task<PuntuacioDisplaySet?> InstanciaAsync(long idPuntuacio)
-        {
-            return await QueryPuntuacioDisplaySet()
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.IdPuntuacio == idPuntuacio);
-        }
-
-        public async Task<List<PuntuacioDisplaySet>> LlistaPerAlumneAsync(string nia, long? idAvaluacio = null)
+        public async Task<PuntuacioDisplaySet?> InstanciaAsync(
+            long idPuntuacio,
+            ClaimsPrincipal user)
         {
             var query = QueryPuntuacioDisplaySet()
-                .Where(p => p.NIA == nia);
+                .Where(p => p.IdPuntuacio == idPuntuacio);
+
+            if (user.IsInRole("AG_Alumne"))
+            {
+                var nia = user.Identity!.Name;
+                query = query.Where(p => p.NIA == nia);
+            }
+
+            return await query
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+        }
+
+        
+        public async Task<List<PuntuacioDisplaySet>> LlistaPerAlumneAsync(string nia, ClaimsPrincipal user, long? idAvaluacio = null)
+        {
+            var query = QueryPuntuacioDisplaySet();
+
+            //El alumne conectat sols pot vore les seues propies puntuacions
+            if (user.IsInRole("AG_Alumne"))
+            {
+                var niaUser = user.Identity!.Name;
+                query = query.Where(p => p.NIA == niaUser);
+            }
+            else
+            {
+                query = query.Where(p => p.NIA == nia);
+            }
 
             if (idAvaluacio.HasValue)
                 query = query.Where(p => p.IdAvaluacio == idAvaluacio.Value);
@@ -280,11 +300,17 @@
                 .ToListAsync();
         }
 
-        public async Task<List<PuntuacioDisplaySet>> LlistaPerClasseAsync(long idClasse, long? idAvaluacio = null)
+        public async Task<List<PuntuacioDisplaySet>> LlistaPerClasseAsync(long idClasse, ClaimsPrincipal user, long? idAvaluacio = null)
         {
             var query = QueryPuntuacioDisplaySet()
                 .Where(p => p.IdClasse == idClasse);
 
+            if (user.IsInRole("AG_Alumne"))
+            {
+                var nia = user.Identity!.Name;
+                query = query.Where(p => p.NIA == nia);
+            }
+
             if (idAvaluacio.HasValue)
                 query = query.Where(p => p.IdAvaluacio == idAvaluacio.Value);
 
@@ -294,10 +320,17 @@
                 .ToListAsync();
         }
 
-        public async Task<List<PuntuacioDisplaySet>> LlistaPerGrupAsync(long idGrup, long? idAvaluacio = null)
+
+        public async Task<List<PuntuacioDisplaySet>> LlistaPerGrupAsync(long idGrup,ClaimsPrincipal user, long? idAvaluacio = null)
         {
             var query = QueryPuntuacioDisplaySet()
                 .Where(p => p.IdGrup == idGrup);
+
+            if (user.IsInRole("AG_Alumne"))
+            {
+                var nia = user.Identity!.Name;
+                query = query.Where(p => p.NIA == nia);
+            }
 
             if (idAvaluacio.HasValue)
                 query = query.Where(p => p.IdAvaluacio == idAvaluacio.Value);
