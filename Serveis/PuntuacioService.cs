@@ -111,6 +111,8 @@
                         dataEvent,
                         user);
 
+                    await _context.SaveChangesAsync();
+
                     await tx.CommitAsync();
 
                     // retornar DisplaySet (no entity)
@@ -248,8 +250,6 @@
 
             if (alumne.IdGrup.HasValue)
                 await _grupService.CalcularKarmaBaseCoreAsync(alumne.IdGrup.Value, false);
-
-            await _context.SaveChangesAsync();
 
             return puntuacio;
         }

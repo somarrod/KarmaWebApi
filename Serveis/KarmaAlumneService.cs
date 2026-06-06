@@ -238,6 +238,7 @@ public class KarmaAlumneService : IKarmaAlumneService
             }
         });
     }
+
     public async Task CrearPerAlumneCoreAsync(
                 string nia,
                 long idAvaluacio,
@@ -274,7 +275,7 @@ public class KarmaAlumneService : IKarmaAlumneService
 
     public async Task<KarmaAlumne?> ObtenirKarmaAlumnePerDataAsync(string nia, DateOnly data)
     {
-        // ✅ 1. Trobar avaluació en curs en eixa data
+        // 1. Trobar avaluació en curs en eixa data
         var avaluacio = await _context.Avaluacions
             .Where(a =>
                 a.DataInicial <= data &&
@@ -284,7 +285,7 @@ public class KarmaAlumneService : IKarmaAlumneService
         if (avaluacio == null)
             return null;
 
-        // ✅ 2. Recuperar karma per eixa avaluació
+        // 2. Recuperar karma per eixa avaluació
         return await _context.KarmaAlumnes
             .FirstOrDefaultAsync(k =>
                 k.NIA == nia &&
