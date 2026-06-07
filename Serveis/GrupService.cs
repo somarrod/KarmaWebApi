@@ -25,7 +25,9 @@ namespace KarmaWebAPI.Serveis
         // CALCULAR KARMA BASE 
         // ==================================================
         //Wrapper Orquestrador de transaccions
-        public async Task<string?> CalcularKarmaBaseAsync(long idGrup)
+        public async Task<string?> CalcularKarmaBaseAsync(
+            long idGrup,
+            long? idAvaluacio = null)
         {
             var strategy = _context.Database.CreateExecutionStrategy();
 
@@ -35,7 +37,10 @@ namespace KarmaWebAPI.Serveis
 
                 try
                 {
-                    var res = await CalcularKarmaBaseCoreAsync(idGrup);
+                    var res = await CalcularKarmaBaseCoreAsync(
+                        idGrup,
+                        idAvaluacio,
+                        true);
 
                     await tx.CommitAsync();
                     return res;
@@ -47,26 +52,58 @@ namespace KarmaWebAPI.Serveis
                 }
             });
         }
+
         //Core
-        public async Task<string?> CalcularKarmaBaseCoreAsync(long idGrup, bool saveChanges = true)
+        public async Task<string?> CalcularKarmaBaseCoreAsync(
+            long idGrup,
+            long? idAvaluacio = null,
+            bool saveChanges = true)
         {
             var grup = await _context.Grups
                 .Include(g => g.Classe)
                 .FirstAsync(g => g.IdGrup == idGrup);
 
             int idAnyEscolar = grup.Classe.IdAnyEscolar;
-            DateOnly hui = DateOnly.FromDateTime(DateTime.Now);
 
-            var avaluacio = await _context.Avaluacions
-                .Where(a =>
-                    a.IdAnyEscolar == idAnyEscolar &&
-                    a.DataInicial <= hui &&
-                    a.DataFinal >= hui)
-                .FirstOrDefaultAsync();
+            // ==============================
+            // OBTENIR AVALUACIÓ
+            // ==============================
+            Avaluacio? avaluacio;
+
+            if (idAvaluacio.HasValue)
+            {
+                // cas controlat
+                avaluacio = await _context.Avaluacions
+                    .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio.Value);
+            }
+            else
+            {
+                // avaluació actual
+                DateOnly hui = DateOnly.FromDateTime(DateTime.Now);
+
+                avaluacio = await _context.Avaluacions
+                    .Where(a =>
+                        a.IdAnyEscolar == idAnyEscolar &&
+                        a.DataInicial <= hui &&
+                        a.DataFinal >= hui)
+                    .FirstOrDefaultAsync();
+
+                // fallback: última
+                if (avaluacio == null)
+                {
+                    avaluacio = await _context.Avaluacions
+                        .Where(a => a.IdAnyEscolar == idAnyEscolar)
+                        .OrderByDescending(a => a.DataFinal)
+                        .FirstOrDefaultAsync();
+                }
+            }
 
             if (avaluacio == null)
                 return null;
 
+            // ==============================
+            // CALCULAR PUNTS MINIMS
+            // ==============================
             var puntsMinims = await _context.KarmaAlumnes
                 .Where(k =>
                     k.IdAvaluacio == avaluacio.IdAvaluacio &&
@@ -78,6 +115,9 @@ namespace KarmaWebAPI.Serveis
             if (puntsMinims == null)
                 return null;
 
+            // ==============================
+            // CONFIGURACIÓ
+            // ==============================
             var configuracio = await _context.ConfiguracionsKarma
                 .Where(c =>
                     c.IdAnyEscolar == idAnyEscolar &&
@@ -85,6 +125,9 @@ namespace KarmaWebAPI.Serveis
                     puntsMinims < c.NumPuntsMaxim)
                 .FirstAsync();
 
+            // ==============================
+            // ACTUALITZAR GRUP
+            // ==============================
             grup.KarmaBase = configuracio.ColorKarma;
             grup.DataUltimaActualitzacioKarma = DateTime.Now;
 

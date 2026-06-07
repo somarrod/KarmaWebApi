@@ -45,7 +45,7 @@ Aquesta separació permet reutilització, testabilitat i una evolució més segu
 
 ---
 
-## 3. Models i fidelitat al domini
+## 3. Models
 
 Els models reflecteixen estrictament el model orientat a objectes de Karma que ha guiat aquest disseny.
 

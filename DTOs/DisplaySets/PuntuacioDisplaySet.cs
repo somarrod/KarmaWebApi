@@ -42,6 +42,9 @@
         // Karma alumne
         public double KarmaActualPunts { get; set; }
         public string KarmaActualColor { get; set; } = string.Empty;
+
+        //Karma grup
+        public string KarmaGrup { get; set; } = string.Empty;
     }
    
 }

@@ -2455,6 +2455,82 @@
           "response": []
         },
         {
+          "name": "✅ iniciar avaluació",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/avaluacio/2/iniciar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "avaluacio",
+                "2",
+                "iniciar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ finalitzar avaluació",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/avaluacio/1/finalitzar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "avaluacio",
+                "1",
+                "finalitzar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "✅ Editar avaluació",
           "request": {
             "method": "PUT",
@@ -3445,7 +3521,7 @@
           ]
         },
         {
-          "name": "✅ Crear puntuació correcta",
+          "name": "✅ Crear puntuació NEGATIVA",
           "request": {
             "method": "POST",
             "header": [
@@ -3460,7 +3536,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"nia\": \"000000005\",\r\n    \"idAvaluacio\": 1,\r\n    \"idCategoria\": 1,\r\n    \"numPunts\": 1,\r\n    \"motiu\": \"Ha portat els papers signats per a l'eixida de divendres 26\",\r\n    \"descripcioAdicional\": null,\r\n    \"dataEvent\": \"2025-11-02\"\r\n}",
+              "raw": "{\r\n    \"nia\": \"000000005\",\r\n    \"idAvaluacio\": 1,\r\n    \"idCategoria\": 1,\r\n    \"numPunts\": -5,\r\n    \"motiu\": \"No ha portat els papers signats per a l'eixida de divendres 26\",\r\n    \"descripcioAdicional\": null,\r\n    \"dataEvent\": \"2025-11-02\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -3482,7 +3558,7 @@
           "response": []
         },
         {
-          "name": "✅ Crear puntuació correcta POSITIU",
+          "name": "✅ Crear puntuació POSITIU",
           "request": {
             "method": "POST",
             "header": [
@@ -3497,7 +3573,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"nia\": \"000000005\",\r\n    \"idAvaluacio\": 2,\r\n    \"idCategoria\": 8,\r\n    \"numPunts\": 1,\r\n    \"motiu\": \"Altres\",\r\n    \"descripcioAdicional\": \"Ha estat atenent. Molt bé\",\r\n    \"dataEvent\": \"2025-11-02\"\r\n}",
+              "raw": "{\r\n    \"nia\": \"000000005\",\r\n    \"idAvaluacio\": 2,\r\n    \"idCategoria\": 8,\r\n    \"numPunts\": 1,\r\n    \"motiu\": \"Ha estat atenent. Molt bé\",\r\n    \"descripcioAdicional\": \"Ha millorat molt l'atenció des d'inici de curs\",\r\n    \"dataEvent\": \"2025-12-02\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -3513,6 +3589,43 @@
                 "api",
                 "puntuacio",
                 "assignar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Reiniciar punts",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"nia\": \"000000009\",\r\n    \"idAvaluacio\": 1,\r\n    \"idCategoria\": 6,\r\n    \"numPunts\": 5,\r\n    \"motiu\": \"Pactat amb Xavi que inicia el seu Karma després de no vindre a classe 2 setmanes per malaltia\",\r\n    \"descripcioAdicional\": null,\r\n    \"dataEvent\": \"2025-03-02\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/puntuacio/reiniciar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "puntuacio",
+                "reiniciar"
               ]
             }
           },
@@ -3529,7 +3642,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/puntuacio/alumne/{{alumneId}}",
+              "raw": "{{baseUrl}}/api/puntuacio/alumne/000000009",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3537,30 +3650,7 @@
                 "api",
                 "puntuacio",
                 "alumne",
-                "{{alumneId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "❌ Crear puntuació com a professor no assignat",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{professorNoClasseToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/puntuacio",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "puntuacio"
+                "000000009"
               ]
             }
           },
@@ -3618,75 +3708,264 @@
       "name": "16. Karma Alumne",
       "item": [
         {
-          "name": "✅ GET – Consultar karma alumne (professor assignat)",
+          "name": "Auxiliar",
+          "item": [
+            {
+              "name": "Login AG_Admin Copy",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"somarrod@alumni.upv.es\",\r\n  \"password\": \"P@ssw0rd\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Login AG_Professor NoClasse",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"rlluria@professor.com\",\r\n  \"password\": \"Rl@1003\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Login AG_Professor Classe",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"rpeiro@professor.com\",\r\n  \"password\": \"Rp@1000\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Login AG_EquipDirectiu",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"smarti@professor.com\",\r\n  \"password\": \"Sm@1001\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Login AG_Alumne",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"000000005\",\r\n  \"password\": \"Mg000000005!\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Llistar alumnes Per classe",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/alumne/per-classe/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "alumne",
+                    "per-classe",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Consulta Grup per ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/grup/2",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "grup",
+                    "2"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Calcular Karma grup",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"idGrup\": 1, \r\n    \"idAvaluacio\": 2\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/grup/calcular-karma-grup",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "grup",
+                    "calcular-karma-grup"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "✅ GET – Consultar karma classe i avalaució",
           "request": {
-            "method": "GET",
+            "method": "POST",
             "header": [
               {
                 "key": "Authorization",
                 "value": "Bearer {{professorToken}}"
               }
             ],
-            "url": {
-              "raw": "{{baseUrl}}/api/karma/alumne/{{alumneId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "karma",
-                "alumne",
-                "{{alumneId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "✅ GET – Consultar karma alumne (alumne)",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{alumneToken}}"
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idClasse\":1,\r\n    \"idAvaluacio\":1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
               }
-            ],
+            },
             "url": {
-              "raw": "{{baseUrl}}/api/karma/alumne/{{alumneId}}",
+              "raw": "{{baseUrl}}/api/karmaalumne/per-classe-avaluacio",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
-                "karma",
-                "alumne",
-                "{{alumneId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "❌ GET – Consultar karma alumne aliè",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{alumneToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/karma/alumne/99999",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "karma",
-                "alumne",
-                "99999"
+                "karmaalumne",
+                "per-classe-avaluacio"
               ]
             }
           },
@@ -3698,50 +3977,339 @@
       "name": "17. Karma Grup",
       "item": [
         {
-          "name": "✅ GET – Consultar karma grup",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{professorToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/karma/grup/{{grupId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "karma",
-                "grup",
-                "{{grupId}}"
-              ]
+          "name": "Auxiliar",
+          "item": [
+            {
+              "name": "Login AG_Admin Copy",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"somarrod@alumni.upv.es\",\r\n  \"password\": \"P@ssw0rd\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Login AG_Professor NoClasse",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"rlluria@professor.com\",\r\n  \"password\": \"Rl@1003\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Login AG_Professor Classe",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"rpeiro@professor.com\",\r\n  \"password\": \"Rp@1000\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Login AG_EquipDirectiu",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"smarti@professor.com\",\r\n  \"password\": \"Sm@1001\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Login AG_Alumne",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"000000005\",\r\n  \"password\": \"Mg000000005!\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Llistar alumnes Per classe",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/alumne/per-classe/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "alumne",
+                    "per-classe",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Consulta Grup per ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/grup/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "grup",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ GET – Consultar karma classe i avalaució Copy",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{professorToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"idClasse\":1,\r\n    \"idAvaluacio\":2\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/karmaalumne/per-classe-avaluacio",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "karmaalumne",
+                    "per-classe-avaluacio"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Crear puntuació NEGATIVA",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{professorToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"nia\": \"000000005\",\r\n    \"idAvaluacio\": 2,\r\n    \"idCategoria\": 1,\r\n    \"numPunts\": -10,\r\n    \"motiu\": \"No ha portat els papers signats per a l'eixida de divendres 26\",\r\n    \"descripcioAdicional\": null,\r\n    \"dataEvent\": \"2025-12-02\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/puntuacio/assignar",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "puntuacio",
+                    "assignar"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Crear puntuació POSITIU",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{professorToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"nia\": \"000000005\",\r\n    \"idAvaluacio\": 2,\r\n    \"idCategoria\": 8,\r\n    \"numPunts\": 4,\r\n    \"motiu\": \"Ha estat atenent. Molt bé\",\r\n    \"descripcioAdicional\": \"Ha millorat molt l'atenció des d'inici de curs\",\r\n    \"dataEvent\": \"2025-12-02\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/puntuacio/assignar",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "puntuacio",
+                    "assignar"
+                  ]
+                }
+              },
+              "response": []
             }
-          },
-          "response": []
+          ]
         },
         {
-          "name": "❌ GET – Consultar karma grup com a alumne",
+          "name": "✅ iniciar avaluació",
           "request": {
-            "method": "GET",
+            "method": "POST",
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer {{alumneToken}}"
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "{{baseUrl}}/api/karma/grup/{{grupId}}",
+              "raw": "{{baseUrl}}/api/avaluacio/2/iniciar",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
-                "karma",
-                "grup",
-                "{{grupId}}"
+                "avaluacio",
+                "2",
+                "iniciar"
               ]
             }
           },

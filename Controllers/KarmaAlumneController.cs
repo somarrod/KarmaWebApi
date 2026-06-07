@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+﻿using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace KarmaWebAPI.Controllers
 {
@@ -20,7 +22,7 @@ namespace KarmaWebAPI.Controllers
         // Alumne nou → crear des de l'avaluació en curs
         // -------------------------------------------------
         [HttpPost("alta-alumne")]
-        [Authorize(Roles = "AG_Professor,AG_Admin")]
+        [Authorize(Roles = "AG_Professor")]
         public async Task<IActionResult> AltaAlumne(
             [FromQuery] string nia,
             [FromQuery] int idAnyEscolar)
@@ -36,7 +38,7 @@ namespace KarmaWebAPI.Controllers
         // Crear KarmaAlumne per a una avaluació concreta
         // -------------------------------------------------
         [HttpPost("avaluacio")]
-        [Authorize(Roles = "AG_Professor,AG_Admin")]
+        [Authorize(Roles = "AG_Professor")]
         public async Task<IActionResult> CrearPerAvaluacio(
             [FromQuery] string nia,
             [FromQuery] long idAvaluacio,
@@ -51,16 +53,15 @@ namespace KarmaWebAPI.Controllers
         // -------------------------------------------------
         // GET: api/karmaalumne/per-avaluacio/{idAvaluacio}
         // -------------------------------------------------
-        [HttpGet("per-avaluacio/{idAvaluacio:long}")]
-        [Authorize(Roles = "AG_Professor,AG_Admin,AG_Alumne")]
-        public async Task<ActionResult<IEnumerable<KarmaAlumne>>> GetPerAvaluacio(
-            long idAvaluacio)
-        {
-            // Aquest mètode usarà directament el context o un mètode del servei
-            // si vols, després el podem encapsular també
-            //PENDENT SOFIA
 
-            return Ok(); // placeholder si encara no l’exposes
+        [HttpPost("per-classe-avaluacio")]
+        [Authorize(Roles = "AG_Professor,AG_Alumne,AG_EquipDirectiu")]
+        public async Task<ActionResult<IEnumerable<KarmaAlumne>>> GetPerClasseIAvaluacio(
+    [                           FromBody] KarmaPerClasseIAvaluacioDTO request)
+        {
+            var result = await _karmaAlumneService.GetPerClasseIAvaluacioAsync(request.IdClasse, request.IdAvaluacio, User);
+
+            return Ok(result);
         }
     }
 }

@@ -228,7 +228,6 @@
                     .First(k => k.NIA == nia && k.IdAvaluacio == idAvaluacio);
             }
 
-
             if (tipus == "S")
                 karma.NumPuntsActuals += numPunts;
             else if (tipus == "I")
@@ -247,9 +246,11 @@
             alumne.KarmaActualPunts = karma.NumPuntsActuals;
             alumne.KarmaActualColor = configuracio.ColorKarma;
 
+            await _context.SaveChangesAsync();
 
             if (alumne.IdGrup.HasValue)
-                await _grupService.CalcularKarmaBaseCoreAsync(alumne.IdGrup.Value, false);
+                await _grupService.CalcularKarmaBaseCoreAsync(alumne.IdGrup.Value, idAvaluacio, false);
+
 
             return puntuacio;
         }
@@ -390,7 +391,14 @@
                             k.Avaluacio.DataInicial <= p.DataEvent &&
                             k.Avaluacio.DataFinal >= p.DataEvent)
                         .Select(k => k.KarmaActual)
+                        .FirstOrDefault() ?? "No definit",
+
+                    KarmaGrup = _context.Grups
+                        .Where(g =>
+                            g.IdGrup == p.IdGrup) 
+                        .Select(k => k.KarmaBase)
                         .FirstOrDefault() ?? "No definit"
+
                 });
         }
     }

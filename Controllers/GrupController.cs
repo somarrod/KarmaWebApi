@@ -115,15 +115,40 @@ namespace KarmaWebAPI.Controllers
 
 
 
-        // ==================================================
-        // POST: api/grup/recalcular-karma/{idGrup}
-        // ==================================================
-        [HttpPost("calcular-karma-grup/{idGrup:long}")]
+        /// <summary>
+        /// Recalcula el karma base d'un grup.
+        /// </summary>
+        /// <remarks>
+        /// Aquest endpoint recalcula el color de karma base del grup en funció dels punts dels alumnes.
+        ///
+        /// --> Com funciona:
+        /// - Si es proporciona <paramref name="idAvaluacio"/>, el càlcul es fa per a eixa avaluació concreta.
+        /// - Si no es proporciona:
+        ///     1️ es busca l'avaluació activa segons la data actual.
+        ///     2️ si no n'hi ha cap, es pren l'última avaluació del curs escolar.
+        ///
+        /// -->  Ús habitual:
+        /// - Per recalcular manualment el karma d’un grup.
+        /// - Per proves amb avaluacions específiques.
+        /// </remarks>
+        /// <param name="idGrup">Identificador del grup</param>
+        /// <param name="idAvaluacio">
+        /// (Opcional) Id de l'avaluació per a la qual es vol recalcular el karma.
+        /// </param>
+        /// <returns>Color de karma base resultant</returns>
+        [HttpPost("calcular-karma-grup")]
         [Authorize(Roles = "AG_Admin,AG_Professor")]
-        public async Task<IActionResult> RecalcularKarmaBase(long idGrup)
+        public async Task<IActionResult> RecalcularKarmaBase(CalcularKarmaBaseGrupDTO dto)
         {
-            var karma = await _grupService.CalcularKarmaBaseAsync(idGrup);
-            return Ok(karma);
+            var karma = await _grupService.CalcularKarmaBaseAsync(dto.IdGrup, dto.IdAvaluacio);
+
+            return Ok(new
+            {
+                IdGrup = dto.IdGrup,
+                IdAvaluacio = dto.IdAvaluacio,
+                KarmaBase = karma
+            });
         }
+
     }
 }

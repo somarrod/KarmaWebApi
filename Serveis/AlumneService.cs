@@ -373,10 +373,10 @@ namespace KarmaWebAPI.Serveis
 
             // també sense transacció
             if (idGrupAnterior.HasValue && idGrupAnterior != dto.IdGrup)
-                await _grupService.CalcularKarmaBaseCoreAsync(idGrupAnterior.Value);
+                await _grupService.CalcularKarmaBaseCoreAsync(idGrupAnterior.Value, null);
 
             if (dto.IdGrup.HasValue)
-                await _grupService.CalcularKarmaBaseCoreAsync(dto.IdGrup.Value);
+                await _grupService.CalcularKarmaBaseCoreAsync(dto.IdGrup.Value, null);
 
             return alumne;
         }
@@ -405,7 +405,7 @@ namespace KarmaWebAPI.Serveis
 
             // si tenia grup → recalcular
             if (idGrupAnterior.HasValue)
-                await _grupService.CalcularKarmaBaseAsync(idGrupAnterior.Value);
+                await _grupService.CalcularKarmaBaseAsync(idGrupAnterior.Value, null);
 
             return await InstanciaCoreAsync(alumne.NIA);
         }

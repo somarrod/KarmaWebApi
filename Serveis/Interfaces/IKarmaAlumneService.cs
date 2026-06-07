@@ -1,5 +1,6 @@
 ﻿
 using KarmaWebAPI.Models;
+using System.Security.Claims;
 
 public interface IKarmaAlumneService
 {
@@ -34,6 +35,14 @@ public interface IKarmaAlumneService
 
     //Recupera el karma d'un alumne en un data
     Task<KarmaAlumne?> ObtenirKarmaAlumnePerDataAsync(string nia, DateOnly data);
+
+
+    // -------------------------------------------------
+    // C) CONSULTES
+    // -------------------------------------------------
+
+    Task<List<KarmaAlumne>> GetPerClasseIAvaluacioAsync(long idClasse, long idAvaluacio, ClaimsPrincipal user);
+
 
 
 }

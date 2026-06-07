@@ -1,6 +1,9 @@
 ﻿using KarmaWebAPI.Data;
+using KarmaWebAPI.DTOs;
 using KarmaWebAPI.Models;
+using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 public class KarmaAlumneService : IKarmaAlumneService
 {
@@ -8,14 +11,15 @@ public class KarmaAlumneService : IKarmaAlumneService
     private readonly DatabaseContext _context;
     private readonly IConfiguracioKarmaService _configuracioKarmaService;
 
+
     public KarmaAlumneService(
         DatabaseContext context,
         IConfiguracioKarmaService configuracioKarmaService)
     {
         _context = context;
         _configuracioKarmaService = configuracioKarmaService;
-    }
 
+     }
 
 
     // =====================================================
@@ -87,7 +91,7 @@ public class KarmaAlumneService : IKarmaAlumneService
             });
         }
 
-        // ❌ IMPORTANT: NO SaveChanges
+        // IMPORTANT: NO SaveChanges
     }
 
     public async Task CopiarPerAvaluacioAsync(long idAvaluacioActual, long idAvaluacioAnterior)
@@ -143,35 +147,6 @@ public class KarmaAlumneService : IKarmaAlumneService
         }
     }
 
-    // Copiar KarmaAlumne des de l'avaluació anterior (NO reinicia)
-    //public async Task CopiarPerAvaluacioAsync(long idAvaluacioActual, long idAvaluacioAnterior)
-    //{
-    //    var karmesAnteriors = await _context.KarmaAlumnes
-    //        .Where(k => k.IdAvaluacio == idAvaluacioAnterior)
-    //        .ToListAsync();
-
-    //    foreach (var karmaAnterior in karmesAnteriors)
-    //    {
-    //        bool existeix = await _context.KarmaAlumnes.AnyAsync(k =>
-    //            k.NIA == karmaAnterior.NIA &&
-    //            k.IdAvaluacio == idAvaluacioActual);
-
-    //        if (existeix)
-    //            continue;
-
-    //        _context.KarmaAlumnes.Add(new KarmaAlumne
-    //        {
-    //            NIA  = karmaAnterior.NIA,
-    //            IdAvaluacio = idAvaluacioActual,
-    //            NumPuntsInicials = karmaAnterior.NumPuntsActuals,
-    //            NumPuntsActuals = karmaAnterior.NumPuntsActuals,
-    //            KarmaInicial = karmaAnterior.KarmaActual,
-    //            KarmaActual = karmaAnterior.KarmaActual
-    //        });
-    //    }
-
-    //    await _context.SaveChangesAsync();
-    //}
 
     // Calcular nota final de TOTS els alumnes d'una avaluació
     public async Task CalcularNotaFinalAsync(long idAvaluacio)
@@ -407,5 +382,62 @@ public class KarmaAlumneService : IKarmaAlumneService
                 punts < c.NumPuntsMaxim);
 
         return configuracio?.ColorKarma ?? string.Empty;
+    }
+
+
+    // =====================================================
+    // B) CONSULTES
+    // =====================================================
+
+    public async Task<List<KarmaAlumne>> GetPerClasseIAvaluacioAsync(
+        long idClasse,
+        long idAvaluacio,
+        ClaimsPrincipal user)
+    {
+        var query = _context.KarmaAlumnes
+            .Where(k => k.Alumne.IdClasse == idClasse && k.IdAvaluacio == idAvaluacio);
+
+        // 🔹 Alumne → només el seu
+        if (user.IsInRole("AG_Alumne"))
+        {
+            var nia = user.Identity!.Name;
+
+            query = query.Where(k => k.NIA == nia);
+
+            return await query
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        // Equip Directiu → tot
+        if (user.IsInRole("AG_EquipDirectiu"))
+        {
+            return await query
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        // Professor → validar accés
+        if (user.IsInRole("AG_Professor"))
+        {
+            var userId = user.FindFirst(ClaimTypes.Name)?.Value;
+
+            var qProfessor = _context.ProfessorsDeClasse
+                            .Where(p => p.Professor.IdProfessor == userId
+                                            && p.Professor.Actiu == true
+                                            && p.IdClasse == idClasse);
+
+            var esProfessor = await qProfessor.AnyAsync();
+
+            if (!esProfessor)
+                return new List<KarmaAlumne>(); // o exception
+
+            return await query
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        // per defecte
+        return new List<KarmaAlumne>();
     }
 }

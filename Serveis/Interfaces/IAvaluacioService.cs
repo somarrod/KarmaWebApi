@@ -12,6 +12,7 @@ public interface IAvaluacioService
     Task<AvaluacioDisplaySet?> EditarAsync(AvaluacioEditarDTO dto);
 
     Task<AvaluacioDisplaySet?> IniciarAsync(long idAvaluacio);
+    Task<AvaluacioDisplaySet?> IniciarCoreAsync(long idAvaluacio);
     Task<AvaluacioDisplaySet?> FinalitzarAsync(long idAvaluacio);
 
     Task<bool> EsborrarAsync(long idAvaluacio);

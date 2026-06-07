@@ -2,19 +2,23 @@
 using KarmaWebAPI.DTOs.Avaluacio;
 using KarmaWebAPI.DTOs.DisplaySets;
 using KarmaWebAPI.Models;
+using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 public class AvaluacioService : IAvaluacioService
 {
     private readonly DatabaseContext _context;
     private readonly IKarmaAlumneService _karmaAlumneService;
+    private readonly IGrupService _grupService;
 
     public AvaluacioService(
         DatabaseContext context,
-        IKarmaAlumneService karmaAlumneService)
+        IKarmaAlumneService karmaAlumneService,
+        IGrupService grupService)
     {
         _context = context;
         _karmaAlumneService = karmaAlumneService;
+        _grupService = grupService;
     }
 
     // =====================================================
@@ -239,35 +243,14 @@ public class AvaluacioService : IAvaluacioService
 
             try
             {
-                var avaluacio = await _context.Avaluacions
-                    .Include(a => a.AnyEscolar)
-                    .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio)
-                    ?? throw new InvalidOperationException("L'avaluació no existeix");
+                var result = await IniciarCoreAsync(idAvaluacio);
 
-                var anyEscolar = avaluacio.AnyEscolar;
-
-                var avaluacioAnterior = await _context.Avaluacions
-                    .Where(a =>
-                        a.IdAnyEscolar == avaluacio.IdAnyEscolar &&
-                        a.DataFinal < avaluacio.DataInicial)
-                    .OrderByDescending(a => a.DataFinal)
-                    .FirstOrDefaultAsync();
-
-                if (avaluacioAnterior == null || anyEscolar.ReiniciaCadaAvaluacio)
-                {
-                    await _karmaAlumneService.CrearPerAvaluacioCoreAsync(avaluacio.IdAvaluacio, anyEscolar.SaldoKarmaInicial);
-                }
-                else
-                {
-                    await _karmaAlumneService.CopiarPerAvaluacioCoreAsync(avaluacio.IdAvaluacio, avaluacioAnterior.IdAvaluacio);
-                }
-
-        
+                // UN ÚNIC SAVE
                 await _context.SaveChangesAsync();
 
                 await tx.CommitAsync();
 
-                return await GetByIdAsync(idAvaluacio);
+                return result;
             }
             catch (Exception ex)
             {
@@ -277,6 +260,55 @@ public class AvaluacioService : IAvaluacioService
                     ex.InnerException?.Message ?? ex.Message);
             }
         });
+    }
+
+    public async Task<AvaluacioDisplaySet> IniciarCoreAsync(long idAvaluacio)
+    {
+        var avaluacio = await _context.Avaluacions
+            .Include(a => a.AnyEscolar)
+            .FirstOrDefaultAsync(a => a.IdAvaluacio == idAvaluacio)
+            ?? throw new InvalidOperationException("L'avaluació no existeix");
+
+        var anyEscolar = avaluacio.AnyEscolar;
+
+        var avaluacioAnterior = await _context.Avaluacions
+            .Where(a =>
+                a.IdAnyEscolar == avaluacio.IdAnyEscolar &&
+                a.DataFinal < avaluacio.DataInicial)
+            .OrderByDescending(a => a.DataFinal)
+            .FirstOrDefaultAsync();
+
+        if (avaluacioAnterior == null || anyEscolar.ReiniciaCadaAvaluacio)
+        {
+            await _karmaAlumneService.CrearPerAvaluacioCoreAsync(
+                avaluacio.IdAvaluacio,
+                anyEscolar.SaldoKarmaInicial);
+        }
+        else
+        {
+            await _karmaAlumneService.CopiarPerAvaluacioCoreAsync(
+                avaluacio.IdAvaluacio,
+                avaluacioAnterior.IdAvaluacio);
+        }
+
+        await _context.SaveChangesAsync();
+
+        // OBTENIR GRUPS DEL CURS ESCOLAR
+        var grups = await _context.Grups
+            .Where(g => g.Classe.IdAnyEscolar == avaluacio.IdAnyEscolar)
+            .ToListAsync();
+
+        // RECALCULAR KARMA BASE
+        foreach (var grup in grups)
+        {
+            await _grupService.CalcularKarmaBaseCoreAsync(
+                grup.IdGrup,
+                idAvaluacio,
+                saveChanges: false);
+        }
+
+        // NO SaveChanges ací
+        return await GetByIdAsync(idAvaluacio);
     }
 
     public async Task<AvaluacioDisplaySet> FinalitzarAsync(long idAvaluacio)
