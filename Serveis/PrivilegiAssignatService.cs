@@ -8,10 +8,12 @@ namespace KarmaWebAPI.Serveis
     public class PrivilegiAssignatService : IPrivilegiAssignatService
     {
         private readonly DatabaseContext _context;
+        private readonly IAlumneService _alumneService;
 
-        public PrivilegiAssignatService(DatabaseContext context)
+        public PrivilegiAssignatService(DatabaseContext context, IAlumneService alumneService)
         {
             _context = context;
+            this._alumneService = alumneService;
         }
 
         // ==================================================
@@ -19,47 +21,90 @@ namespace KarmaWebAPI.Serveis
         // ==================================================
         public async Task<List<PrivilegiAssignat>> AssignarAsync(string nia, long idPrivilegi)
         {
-            var alumne = await _context.Alumnes
-                .Include(a => a.Grup)
-                .FirstOrDefaultAsync(a => a.NIA == nia)
-                ?? throw new InvalidOperationException("Alumne no trobat");
-
-            var privilegi = await _context.Privilegis
-                .FirstOrDefaultAsync(p => p.IdPrivilegi == idPrivilegi && p.Actiu)
-                ?? throw new InvalidOperationException("Privilegi no vàlid");
-
-            var ara = DateTime.Now;
-            var codiIntern = $"PA-{idPrivilegi}-{Guid.NewGuid().ToString("N")[..8]}";
-
-            var assignats = new List<PrivilegiAssignat>();
-
-            if (privilegi.Tipus == "I")
+            try
             {
-                assignats.Add(CrearAssignacio(alumne.NIA, privilegi, codiIntern, ara));
-            }
-            else if (privilegi.Tipus == "G")
-            {
-                if (alumne.IdGrup == null)
-                    throw new InvalidOperationException("L'alumne no té grup");
+                var alumne = await _context.Alumnes
+                    .Include(a => a.Grup)
+                    .Include(a => a.Classe)
+                    .FirstOrDefaultAsync(a => a.NIA == nia)
+                    ?? throw new InvalidOperationException("Alumne no trobat");
 
-                var alumnesGrup = await _context.Alumnes
-                    .Where(a => a.IdGrup == alumne.IdGrup)
-                    .ToListAsync();
+                var privilegi = await _context.Privilegis
+                    .FirstOrDefaultAsync(p => p.IdPrivilegi == idPrivilegi && p.Actiu)
+                    ?? throw new InvalidOperationException("Privilegi no vàlid");
 
-                foreach (var a in alumnesGrup)
+                var ara = DateTime.Now;
+                var codiIntern = $"PA-{idPrivilegi}-{Guid.NewGuid().ToString("N")[..8]}";
+
+                var assignats = new List<PrivilegiAssignat>();
+
+                // ==============================
+                // VALIDAR NIVELL DE KARMA
+                // ==============================
+                var nivellPermes = await _alumneService
+                    .ObtenirNivellPrivilegiPermesAsync(alumne.NIA);
+
+                if (nivellPermes == null || nivellPermes < privilegi.NivellPrivilegi)
                 {
-                    assignats.Add(CrearAssignacio(a.NIA, privilegi, codiIntern, ara));
+                    throw new InvalidOperationException(
+                        "L'alumne no té nivell de karma suficient per a aquest privilegi");
                 }
+
+                // ==============================
+                // ASSIGNACIÓ
+                // ==============================
+                if (privilegi.Tipus == "I")
+                {
+                    assignats.Add(CrearAssignacio(alumne.NIA, privilegi, codiIntern, ara));
+                }
+                else if (privilegi.Tipus == "G")
+                {
+                    if (alumne.IdGrup == null)
+                        throw new InvalidOperationException("L'alumne no té grup");
+
+                    var alumnesGrup = await _context.Alumnes
+                        .Where(a => a.IdGrup == alumne.IdGrup)
+                        .ToListAsync();
+
+                    foreach (var a in alumnesGrup)
+                    {
+                        var nivellPermesGrup = await _alumneService
+                            .ObtenirNivellPrivilegiPermesAsync(a.NIA);
+
+                        if (nivellPermesGrup == null || nivellPermesGrup < privilegi.NivellPrivilegi)
+                            throw new InvalidOperationException(
+                                $"{a.Nom} no té nivell de karma suficient per a aquest privilegi");
+
+                        assignats.Add(CrearAssignacio(a.NIA, privilegi, codiIntern, ara));
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException("Tipus de privilegi desconegut");
+                }
+
+                _context.PrivilegisAssignats.AddRange(assignats);
+                await _context.SaveChangesAsync();
+
+                return assignats;
             }
-            else
+            catch (DbUpdateException dbEx)
             {
-                throw new InvalidOperationException("Tipus de privilegi desconegut");
+                // errors típics de BD (FK, duplicates, nulls…)
+                throw new InvalidOperationException(
+                    dbEx.InnerException?.Message ?? "Error guardant dades en la base de dades");
             }
-
-            _context.PrivilegisAssignats.AddRange(assignats);
-            await _context.SaveChangesAsync();
-
-            return assignats;
+            catch (InvalidOperationException)
+            {
+                // errors de negoci (els teus)
+                throw;
+            }
+            catch (Exception ex)
+            {
+                // 💥 qualsevol altre error inesperat
+                throw new Exception(
+                    $"Error inesperat en assignar privilegi: {ex.Message}");
+            }
         }
 
         public PrivilegiAssignat CrearAssignacio(
@@ -84,24 +129,78 @@ namespace KarmaWebAPI.Serveis
         }
 
         // ==================================================
-        // EXECUTAR (PER CODI INTERN)
+        // EXECUTAR (per IdPrivilegi Assignat)
         // ==================================================
-        public async Task<bool> ExecutarAsync(string codiIntern)
+        public async Task<List<PrivilegiAssignat>> ExecutarAsync(long idPrivilegiAssignat)
         {
-            var assignacions = await _context.PrivilegisAssignats
-                .Where(p => p.CodiIntern == codiIntern && p.DataExecucio == null)
-                .ToListAsync();
+            // ==============================
+            // 1. Carregar assignació base
+            // ==============================
+            var privilegiAssignat = await _context.PrivilegisAssignats
+                .FirstOrDefaultAsync(p =>
+                    p.IdPrivilegiAssignat == idPrivilegiAssignat &&
+                    p.DataExecucio == null);
 
-            if (!assignacions.Any())
-                return false;
+            if (privilegiAssignat == null)
+                throw new InvalidOperationException(
+                    $"Privilegi assignat no trobat per Id {idPrivilegiAssignat}"); 
+
+            // ==============================
+            // 2. Carregar privilegi
+            // ==============================
+            var privilegi = await _context.Privilegis
+                .FirstOrDefaultAsync(p =>
+                    p.IdPrivilegi == privilegiAssignat.IdPrivilegi);
+
+            if (privilegi == null)
+                throw new InvalidOperationException(
+                    $"Privilegi no trobat per Id {privilegiAssignat.IdPrivilegi}");
+
+            var tipus = privilegi.Tipus;
+
+            // ==============================
+            // 3. Determinar conjunt
+            // ==============================
+            IQueryable<PrivilegiAssignat> query;
+
+            if (tipus == "G")
+            {
+                query = _context.PrivilegisAssignats
+                    .Where(p =>
+                        p.CodiIntern == privilegiAssignat.CodiIntern &&
+                        p.DataExecucio == null);
+            }
+            else
+            {
+                query = _context.PrivilegisAssignats
+                    .Where(p =>
+                        p.IdPrivilegiAssignat == idPrivilegiAssignat &&
+                        p.DataExecucio == null);
+            }
+
+            // ==============================
+            // 4. Executar
+            // ==============================
+            var assignacions = await query.ToListAsync();
+
+            if (assignacions.Count == 0)
+                throw new InvalidOperationException(
+                     $"Privilegi no trobat per Id {privilegiAssignat.IdPrivilegi}");
 
             var ara = DateTime.Now;
+
             foreach (var p in assignacions)
                 p.DataExecucio = ara;
 
+            // ==============================
+            // 5. Guardar
+            // ==============================
             await _context.SaveChangesAsync();
-            return true;
+
+            // IMPORTANT: l’objecte original ja està actualitzat (tracking EF)
+            return assignacions;
         }
+
 
         // ==================================================
         // LLISTA PER ALUMNE

@@ -86,6 +86,17 @@ namespace KarmaWebAPI.Data
                 .HasForeignKey(c => c.IdTipusCategoria);
 
 
+            modelBuilder.Entity<PrivilegiAssignat>()
+                .HasOne(p => p.Privilegi)
+                .WithMany()
+                .HasForeignKey(p => p.IdPrivilegi);
+
+            modelBuilder.Entity<PrivilegiAssignat>()
+                .HasOne(p => p.Alumne)
+                .WithMany()
+                .HasForeignKey(p => p.NIA);
+
+
             // Llamada al método base
             base.OnModelCreating(modelBuilder);
         }

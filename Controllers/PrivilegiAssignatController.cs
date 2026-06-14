@@ -1,4 +1,5 @@
-﻿using KarmaWebAPI.Serveis;
+﻿using KarmaWebAPI.DTOs;
+using KarmaWebAPI.Serveis;
 using KarmaWebAPI.Serveis.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,11 +23,9 @@ namespace KarmaWebAPI.Controllers
         // ==================================================
         [HttpPost("assignar")]
         [Authorize(Roles = "AG_Admin,AG_Professor,AG_EquipDirectiu")]
-        public async Task<IActionResult> Assignar(
-            [FromQuery] string nia,
-            [FromQuery] long idPrivilegi)
+        public async Task<IActionResult> Assignar(AssignarPrivilegiDTO dto)
         {
-            var result = await _service.AssignarAsync(nia, idPrivilegi);
+            var result = await _service.AssignarAsync(dto.NIA, dto.IdPrivilegi);
             return Ok(result);
         }
 
@@ -34,16 +33,13 @@ namespace KarmaWebAPI.Controllers
         // POST: api/privilegi-assignat/executar
         // Executa privilegi per CodiIntern (afecta tots si és de grup)
         // ==================================================
-        [HttpPost("executar")]
+        [HttpPost("gaudir/{idPrivilegiAssignat:long}")]
         [Authorize(Roles = "AG_Admin,AG_Professor,AG_EquipDirectiu")]
-        public async Task<IActionResult> Executar(
-            [FromQuery] string codiIntern)
+        public async Task<IActionResult> Executar(long idPrivilegiAssignat)
         {
-            var ok = await _service.ExecutarAsync(codiIntern);
-            if (!ok)
-                return NotFound();
-
-            return Ok();
+            var result = await _service.ExecutarAsync(idPrivilegiAssignat);
+           
+            return Ok(result);
         }
 
         // ==================================================

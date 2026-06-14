@@ -231,6 +231,63 @@ namespace KarmaWebAPI.Serveis
             return result ?? throw new InvalidOperationException("Alumne no trobat");
         }
 
+        public async Task<int> ObtenirNivellPrivilegiPermesAsync(string nia)
+        {
+            // ==============================
+            // 🔹 1. Alumne + Classe
+            // ==============================
+            var alumne = await _context.Alumnes
+                .Include(a => a.Classe)
+                .FirstOrDefaultAsync(a => a.NIA == nia)
+                ?? throw new InvalidOperationException("Alumne no trobat");
+
+            int idAnyEscolar = alumne.Classe.IdAnyEscolar;
+
+            DateOnly hui = DateOnly.FromDateTime(DateTime.Now);
+
+            // ==============================
+            // 🔹 2. Avaluació actual
+            // ==============================
+            var avaluacio = await _context.Avaluacions
+                .Where(a =>
+                    a.IdAnyEscolar == idAnyEscolar &&
+                    a.DataInicial <= hui &&
+                    a.DataFinal >= hui)
+                .FirstOrDefaultAsync();
+
+            if (avaluacio == null) { return 0; }
+
+            // ==============================
+            // 🔹 3. Karma de l’alumne
+            // ==============================
+            var karma = await _context.KarmaAlumnes
+                .FirstOrDefaultAsync(k =>
+                    k.NIA == nia &&
+                    k.IdAvaluacio == avaluacio.IdAvaluacio);
+            //?? throw new InvalidOperationException("Karma no trobat per a l'alumne");
+
+            if (karma == null) { return 0; }
+
+            double punts = karma.NumPuntsActuals;
+
+            // ==============================
+            // 🔹 4. Configuració Karma
+            // ==============================
+            var configuracio = await _context.ConfiguracionsKarma
+                .Where(c =>
+                    c.IdAnyEscolar == idAnyEscolar &&
+                    punts >= c.NumPuntsMinim &&
+                    punts < c.NumPuntsMaxim)
+                .FirstAsync();
+
+            // ==============================
+            // 🔹 5. Retorn nivell privilegis
+            // ==============================
+            return configuracio.NivellPrivilegis;
+        }
+
+
+
         // ==================================================
         // LLISTA
         // ==================================================

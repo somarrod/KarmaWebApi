@@ -6,7 +6,7 @@ namespace KarmaWebAPI.Serveis.Interfaces
     {
 
         Task<List<PrivilegiAssignat>> AssignarAsync(string nia, long idPrivilegi);
-        Task<bool> ExecutarAsync(string codiIntern);
+        Task<List<PrivilegiAssignat>> ExecutarAsync(long idPrivilegiAssignat);
 
         Task<List<PrivilegiAssignat>> LlistaPerAlumneAsync(string nia);
 

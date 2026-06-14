@@ -14,8 +14,10 @@ namespace KarmaWebAPI.Serveis.Interfaces
         Task<AlumneDisplaySet> DesactivarAsync(string nia);
         Task<AlumneDisplaySet> AssignarClasseIGrupAsync(AlumneAssignarClasseIGrupDTO dto);
 
-        Task<AlumneDisplaySet> LlevarAlumneDeGrupAsync(string nia); 
+        Task<AlumneDisplaySet> LlevarAlumneDeGrupAsync(string nia);
 
+        //Torna el nivell de privilegis, al que pot obtar un alumne segons el seu karma
+        Task<int> ObtenirNivellPrivilegiPermesAsync(string nia);
 
         //CONSULTES   
         Task<AlumneDisplaySet> InstanciaAsync(string nia, ClaimsPrincipal user);
@@ -25,7 +27,8 @@ namespace KarmaWebAPI.Serveis.Interfaces
 
         //Actualitza en BD tots els identity dels alumnes (si no estaven creats)
         Task SincronitzarIdentityAsync();
-
+        
+        
     }
 
 }

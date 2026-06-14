@@ -32,10 +32,13 @@ namespace KarmaWebAPI.Models
         // Relacions
         [Required]
         public string NIA { get; set; }
+        [ForeignKey(nameof(NIA))]
         public Alumne Alumne { get; set; } = null!;
 
         [Required]
         public long IdPrivilegi { get; set; }
+
+        [ForeignKey(nameof(IdPrivilegi))]
         public Privilegi Privilegi { get; set; } = null!;
     }
 }
