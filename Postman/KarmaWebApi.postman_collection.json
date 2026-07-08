@@ -3980,7 +3980,7 @@
           "name": "Auxiliar",
           "item": [
             {
-              "name": "Login AG_Admin Copy",
+              "name": "Login AG_Admin",
               "request": {
                 "method": "POST",
                 "header": [],
@@ -4321,23 +4321,426 @@
       "name": "18. Assignació de Privilegis",
       "item": [
         {
-          "name": "✅ GET – Consultar privilegis disponibles",
+          "name": "Auxiliar",
+          "item": [
+            {
+              "name": "Login AG_Admin",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"somarrod@alumni.upv.es\",\r\n  \"password\": \"P@ssw0rd\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Login AG_Professor NoClasse",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"rlluria@professor.com\",\r\n  \"password\": \"Rl@1003\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Login AG_Professor Classe",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"rpeiro@professor.com\",\r\n  \"password\": \"Rp@1000\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Login AG_EquipDirectiu",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"smarti@professor.com\",\r\n  \"password\": \"Sm@1001\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Login AG_Alumne",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"login\": \"000000005\",\r\n  \"password\": \"Mg000000005!\",\r\n  \"rememberMe\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Llistar alumnes Per classe",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/alumne/per-classe/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "alumne",
+                    "per-classe",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Consulta Grup per ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/grup/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "grup",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ GET – Consultar karma classe i avalaució",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{professorToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"idClasse\":1,\r\n    \"idAvaluacio\":2\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/karmaalumne/per-classe-avaluacio",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "karmaalumne",
+                    "per-classe-avaluacio"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Crear puntuació NEGATIVA",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{professorToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"nia\": \"000000005\",\r\n    \"idAvaluacio\": 2,\r\n    \"idCategoria\": 1,\r\n    \"numPunts\": -10,\r\n    \"motiu\": \"No ha portat els papers signats per a l'eixida de divendres 26\",\r\n    \"descripcioAdicional\": null,\r\n    \"dataEvent\": \"2025-12-02\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/puntuacio/assignar",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "puntuacio",
+                    "assignar"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Crear puntuació POSITIU",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{professorToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"nia\": \"000000001\",\r\n    \"idAvaluacio\": 3,\r\n    \"idCategoria\": 8,\r\n    \"numPunts\": 5,\r\n    \"motiu\": \"Ha estat atenent. Molt bé\",\r\n    \"descripcioAdicional\": \"Ha millorat molt l'atenció des d'inici de curs\",\r\n    \"dataEvent\": \"2026-03-02\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/puntuacio/assignar",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "puntuacio",
+                    "assignar"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ Llistar alumnes Per classe Copy",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/privilegi-assignat/per-classe/2",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "privilegi-assignat",
+                    "per-classe",
+                    "2"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "✅ GET – Consultar privilegis disponibles",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/privilegi/per-any-escolar/2526",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "privilegi",
+                    "per-any-escolar",
+                    "2526"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "✅ POST – Assignar privilegi (karma suficient)",
           "request": {
-            "method": "GET",
+            "method": "POST",
             "header": [
               {
                 "key": "Authorization",
                 "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"IdPrivilegi\":3,\r\n    \"NIA\": \"000000001\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "{{baseUrl}}/api/privilegi",
+              "raw": "{{baseUrl}}/api/privilegi-assignat/assignar",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
-                "privilegi"
+                "privilegi-assignat",
+                "assignar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ POST – Gaudir privilegi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"IdPrivilegi\":3,\r\n    \"NIA\": \"000000001\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/privilegi-assignat/gaudir/4",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "privilegi-assignat",
+                "gaudir",
+                "4"
               ]
             }
           },
@@ -4369,37 +4772,9 @@
           "response": []
         },
         {
-          "name": "✅ POST – Assignar privilegi (karma suficient)",
+          "name": "✅ GET – Consultar privilegis assignats classe",
           "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{adminToken}}"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/privilegi/assignacio",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "privilegi",
-                "assignacio"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "❌ POST – Assignar privilegi amb karma insuficient",
-          "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
                 "key": "Authorization",
@@ -4407,235 +4782,21 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/privilegi/assignacio",
+              "raw": "{{baseUrl}}/api/privilegi-assignat/per-classe/1",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
-                "privilegi",
-                "assignacio"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "❌ POST – Assignació duplicada del mateix privilegi",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{adminToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/privilegi/assignacio",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "privilegi",
-                "assignacio"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "❌ POST – Assignar privilegi com a professor (no equip directiu)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{professorToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/privilegi/assignacio",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "privilegi",
-                "assignacio"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "❌ POST – Assignar privilegi com a alumne",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{alumneToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/privilegi/assignacio",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "privilegi",
-                "assignacio"
+                "privilegi-assignat",
+                "per-classe",
+                "1"
               ]
             }
           },
           "response": []
         }
       ]
-    },
-    {
-      "name": "19. Proves End‑to‑End",
-      "item": [
-        {
-          "name": "✅ E2E – Consultar estructura bàsica",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{adminToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/any-escolar",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "any-escolar"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "✅ E2E – Professor consulta alumnat i categories",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{professorToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/alumne",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "alumne"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "✅ E2E – Crear puntuació i verificar karma",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{professorToken}}"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/puntuacio",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "puntuacio"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "✅ E2E – Consultar karma de l’alumne",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{professorToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/karma/alumne/{{alumneId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "karma",
-                "alumne",
-                "{{alumneId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "✅ E2E – Assignar privilegi final",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{adminToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/privilegi/assignacio",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "privilegi",
-                "assignacio"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "New Request",
-      "request": {
-        "method": "GET",
-        "header": []
-      },
-      "response": []
-    },
-    {
-      "name": "New Request",
-      "request": {
-        "method": "GET",
-        "header": []
-      },
-      "response": []
     }
   ],
   "variable": [
