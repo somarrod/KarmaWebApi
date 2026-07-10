@@ -12,4 +12,4 @@ Totes les aportacions generades per la ferramenta han sigut revisades, modificad
 Les decisions de disseny, arquitectura, implementació i validació final corresponen exclusivament a l'autora.
 
 **Referència**
-Microsoft Corporation. (2026). *Microsoft Copilot*. https://copilot.microsoft.com/
+Microsoft Corporation. (2026). *Microsoft Copilot*. https://copilot.microsoft.com/ 
